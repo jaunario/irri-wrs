@@ -1,0 +1,2 @@
+serviceClass: org.irri.statistics.client.MySQLService
+path: 048566199E73B1B685DEA2B2A0776410.gwt.rpc
