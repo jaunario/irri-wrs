@@ -8,11 +8,11 @@
   <!-- Servlets -->
 
   <servlet>
-      <servlet-name>MySQLService</servlet-name>
+      <servlet-name>mysqlService</servlet-name>
       <servlet-class>org.irri.statistics.server.MySQLServiceImpl</servlet-class>
   </servlet>
   <servlet-mapping>
-      <servlet-name>MySQLService</servlet-name>
+      <servlet-name>mysqlService</servlet-name>
       <url-pattern>/wrs_manila/mysqlservice</url-pattern>
   </servlet-mapping>
 
