@@ -9,6 +9,8 @@ package org.irri.statistics.client;
  *
  * @author Jorrel Khalil S. Aunario
  */
+import org.irri.statistics.client.ui.Wrs_Browser;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -69,7 +71,7 @@ public class DataViewer extends TabPanel{
     private String srctable = "reg_data";
     private String varlisttable = "variables";
 
-    public DataViewer(){
+    public DataViewer(){    	
         super();
         final AsyncCallback<String[][]> GetDataCallback = new AsyncCallback<String[][]>() {
             public void onSuccess(String[][] result) {
@@ -246,6 +248,9 @@ public class DataViewer extends TabPanel{
                 "<p>Please click on the search tab and follow the instructions.</p></blockquote>"));
         add(SelectionPanel, "Search");
         add(ResultsPan, "Results");
+        Wrs_Browser wrs_Browser = new Wrs_Browser();
+        add(wrs_Browser,"Browse");
+        wrs_Browser.setHeight("372px");
         getTabBar().setTabEnabled(1, false);
         selectTab(0);
         setSize("100%", "100%");
