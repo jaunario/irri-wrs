@@ -71,7 +71,7 @@ public class RPFiltering extends Composite {
 			//super();
 			AbsolutePanel absolutePanel = new AbsolutePanel();
 			initWidget(absolutePanel);
-			absolutePanel.setSize("401px", "438px");
+			absolutePanel.setSize("400px", "438px");
 			
 	        Label lblRegion = new Label("Regions");
 			absolutePanel.add(lblRegion, 8, 43);
