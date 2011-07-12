@@ -43,6 +43,7 @@ public class MySQLServiceImpl extends RemoteServiceServlet implements
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             Connection connection = DriverManager.getConnection(
             		"jdbc:mysql://localhost/rice_stats", "wrsviewer", "Vi3wWRS");
+            		//"jdbc:mysql://localhost/rice_stats", "root", "Ragnarok09");
             Statement select = connection.createStatement();
 
             ResultSet result = select.executeQuery(Query);
