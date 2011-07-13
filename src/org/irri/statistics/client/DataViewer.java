@@ -132,13 +132,7 @@ public class DataViewer extends TabPanel{
                 "<li>Select year(s).</li>" +
                 "<li>Click <b><i>Get Data</i>.</b></li></ol>");
 
-        HTMLPanel HTHints = new HTMLPanel("<p><b>Hint: </b></p>" +
-                "<ul>" +
-                "<li>After clicking on an item, wait for the list boxes to be populated.</li>" +
-                "<li>To select multiple items, hold the <b><i>Ctrl</i></b> button on your keyboard and then click on the item.</li>" +
-                "<li>If you have multiple selections, deselect an item by just clicking on an item again.</li>" +
-                "<li>In <i>Subnational Geographic Extent</i>, selecting a country retrievs data from all the selected country's provices/states.</li>"+
-                "</ul>");
+        HTMLPanel HTHints = new HTMLPanel("<p><b>Hint: </b></p><ul><li>After clicking on an item, wait for the list boxes to be populated.</li><li>To select multiple items, hold the <b><i>Ctrl</i></b> button on your keyboard and then click on the item.</li><li>If you have multiple selections, deselect an item by just clicking on an item again.</li><li>In <i>Subnational Geographic Extent</i>, selecting a country retrievs data from all the selected country's provices/states.</li></ul>");
 
         BtFetchData.setTitle("Gets the data with the specifications selected below");
         BtFetchData.setEnabled(false);
