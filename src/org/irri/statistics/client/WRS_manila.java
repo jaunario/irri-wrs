@@ -3,6 +3,7 @@ package org.irri.statistics.client;
 import org.irri.statistics.client.ui.RPFiltering;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.dom.client.Style.Position;
@@ -10,7 +11,6 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -33,6 +33,7 @@ public class WRS_manila implements EntryPoint {
      */
     public void onModuleLoad() {
         RootPanel rootPanel = RootPanel.get("container");
+        rootPanel.setStyleName("wrapper");
         rootPanel.setSize("100%", "100%");
         dpWRSHome.setStyleName("wrapper");
         rootPanel.add(dpWRSHome, 0, 0);

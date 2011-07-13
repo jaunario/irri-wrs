@@ -4,7 +4,6 @@ import org.irri.statistics.client.UtilsRPC;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -12,10 +11,10 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
 public class RPFiltering extends Composite {
 	/*
@@ -23,12 +22,12 @@ public class RPFiltering extends Composite {
 	 * 
 	 * Author : Jorrel Khalil S. Aunario
 	 */
-		ListBox lbxExtent = new ListBox(false);
-		ListBox lbxRegion = new ListBox(true);
-		ListBox lbxVarGroup = new ListBox(true);
-		ListBox lbxVariable = new ListBox(true);
-		ListBox lbxYear = new ListBox(true);
-		Button btnSubmit = new Button("Get Data");
+	ListBox lbxExtent = new ListBox(false);
+	ListBox lbxRegion = new ListBox(true);
+	ListBox lbxVarGroup = new ListBox(true);
+	ListBox lbxVariable = new ListBox(true);
+	ListBox lbxYear = new ListBox(true);
+	Button btnSubmit = new Button("Get Data");
 		
 		String selectedCountries = "";    
 	    String srctable = "reg_data";
@@ -71,9 +70,6 @@ public class RPFiltering extends Composite {
         };
 		
 		public RPFiltering() {
-		
-		    
-		    //super();
 			VerticalPanel absolutePanel = new VerticalPanel();
 			absolutePanel.setSpacing(5);
 			absolutePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
@@ -81,6 +77,7 @@ public class RPFiltering extends Composite {
 			absolutePanel.setSize("383px", "392px");
 	        
 	        HorizontalPanel horizontalPanel_1 = new HorizontalPanel();
+	        horizontalPanel_1.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 	        horizontalPanel_1.setSpacing(5);
 	        absolutePanel.add(horizontalPanel_1);
 	        
