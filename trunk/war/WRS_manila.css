@@ -36,17 +36,26 @@ h1 {
 	font-weight: bold;	
 }
 .wrapper {
-	margin-left: auto;
-	margin-right: auto;
 	position: relative;
 }
 .root {
-		position: relative;
+	box-align: center;
 }
 .gwt-HTML {
-	margin: 5px, 5px;
+	margin: 5px, 10px;
 }
 .status {
 	font-size: 12px;
 	font-family: Arial, Verdana;
+}
+.gwt-Label-logo {
+	font-size: 60;
+	font-family: Times New Roman;
+	font-weight: bold;
+	color: #028502;
+}
+.gwt-Label-fullname {
+	font-family: Times New Roman;
+	font-size: 20px;
+	color: #555;
 }
