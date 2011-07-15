@@ -68,6 +68,30 @@ public class RPFiltering extends Composite {
                  System.out.println("Communication failed (RDV.InitRegionBox)");
             }
         };
+        
+        final AsyncCallback<String[][]> InitVarBox = new AsyncCallback<String[][]>() {
+            public void onSuccess(String[][] out) {
+                lbxVariable.clear();
+                if (out.length<=1){
+                	lbxVariable.addItem("No Data Available");
+                }
+                else{
+                    try{
+                        for (int i = 1;i<out.length;i++){
+                        	lbxVariable.addItem(out[i][0]+" ("+out[i][1] + ")", out[i][2]);
+                        }
+                    }
+                    catch(Exception e){
+                        System.err.println(e);
+                    }
+                }
+            }
+
+            public void onFailure(Throwable caught) {
+                System.out.println("Communication failed (RDV.InitVarBox)");
+            }
+        };
+
 		
 		public RPFiltering() {
 			VerticalPanel vpWrapper = new VerticalPanel();
@@ -134,6 +158,20 @@ public class RPFiltering extends Composite {
 	        
 	        Label lblVarGroup = new Label("Variable Groups");
 	        verticalPanel_1.add(lblVarGroup);
+	        lbxVarGroup.addChangeHandler(new ChangeHandler() {
+	        	public void onChange(ChangeEvent event) {
+	        		String selregion = getSelectedItems(lbxRegion);
+	        		String sql = "SELECT v.var_name, v.unit, s.var_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code WHERE v.group_code in (" + getSelectedItems(lbxVarGroup) + ") AND v.show_flag=1";
+	        		
+	        		if (!selregion.equalsIgnoreCase("")){
+	        			sql = sql + " AND s.iso3 in (" + selregion + ")";
+	        		}
+	        		
+	        		sql = sql +  " GROUP BY s.var_code";
+	        		UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitVarBox);
+	        		
+	        	}
+	        });
 	        verticalPanel_1.add(lbxVarGroup);
 	        
 	        lbxVarGroup.setVisibleItemCount(5);
@@ -188,5 +226,16 @@ public class RPFiltering extends Composite {
 			lbxVariable.clear();
 			UtilsRPC.getService("mysqlservice").RunSELECT("SELECT region, iso3 FROM region_list ORDER BY region",InitRegionBox);
 			UtilsRPC.getService("mysqlservice").RunSELECT("SELECT group_name, group_code FROM wrs_groups ORDER BY group_code",InitVarGroupBox);			
+		}
+		
+		public String getSelectedItems(ListBox lbx){
+			String selitems = "";
+			for (int i = 0; i < lbx.getItemCount(); i++) {
+				if (lbx.isItemSelected(i)) {
+					selitems = selitems + "'" + lbx.getValue(i) + "',";
+				}
+			}			
+			if (selitems.length()>0) selitems = selitems.substring(0, selitems.length()-1);
+			return(selitems);
 		}
 	}
