@@ -111,7 +111,8 @@ public class RPFiltering extends Composite {
 	        hpGExtent.add(lbxExtent);
 	        lbxExtent.addChangeHandler(new ChangeHandler() {
 	        	public void onChange(ChangeEvent event) {
-	        		String sql = "";
+	        		String rsql = "";
+	        		String vgsql = "";
 	        		lbxYear.clear();
 	        		lbxVariable.clear();
 
@@ -119,17 +120,18 @@ public class RPFiltering extends Composite {
 
 	        			srctable = "reg_data";
 		            	varlisttable = "variables";
-		            	sql =  "SELECT region, iso3 FROM region_list ORDER BY region";
+		            	rsql =  "SELECT c.name_english, r.iso3 FROM "+ srctable +" r INNER JOIN countries c ON c.iso3=r.iso3 WHERE c.ci=0 GROUP BY 1 ASC";
+		            	vgsql =  "SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code";
 		            } else if (lbxExtent.getSelectedIndex()==1){
 		            	srctable = "front_data";
-		            	varlisttable = "variables";
-		            	sql = "SELECT country, iso3 FROM country_list ORDER BY country";
-		            } else{
+		            	rsql =  "SELECT c.name_english, r.iso3 FROM "+ srctable +" r INNER JOIN countries c ON c.iso3=r.iso3 WHERE c.ci=1 GROUP BY 1 ASC";
+		            	vgsql =  "SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code";		            } else{
 		            	srctable = "pays";
 		            	varlisttable = "svar_list";
-		            	sql = "SELECT country, iso3 FROM sncountry_list ORDER BY country";
+		            	rsql = "SELECT c.name_english, iso3 FROM sncountry_list ORDER BY country";
 		            }
-		            UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitRegionBox);
+		            UtilsRPC.getService("mysqlservice").RunSELECT(rsql,InitRegionBox);
+		            UtilsRPC.getService("mysqlservice").RunSELECT(vgsql,InitVarGroupBox);
 		            //else MainPanel.add(new HTML("Under Construction"));
 	        	}
 	        });
@@ -224,8 +226,8 @@ public class RPFiltering extends Composite {
 		public void initListBoxes(){
 			lbxYear.clear();
 			lbxVariable.clear();
-			UtilsRPC.getService("mysqlservice").RunSELECT("SELECT region, iso3 FROM region_list ORDER BY region",InitRegionBox);
-			UtilsRPC.getService("mysqlservice").RunSELECT("SELECT group_name, group_code FROM wrs_groups ORDER BY group_code",InitVarGroupBox);			
+			UtilsRPC.getService("mysqlservice").RunSELECT("SELECT c.name_english, r.iso3 FROM "+ srctable +" r INNER JOIN countries c ON c.iso3=r.iso3 WHERE c.ci=0 GROUP BY 1 ASC",InitRegionBox);
+			UtilsRPC.getService("mysqlservice").RunSELECT("SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code",InitVarGroupBox);			
 		}
 		
 		public String getSelectedItems(ListBox lbx){
