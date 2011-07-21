@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.ScrollPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -61,7 +62,7 @@ public class WRS_manila implements EntryPoint {
         lblStatusGoesHere.setSize("100%", "14px");
         
         VerticalPanel flowPanel = new VerticalPanel();
-        dlpWRSHome.addNorth(flowPanel, 88.3);
+        dlpWRSHome.addNorth(flowPanel, 80.0);
         flowPanel.setSize("100%", "100%");
         
         Label lblIrri = new Label("IRRI");
@@ -72,7 +73,7 @@ public class WRS_manila implements EntryPoint {
         flowPanel.setCellVerticalAlignment(lblIrri, HasVerticalAlignment.ALIGN_BOTTOM);
         flowPanel.setCellHeight(lblIrri, "10%");
         flowPanel.setCellWidth(lblIrri, "100%");
-        lblIrri.setSize("100%", "50%");
+        lblIrri.setSize("100%", "54px");
         
         Label lblInternationalRiceResearch = new Label("International Rice Research Institute");
         lblInternationalRiceResearch.setStyleName("gwt-Label-fullname");
@@ -82,23 +83,26 @@ public class WRS_manila implements EntryPoint {
         TabLayoutPanel TLPMain = new TabLayoutPanel(30.0, Unit.PX);
         TLPMain.setAnimationVertical(true);
         
+        ScrollPanel scrollPanel = new ScrollPanel();
+        TLPMain.add(scrollPanel, "Select", false);
+        
         DockPanel dpSelectorWrapper = new DockPanel();
-        TLPMain.add(dpSelectorWrapper, "Select", false);
+        scrollPanel.setWidget(dpSelectorWrapper);
         dpSelectorWrapper.setSize("100%", "100%");
         VerticalPanel vpText = new VerticalPanel();
         vpText.setSpacing(5);
         dpSelectorWrapper.add(vpText, DockPanel.WEST);
         vpText.setSize("100%", "100%");
         dpSelectorWrapper.setCellHeight(vpText, "100%");
-        dpSelectorWrapper.setCellWidth(vpText, "100%");
+        dpSelectorWrapper.setCellWidth(vpText, "40%");
         
         HTML htmlhowToUse = new HTML("<h3>How to Use this Facility</h3> <p>The procedure in retrieving data from this facility is sequential to minimize empty result sets. Please follow the steps enumerated below.</p><ol> <li>Select the level of geographical extent (i.e. continental, national, or subnational)</li> <li>Select region/country/organization of interest.</li> <li>Select variable(s) from either <i>Supply and Demand Variables Box</i> or <i>Other Variables Box</i>.</li> <li>Select year(s).</li><li>Click <b><i>Get Data</i>.</b></li></ol>", true);
         vpText.add(htmlhowToUse);
-        htmlhowToUse.setSize("100%", "209px");
+        htmlhowToUse.setSize("95%", "209px");
         
         HTML htmlNewHtml = new HTML("<h3>Hint:</h3>\r\n<ul><li>After clicking on an item, wait for the list boxes to be populated.</li><li>To select multiple items, hold the <b><i>Ctrl</i></b> button on your keyboard and then click on the item.</li><li>If you have multiple selections, deselect an item by just clicking on an item again.</li><li>In <i>Subnational Geographic Extent</i>, selecting a country retrievs data from all the selected country's provices/states.</li></ul>", true);
         vpText.add(htmlNewHtml);
-        htmlNewHtml.setSize("100%", "176px");
+        htmlNewHtml.setSize("95%", "176px");
         
         VerticalPanel vpFilters = new VerticalPanel();
         vpFilters.setSpacing(5);
@@ -113,7 +117,7 @@ public class WRS_manila implements EntryPoint {
         HTMLPanel htmlDisclaimer = new HTMLPanel("<h3>Disclaimer </h3>\r\nData and information released from the International Rice Research Institute (IRRI) are provided on an \"AS IS\" basis, without warranty of any kind, including without limitation the warranties of merchantability, fitness for a particular purpose and non-infringement. Availability of this data and information does not constitute scientific publication. Data and/or information may contain errors or be incomplete.");
         vpFilters.add(htmlDisclaimer);
         htmlDisclaimer.setStyleName("notes");
-        htmlDisclaimer.setSize("95%", "100%");
+        htmlDisclaimer.setSize("93%", "100%");
         filterPanel.initListBoxes();
         dlpWRSHome.add(TLPMain);
         TLPMain.setSize("100%", "100%");
