@@ -240,4 +240,11 @@ public class RPFiltering extends Composite {
 			if (selitems.length()>0) selitems = selitems.substring(0, selitems.length()-1);
 			return(selitems);
 		}
+		
+		public String sqlFromItems(){
+			return "SELECT c.NAME_ENGLISH AS 'country', d.yr AS 'year', sum(if(d.var_code='RicPr-USDA',val,null)) 'RicPr-USDA', sum(if(d.var_code='RicYldUSDA',val,null)) 'RicYldUSDA', sum(if(d.var_code='RicHa-USDA',val,null)) 'RicHa-USDA'" +
+			"FROM front_data d inner join countries c on d.iso3 = c.ISO3 " +
+            "WHERE d.iso3 in ('PHL') AND yr between 1960 AND 2011 "+
+            "GROUP BY d.iso3 ASC, d.yr DESC;";
+		}
 	}

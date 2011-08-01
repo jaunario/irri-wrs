@@ -1,11 +1,14 @@
 package org.irri.statistics.client;
 
 import org.irri.statistics.client.ui.RPFiltering;
+import org.irri.statistics.client.ui.WRSResultTable;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -23,8 +26,10 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  */
 public class WRS_manila implements EntryPoint {
     DockLayoutPanel dlpWRSHome = new DockLayoutPanel(Unit.PX);
-    	RPFiltering filterPanel = new RPFiltering();
-
+    	TabLayoutPanel TLPMain = new TabLayoutPanel(30.0, Unit.PX);    
+    		RPFiltering filterPanel = new RPFiltering();
+    		DockPanel dpResult = new DockPanel();
+            
     /** Creates a new instance of worldriceEntryPoint */
     public WRS_manila() {
 
@@ -40,7 +45,7 @@ public class WRS_manila implements EntryPoint {
         //rootPanel.setStyleName("wrapper");
         //rootPanel.setSize("100%", "100%");
         dlpWRSHome.setStyleName("wrapper");
-        dlpWRSHome.setSize("80%", "90%");
+        dlpWRSHome.setSize("80%", "100%");
         dlpWRSHome.getElement().getStyle().setPosition(Position.RELATIVE);
         
         RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
@@ -80,7 +85,6 @@ public class WRS_manila implements EntryPoint {
         flowPanel.add(lblInternationalRiceResearch);
         lblInternationalRiceResearch.setSize("100%", "80%");
         
-        TabLayoutPanel TLPMain = new TabLayoutPanel(30.0, Unit.PX);
         TLPMain.setAnimationVertical(true);
         
         ScrollPanel scrollPanel = new ScrollPanel();
@@ -118,8 +122,25 @@ public class WRS_manila implements EntryPoint {
         vpFilters.add(htmlDisclaimer);
         htmlDisclaimer.setStyleName("notes");
         htmlDisclaimer.setSize("93%", "100%");
+        
+        TLPMain.add(dpResult, "Data", false);
+        dpResult.setSize("100%", "100%");
+        dpResult.setVisible(false);
         filterPanel.initListBoxes();
         dlpWRSHome.add(TLPMain);
         TLPMain.setSize("100%", "100%");
+        
+        filterPanel.setSubmitButtonClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				WRSResultTable mydata = new WRSResultTable(	filterPanel.sqlFromItems());
+				dpResult.add(mydata,DockPanel.CENTER);
+				dpResult.setVisible(true);
+				//dlpWRSHome.
+				
+			}
+		});
     }
 }
