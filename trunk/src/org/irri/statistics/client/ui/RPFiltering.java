@@ -150,6 +150,20 @@ public class RPFiltering extends Composite {
 	        
 	        Label lblRegion = new Label("Regions");
 	        verticalPanel.add(lblRegion);
+	        lbxRegion.addChangeHandler(new ChangeHandler() {
+	        	public void onChange(ChangeEvent event) {
+	        		String selvargrps = getSelectedItems(lbxVarGroup);
+	        		String sql = "SELECT v.var_name, v.unit, s.var_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code WHERE s.iso3 in (" + getSelectedItems(lbxRegion) + ") AND v.show_flag=1";
+	        		
+	        		if (!selvargrps.equalsIgnoreCase("")){
+	        			sql = sql + " AND v.group_code in (" + selvargrps + ")";
+	        		}
+	        		
+	        		sql = sql +  " GROUP BY s.var_code";
+	        		UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitVarBox);
+
+	        	}
+	        });
 	        verticalPanel.add(lbxRegion);
 	        
 	        lbxRegion.setVisibleItemCount(5);
