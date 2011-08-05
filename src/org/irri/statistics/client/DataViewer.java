@@ -178,8 +178,6 @@ public class DataViewer extends TabPanel{
 
         VpControlFilters.setStyleName("forms");
         VpControlFilters.setSpacing(5);
-
-        SelectionPanel.setSize("100%", "100%");
         SelectionPanel.setSpacing(5);
 
         FtDataContainer.setCellSpacing(0);
@@ -223,6 +221,7 @@ public class DataViewer extends TabPanel{
         
         SelectionPanel.add(VpInstructions, DockPanel.CENTER);
         SelectionPanel.add(VpControlFilters, DockPanel.EAST);
+        VpControlFilters.setWidth("314px");
         
         ScDataScroller.add(FtDataContainer);
         VpDataContainer.add(ScDataScroller);
@@ -237,7 +236,6 @@ public class DataViewer extends TabPanel{
         add(SelectionPanel, "Search");
         add(ResultsPan, "Results");
          selectTab(0);
-        setSize("100%", "100%");
         
         LbRegLevel.addChangeHandler(new ChangeHandler() {
             public void onChange(ChangeEvent event) {
@@ -416,18 +414,18 @@ public class DataViewer extends TabPanel{
                         query = "SELECT c.NAME_ENGLISH AS 'region', d.yr AS 'year', " + vars +
                             "FROM "+srctable+" d inner join countries c on d.iso3 = c.ISO3 " +
                             "WHERE d.iso3 in ("+selectedCountries+") AND yr in ("+years+") "+
-                            "GROUP BY d.iso3 ASC, d.yr DESC;";
+                            "GROUP BY d.iso3 ASC, d.yr ;";
                     } else if (LbRegLevel.getSelectedIndex()==1){
                         query = "SELECT c.NAME_ENGLISH AS 'country', d.yr AS 'year', " + vars +
                             "FROM "+srctable+" d inner join countries c on d.iso3 = c.ISO3 " +
                             "WHERE d.iso3 in ("+selectedCountries+") AND yr in ("+years+") "+
-                            "GROUP BY d.iso3 ASC, d.yr DESC;";
+                            "GROUP BY d.iso3 ASC, d.yr ;";
                     } else {
                         query = "SELECT CONCAT(c.NAME_ENGLISH,' - ', l.geo_name) AS 'country-province', d.yr AS 'year', " + vars +
                             "FROM "+srctable+" d " + "natural join locales l, countries c " +
                             "WHERE l.iso3=c.ISO3 AND l.iso3 in ("+selectedCountries+") AND yr in ("+years+") " +
                             "AND season = 'All' AND variety = 'All' AND ecosystem ='All' " +
-                            "ORDER BY l.iso3, l.geo_name ASC, d.yr DESC;";
+                            "ORDER BY l.iso3, l.geo_name ASC, d.yr ;";
                     }
                     ResultsPan.clear();
                     ResultsPan.add(VpDataContainer);
@@ -583,6 +581,7 @@ public class DataViewer extends TabPanel{
                 BtFetchData.setEnabled(true);
             }
         });        
+    	setStyleName("main");
     }
                 
     public void changeVarSelectionStatus(boolean status){
@@ -661,11 +660,11 @@ public class DataViewer extends TabPanel{
         
         if (!selvars.equals("") && LbRegLevel.getSelectedIndex()!=2){
             selvars = selvars.substring(0, selvars.length()-1);
-            UtilsRPC.getService("mysqlservice").RunSELECT("SELECT yr FROM "+srctable+" d where iso3 in ("+selectedCountries+") and var_code in ("+selvars +") GROUP BY yr DESC", InitYearBox);
+            UtilsRPC.getService("mysqlservice").RunSELECT("SELECT yr FROM "+srctable+" d where iso3 in ("+selectedCountries+") and var_code in ("+selvars +") GROUP BY yr ", InitYearBox);
             changeYearSelectionStatus(true);
         } else if (!selvars.equals("") && LbRegLevel.getSelectedIndex()==2){
             selvars = selvars.substring(0, selvars.length()-1);
-            UtilsRPC.getService("mysqlservice").RunSELECT("SELECT yr FROM "+srctable+" d natural join locales l where l.iso3 in ("+selectedCountries+") GROUP BY yr DESC", InitYearBox);
+            UtilsRPC.getService("mysqlservice").RunSELECT("SELECT yr FROM "+srctable+" d natural join locales l where l.iso3 in ("+selectedCountries+") GROUP BY yr ", InitYearBox);
             changeYearSelectionStatus(true);
         }
         else {
