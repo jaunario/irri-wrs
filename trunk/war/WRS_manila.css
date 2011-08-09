@@ -37,13 +37,14 @@ h1 {
 }
 .wrapper {
 	margin-left: auto;
-	margin-right: auto;
+	margin-right: auto;	
 }
 .gwt-HTML {
 	margin: 10px 10px;
 	text-align: justify;
 	font-size: 12px;
 	font-family: Arial, Verdana;
+	padding-right:10px;
 }
 .status {
 	font-size: 10px;
@@ -68,7 +69,13 @@ h1 {
 	text-align: justify;
     padding: 5px 15px;
     background-color: #ddd;
+    margin-right:15px;
 }
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabs {
 	align: right;
+}
+.banner {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #aaa;
 }
