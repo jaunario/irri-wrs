@@ -14,6 +14,9 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.cellview.client.SimplePager;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.Image;
 
 public class WRSResultTable extends Composite {
 	private ListDataProvider<CountryStat> queryresult = new ListDataProvider<CountryStat>();
@@ -21,16 +24,27 @@ public class WRSResultTable extends Composite {
 	
 	public WRSResultTable(String selectquery) {
 		
-		VerticalPanel verticalPanel = new VerticalPanel();
+		DockLayoutPanel verticalPanel = new DockLayoutPanel(Unit.PX);
 		initWidget(verticalPanel);
 		
-		verticalPanel.add(ctResult);
-		ctResult.setSize("100%", "100%");
-		
 		SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
+		
+		VerticalPanel verticalPanel_2 = new VerticalPanel();
+		verticalPanel.addWest(verticalPanel_2, 200.0);
+		
+		Image image = new Image("images/generichart.gif");
+		verticalPanel_2.add(image);
+		image.setSize("132px", "120px");
+		
+		VerticalPanel verticalPanel_1 = new VerticalPanel();
+		verticalPanel.add(verticalPanel_1);
+		verticalPanel_1.setSize("100%", "100%");
+		verticalPanel_1.add(ctResult);
+		ctResult.setSize("100%", "100%");
 		SimplePager pager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
-	    pager.setDisplay(ctResult);	    
-		verticalPanel.add(pager);
+		pager.setSize("100%", "30px");
+		pager.setDisplay(ctResult);
+		verticalPanel_1.add(pager);
 		sqlPopulateTable(selectquery);
 	}
 	

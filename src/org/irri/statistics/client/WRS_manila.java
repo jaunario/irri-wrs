@@ -19,6 +19,9 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.DeckPanel;
+import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Hyperlink;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -26,6 +29,7 @@ import com.google.gwt.user.client.ui.DeckPanel;
 public class WRS_manila implements EntryPoint {
     DockLayoutPanel dlpWRSHome = new DockLayoutPanel(Unit.PX);
     		RPFiltering filterPanel = new RPFiltering();
+    		private DeckPanel deckPanel;
             
     /** Creates a new instance of worldriceEntryPoint */
     public WRS_manila() {
@@ -84,12 +88,16 @@ public class WRS_manila implements EntryPoint {
         flowPanel.add(lblInternationalRiceResearch);
         lblInternationalRiceResearch.setSize("100%", "80%");
         
-        VerticalPanel verticalPanel = new VerticalPanel();
+        HorizontalPanel verticalPanel = new HorizontalPanel();
+        verticalPanel.setSpacing(2);
         verticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-        dlpWRSHome.addNorth(verticalPanel, 30.0);
+        dlpWRSHome.addNorth(verticalPanel, 34.0);
         verticalPanel.setWidth("100%");
         
-        DeckPanel deckPanel = new DeckPanel();
+        Hyperlink hprlnkNewHyperlink = new Hyperlink("New hyperlink", false, "newHistoryToken");
+        verticalPanel.add(hprlnkNewHyperlink);
+        
+        deckPanel = new DeckPanel();
         dlpWRSHome.add(deckPanel);
         
         DockLayoutPanel dockPanel = new DockLayoutPanel(Unit.PX);
@@ -130,8 +138,8 @@ public class WRS_manila implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
-				//WRSResultTable mydata = new WRSResultTable(	filterPanel.sqlFromItems());
-				//deckPanel.add(mydata);
+				WRSResultTable mydata = new WRSResultTable(	filterPanel.sqlFromItems());
+				deckPanel.add(mydata);
 				//dlpWRSHome.
 				
 			}
@@ -141,11 +149,38 @@ public class WRS_manila implements EntryPoint {
         
         HorizontalPanel horizontalPanel_1 = new HorizontalPanel();
         vpFilters.add(horizontalPanel_1);
-        horizontalPanel_1.setSize("100%", "25%");
+        horizontalPanel_1.setSize("100%", "102px");
+        
+        Image image = new Image("images/generichart.gif");
+        horizontalPanel_1.add(image);
+        image.setSize("140px", "100px");
+        
+        Image image_1 = new Image("images/generichart.gif");
+        horizontalPanel_1.add(image_1);
+        image_1.setSize("124px", "100px");
+        
+        Image image_2 = new Image("images/generichart.gif");
+        horizontalPanel_1.add(image_2);
+        image_2.setSize("129px", "100px");
         
         HorizontalPanel horizontalPanel_2 = new HorizontalPanel();
         vpFilters.add(horizontalPanel_2);
         horizontalPanel_2.setSize("100%", "25%");
+        
+        Image image_3 = new Image("images/generichart.gif");
+        horizontalPanel_2.add(image_3);
+        image_3.setSize("140px", "100px");
+        
+        Image image_4 = new Image("images/generichart.gif");
+        horizontalPanel_2.add(image_4);
+        image_4.setSize("124px", "100px");
+        
+        Image image_5 = new Image("images/generichart.gif");
+        horizontalPanel_2.add(image_5);
+        image_5.setSize("129px", "100px");
         deckPanel.showWidget(0);
     }
+	public DeckPanel getDeckPanel() {
+		return deckPanel;
+	}
 }
