@@ -19,17 +19,16 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.DeckPanel;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.PushButton;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class WRS_manila implements EntryPoint {
-    DockLayoutPanel dlpWRSHome = new DockLayoutPanel(Unit.PX);
+    DockLayoutPanel MainWrapper = new DockLayoutPanel(Unit.PX);
     		RPFiltering filterPanel = new RPFiltering();
-    		private DeckPanel deckPanel;
+    		private DeckPanel ContentPanel;
             
     /** Creates a new instance of worldriceEntryPoint */
     public WRS_manila() {
@@ -45,63 +44,68 @@ public class WRS_manila implements EntryPoint {
         //RootPanel rootPanel = RootPanel.get("container");
         //rootPanel.setStyleName("wrapper");
         //rootPanel.setSize("100%", "100%");
-        dlpWRSHome.setStyleName("wrapper");
-        dlpWRSHome.setSize("100%", "100%");
-        dlpWRSHome.getElement().getStyle().setPosition(Position.RELATIVE);
+        MainWrapper.setStyleName("wrapper");
+        MainWrapper.setSize("100%", "100%");
+        MainWrapper.getElement().getStyle().setPosition(Position.RELATIVE);
         
         RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
         rootLayoutPanel.setSize("100%", "100%");
         rootLayoutPanel.setStyleName("wrapper");
-        rootLayoutPanel.add(dlpWRSHome);
-        rootLayoutPanel.setWidgetLeftRight(dlpWRSHome, 105.0, Unit.PX, 105.0, Unit.PX);
+        rootLayoutPanel.add(MainWrapper);
+        rootLayoutPanel.setWidgetLeftRight(MainWrapper, 105.0, Unit.PX, 105.0, Unit.PX);
         
-        HorizontalPanel horizontalPanel = new HorizontalPanel();
-        horizontalPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-        dlpWRSHome.addSouth(horizontalPanel,25.8);
-        horizontalPanel.setSize("100%", "100%");
+        HorizontalPanel StatusPanel = new HorizontalPanel();
+        StatusPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+        MainWrapper.addSouth(StatusPanel,25.8);
+        StatusPanel.setSize("100%", "100%");
         
         Label lblStatusGoesHere = new Label("Status Goes Here");
-        horizontalPanel.add(lblStatusGoesHere);
-        horizontalPanel.setCellVerticalAlignment(lblStatusGoesHere, HasVerticalAlignment.ALIGN_BOTTOM);
+        StatusPanel.add(lblStatusGoesHere);
+        StatusPanel.setCellVerticalAlignment(lblStatusGoesHere, HasVerticalAlignment.ALIGN_BOTTOM);
         lblStatusGoesHere.setStyleName("status");
-        horizontalPanel.setCellHeight(lblStatusGoesHere, "100%");
-        horizontalPanel.setCellWidth(lblStatusGoesHere, "100%");
+        StatusPanel.setCellHeight(lblStatusGoesHere, "100%");
+        StatusPanel.setCellWidth(lblStatusGoesHere, "100%");
         lblStatusGoesHere.setSize("100%", "14px");
         
-        VerticalPanel flowPanel = new VerticalPanel();
-        flowPanel.setStyleName("banner");
-        dlpWRSHome.addNorth(flowPanel, 80.0);
-        flowPanel.setSize("100%", "100%");
+        VerticalPanel IRRIBanner = new VerticalPanel();
+        IRRIBanner.setStyleName("banner");
+        MainWrapper.addNorth(IRRIBanner, 80.0);
+        IRRIBanner.setSize("100%", "100%");
         
         Label lblIrri = new Label("IRRI");
         lblIrri.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
         lblIrri.setDirectionEstimator(true);
         lblIrri.setStyleName("gwt-Label-logo");
-        flowPanel.add(lblIrri);
-        flowPanel.setCellVerticalAlignment(lblIrri, HasVerticalAlignment.ALIGN_BOTTOM);
-        flowPanel.setCellHeight(lblIrri, "10%");
-        flowPanel.setCellWidth(lblIrri, "100%");
+        IRRIBanner.add(lblIrri);
+        IRRIBanner.setCellVerticalAlignment(lblIrri, HasVerticalAlignment.ALIGN_BOTTOM);
+        IRRIBanner.setCellHeight(lblIrri, "10%");
+        IRRIBanner.setCellWidth(lblIrri, "100%");
         lblIrri.setSize("100%", "54px");
         
         Label lblInternationalRiceResearch = new Label("International Rice Research Institute");
         lblInternationalRiceResearch.setStyleName("gwt-Label-fullname");
-        flowPanel.add(lblInternationalRiceResearch);
+        IRRIBanner.add(lblInternationalRiceResearch);
         lblInternationalRiceResearch.setSize("100%", "80%");
         
-        HorizontalPanel verticalPanel = new HorizontalPanel();
-        verticalPanel.setSpacing(2);
-        verticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-        dlpWRSHome.addNorth(verticalPanel, 34.0);
-        verticalPanel.setWidth("100%");
+        HorizontalPanel NavigationBar = new HorizontalPanel();
+        NavigationBar.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
+        NavigationBar.setSpacing(2);
+        NavigationBar.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        MainWrapper.addNorth(NavigationBar, 40.0);
+        NavigationBar.setSize("100%", "100%");
         
-        Hyperlink hprlnkNewHyperlink = new Hyperlink("New hyperlink", false, "newHistoryToken");
-        verticalPanel.add(hprlnkNewHyperlink);
+        Label lblWorldRiceStatistics = new Label("World Rice Statistics");
+        lblWorldRiceStatistics.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+        lblWorldRiceStatistics.setStyleName("gwt-Label-title");
+        NavigationBar.add(lblWorldRiceStatistics);
+        lblWorldRiceStatistics.setHeight("100%");
+        NavigationBar.setCellVerticalAlignment(lblWorldRiceStatistics, HasVerticalAlignment.ALIGN_BOTTOM);
         
-        deckPanel = new DeckPanel();
-        dlpWRSHome.add(deckPanel);
+        ContentPanel = new DeckPanel();
+        MainWrapper.add(ContentPanel);
         
         DockLayoutPanel dockPanel = new DockLayoutPanel(Unit.PX);
-        deckPanel.add(dockPanel);
+        ContentPanel.add(dockPanel);
         
         ScrollPanel scrollPanel_1 = new ScrollPanel();
         dockPanel.addEast(scrollPanel_1, 300.0);
@@ -139,7 +143,7 @@ public class WRS_manila implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				WRSResultTable mydata = new WRSResultTable(	filterPanel.sqlFromItems());
-				deckPanel.add(mydata);
+				ContentPanel.add(mydata);
 				//dlpWRSHome.
 				
 			}
@@ -147,6 +151,27 @@ public class WRS_manila implements EntryPoint {
         vpFilters.setCellHeight(filterPanel, "80%");
         vpFilters.setCellHorizontalAlignment(filterPanel, HasHorizontalAlignment.ALIGN_CENTER);
         
+        WRSResultTable myresult = new WRSResultTable("SELECT iso3, yr, SUM(IF(var_code='RicPr-USDA', val, null)) 'RicPr-USDA' FROM front_data WHERE yr=2010 GROUP BY 1,2 ORDER BY 3 DESC LIMIT 10;");
+        ContentPanel.add(myresult);
+        
+        PushButton pshbtnSelect = new PushButton("Select");
+        pshbtnSelect.addClickHandler(new ClickHandler() {
+        	public void onClick(ClickEvent event) {
+        		ContentPanel.showWidget(0);
+        	}
+        });
+        NavigationBar.add(pshbtnSelect);
+        NavigationBar.setCellHorizontalAlignment(pshbtnSelect, HasHorizontalAlignment.ALIGN_CENTER);
+        
+        PushButton pshbtnResults = new PushButton("Results");
+        pshbtnResults.addClickHandler(new ClickHandler() {
+        	public void onClick(ClickEvent event) {
+        		ContentPanel.showWidget(1);
+        	}
+        });
+        NavigationBar.add(pshbtnResults);
+        NavigationBar.setCellHorizontalAlignment(pshbtnResults, HasHorizontalAlignment.ALIGN_CENTER);
+
         HorizontalPanel horizontalPanel_1 = new HorizontalPanel();
         vpFilters.add(horizontalPanel_1);
         horizontalPanel_1.setSize("100%", "102px");
@@ -178,9 +203,9 @@ public class WRS_manila implements EntryPoint {
         Image image_5 = new Image("images/generichart.gif");
         horizontalPanel_2.add(image_5);
         image_5.setSize("129px", "100px");
-        deckPanel.showWidget(0);
+        ContentPanel.showWidget(0);
     }
 	public DeckPanel getDeckPanel() {
-		return deckPanel;
+		return ContentPanel;
 	}
 }

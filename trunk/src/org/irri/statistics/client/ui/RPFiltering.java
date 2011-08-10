@@ -35,11 +35,8 @@ public class RPFiltering extends Composite {
 	    
 	    final AsyncCallback<String[][]> InitRegionBox = new AsyncCallback<String[][]>() {
             public void onSuccess(String[][] result) {
-                lbxRegion.clear();
                 try{
-                    for (int i = 1;i<result.length;i++){
-                    	lbxRegion.addItem(result[i][0],result[i][1]);
-                    }
+                	populateListBox(lbxRegion, result);
                 }
                 catch(Exception e){
                     System.err.println(e);
@@ -53,11 +50,8 @@ public class RPFiltering extends Composite {
 		
         final AsyncCallback<String[][]> InitVarGroupBox = new AsyncCallback<String[][]>() {
             public void onSuccess(String[][] result) {
-                lbxVarGroup.clear();
                 try{
-                    for (int i = 1;i<result.length;i++){
-                    	lbxVarGroup.addItem(result[i][0],result[i][1]);
-                    }
+                	populateListBox(lbxVarGroup, result);
                 }
                 catch(Exception e){
                     System.err.println(e);
@@ -71,20 +65,12 @@ public class RPFiltering extends Composite {
         
         final AsyncCallback<String[][]> InitVarBox = new AsyncCallback<String[][]>() {
             public void onSuccess(String[][] out) {
-                lbxVariable.clear();
-                if (out.length<=1){
-                	lbxVariable.addItem("No Data Available");
-                }
-                else{
                     try{
-                        for (int i = 1;i<out.length;i++){
-                        	lbxVariable.addItem(out[i][0]+" ("+out[i][1] + ")", out[i][2]);
-                        }
+                    	populateListBox(lbxVariable, out);
                     }
                     catch(Exception e){
                         System.err.println(e);
                     }
-                }
             }
 
             public void onFailure(Throwable caught) {
@@ -98,7 +84,7 @@ public class RPFiltering extends Composite {
 			vpWrapper.setSpacing(5);
 			vpWrapper.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			initWidget(vpWrapper);
-			vpWrapper.setSize("383px", "392px");
+			vpWrapper.setSize("521px", "392px");
 	        
 	        HorizontalPanel hpGExtent = new HorizontalPanel();
 	        hpGExtent.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
@@ -107,7 +93,7 @@ public class RPFiltering extends Composite {
 	        
 	        Label lblGeographicExtent = new Label("Geographic Extent");
 	        hpGExtent.add(lblGeographicExtent);
-	        lblGeographicExtent.setSize("142px", "18px");
+	        lblGeographicExtent.setSize("146px", "18px");
 	        hpGExtent.add(lbxExtent);
 	        lbxExtent.addChangeHandler(new ChangeHandler() {
 	        	public void onChange(ChangeEvent event) {
@@ -139,7 +125,7 @@ public class RPFiltering extends Composite {
 	        lbxExtent.addItem("Continent/Organization");
 	        lbxExtent.addItem("Country");
 	        lbxExtent.addItem("State/Province");
-	        lbxExtent.setSize("238px", "22px");
+	        lbxExtent.setSize("310px", "22px");
 	        
 	        HorizontalPanel hpVarL1 = new HorizontalPanel();
 	        hpVarL1.setSpacing(5);
@@ -148,37 +134,15 @@ public class RPFiltering extends Composite {
 	        VerticalPanel verticalPanel = new VerticalPanel();
 	        hpVarL1.add(verticalPanel);
 	        
-	        Label lblRegion = new Label("Regions");
-	        verticalPanel.add(lblRegion);
-	        lbxRegion.addChangeHandler(new ChangeHandler() {
-	        	public void onChange(ChangeEvent event) {
-	        		String selvargrps = getSelectedItems(lbxVarGroup);
-	        		String sql = "SELECT v.var_name, v.unit, s.var_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code WHERE s.iso3 in (" + getSelectedItems(lbxRegion) + ") AND v.show_flag=1";
-	        		
-	        		if (!selvargrps.equalsIgnoreCase("")){
-	        			sql = sql + " AND v.group_code in (" + selvargrps + ")";
-	        		}
-	        		
-	        		sql = sql +  " GROUP BY s.var_code";
-	        		UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitVarBox);
-
-	        	}
-	        });
-	        verticalPanel.add(lbxRegion);
-	        
-	        lbxRegion.setVisibleItemCount(5);
-	        lbxRegion.setSize("190px", "100px");
-	        
-	        VerticalPanel verticalPanel_1 = new VerticalPanel();
-	        hpVarL1.add(verticalPanel_1);
-	        
-	        Label lblVarGroup = new Label("Variable Groups");
-	        verticalPanel_1.add(lblVarGroup);
-	        lbxVarGroup.addChangeHandler(new ChangeHandler() {
+	        ChangeHandler varChangeHandler = new ChangeHandler() {
 	        	public void onChange(ChangeEvent event) {
 	        		String selregion = getSelectedItems(lbxRegion);
-	        		String sql = "SELECT v.var_name, v.unit, s.var_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code WHERE v.group_code in (" + getSelectedItems(lbxVarGroup) + ") AND v.show_flag=1";
+	        		String selvargroups = getSelectedItems(lbxVarGroup);
 	        		
+	        		String sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code WHERE v.show_flag=1";
+	        		if (!selvargroups.equalsIgnoreCase("")){
+	        			sql = sql + " AND v.group_code in (" + selvargroups + ")"; 
+	        		}
 	        		if (!selregion.equalsIgnoreCase("")){
 	        			sql = sql + " AND s.iso3 in (" + selregion + ")";
 	        		}
@@ -187,11 +151,26 @@ public class RPFiltering extends Composite {
 	        		UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitVarBox);
 	        		
 	        	}
-	        });
+	        };
+
+	        Label lblRegion = new Label("Regions");
+	        verticalPanel.add(lblRegion);
+	        lbxRegion.addChangeHandler(varChangeHandler);
+	        verticalPanel.add(lbxRegion);
+	        
+	        lbxRegion.setVisibleItemCount(5);
+	        lbxRegion.setSize("250px", "100px");
+	        
+	        VerticalPanel verticalPanel_1 = new VerticalPanel();
+	        hpVarL1.add(verticalPanel_1);
+	        
+	        Label lblVarGroup = new Label("Variable Groups");
+	        verticalPanel_1.add(lblVarGroup);
+	        lbxVarGroup.addChangeHandler(varChangeHandler);
 	        verticalPanel_1.add(lbxVarGroup);
 	        
 	        lbxVarGroup.setVisibleItemCount(5);
-	        lbxVarGroup.setSize("190px", "100px");
+	        lbxVarGroup.setSize("250px", "100px");
 	        
 	        HorizontalPanel hpVarL2 = new HorizontalPanel();
 	        hpVarL2.setSpacing(5);
@@ -203,7 +182,7 @@ public class RPFiltering extends Composite {
 	        Label lblVariables = new Label("Variables");
 	        verticalPanel_2.add(lblVariables);
 	        verticalPanel_2.add(lbxVariable);
-	        lbxVariable.setSize("304px", "195px");
+	        lbxVariable.setSize("420px", "195px");
 	        lbxVariable.setVisibleItemCount(10);
 	        
 	        VerticalPanel verticalPanel_3 = new VerticalPanel();
@@ -212,7 +191,7 @@ public class RPFiltering extends Composite {
 	        Label lblYears = new Label("Years");
 	        verticalPanel_3.add(lblYears);
 	        verticalPanel_3.add(lbxYear);
-	        lbxYear.setSize("77px", "195px");
+	        lbxYear.setSize("80px", "195px");
 	        lbxYear.setVisibleItemCount(10);
 	        
 	        HorizontalPanel hpBtns = new HorizontalPanel();
@@ -261,4 +240,18 @@ public class RPFiltering extends Composite {
             "WHERE d.iso3 in ('PHL') AND yr between 1960 AND 2011 "+
             "GROUP BY d.iso3 ASC, d.yr DESC;";
 		}
-	}
+		
+		private void populateListBox(ListBox listbox, String[][] data){
+	        listbox.clear();	     
+			if (data==null){
+            	listbox.addItem("No data available for selected categories.");
+            	listbox.setEnabled(false);
+			} else {
+	            for (int i = 1;i<data.length;i++){
+	            	listbox.addItem(data[i][0],data[i][1]);
+	            }
+	            listbox.setEnabled(true);
+			}
+		}
+
+  	}
