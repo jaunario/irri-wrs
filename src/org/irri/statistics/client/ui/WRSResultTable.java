@@ -16,7 +16,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.ScrollPanel;
 
 public class WRSResultTable extends Composite {
 	private ListDataProvider<CountryStat> queryresult = new ListDataProvider<CountryStat>();
@@ -30,19 +33,25 @@ public class WRSResultTable extends Composite {
 		SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
 		
 		VerticalPanel verticalPanel_2 = new VerticalPanel();
-		verticalPanel.addWest(verticalPanel_2, 200.0);
+		verticalPanel.addWest(verticalPanel_2, 300.0);
 		
 		Image image = new Image("images/generichart.gif");
 		verticalPanel_2.add(image);
 		image.setSize("132px", "120px");
 		
+		ScrollPanel scrollPanel = new ScrollPanel();
+		verticalPanel.add(scrollPanel);
+		scrollPanel.setSize("100%", "100%");
+		
 		VerticalPanel verticalPanel_1 = new VerticalPanel();
-		verticalPanel.add(verticalPanel_1);
+		scrollPanel.setWidget(verticalPanel_1);
+		verticalPanel_1.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		verticalPanel_1.setSize("100%", "100%");
+		
 		verticalPanel_1.add(ctResult);
 		ctResult.setSize("100%", "100%");
 		SimplePager pager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
-		pager.setSize("100%", "30px");
+		pager.setSize("300px", "30px");
 		pager.setDisplay(ctResult);
 		verticalPanel_1.add(pager);
 		sqlPopulateTable(selectquery);
@@ -78,7 +87,7 @@ public class WRSResultTable extends Composite {
 						};
 						ctResult.addColumn(thisColumn,result[0][i]);
 					} else if (i==1){
-						Column<CountryStat, Number> thisColumn = new Column<CountryStat, Number>(new NumberCell()) {
+						Column<CountryStat, Number> thisColumn = new Column<CountryStat, Number>(new NumberCell(NumberFormat.getFormat("####"))) {
 							@Override
 							public Number getValue(CountryStat cstat) {
 								return (Number) cstat.getYear();
