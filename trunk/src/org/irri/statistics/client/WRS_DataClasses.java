@@ -34,5 +34,17 @@ public class WRS_DataClasses {
 			return values[i];
 		}
 		
+		public void setCountry(String cntry){
+			country = cntry;
+		}
+		
+		public void setYear(int yr){
+			year = yr;
+		}
+		
+		public void setVarValue(int idx, float val){
+			values[idx]=val;
+		}
+
 	}
 }

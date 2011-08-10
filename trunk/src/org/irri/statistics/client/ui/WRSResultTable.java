@@ -1,14 +1,18 @@
 package org.irri.statistics.client.ui;
 
+import java.util.Comparator;
+
 import org.irri.statistics.client.UtilsRPC;
 import org.irri.statistics.client.WRS_DataClasses.CountryStat;
 
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -24,6 +28,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 public class WRSResultTable extends Composite {
 	private ListDataProvider<CountryStat> queryresult = new ListDataProvider<CountryStat>();
 	CellTable<CountryStat> ctResult = new CellTable<CountryStat>();
+	ListHandler<CountryStat> ResultHandler;
 	
 	public WRSResultTable(String selectquery) {
 		
@@ -55,6 +60,17 @@ public class WRSResultTable extends Composite {
 		pager.setDisplay(ctResult);
 		verticalPanel_1.add(pager);
 		sqlPopulateTable(selectquery);
+		
+		ResultHandler = new ListHandler<CountryStat>(queryresult.getList());
+		ctResult.addColumnSortHandler(ResultHandler);
+		
+		
+	}
+	
+	public void clearResultTable(){
+		for (int i = ctResult.getColumnCount()-1; i >= 0 ; i--) {
+			ctResult.removeColumn(i);
+		}
 	}
 	
 	public void sqlPopulateTable(String query){
@@ -69,6 +85,7 @@ public class WRSResultTable extends Composite {
 			@Override
 			public void onSuccess(String[][] result) {
 				// TODO Auto-generated method stub
+				queryresult.getList().clear();
 				for (int i = 1; i < result.length; i++) {
 					float[] vals = new float[result[i].length-2];					
 					for (int j = 0; j < vals.length; j++) {
@@ -76,7 +93,7 @@ public class WRSResultTable extends Composite {
 					}
 					queryresult.getList().add(new CountryStat(result[i][0], Integer.parseInt(result[i][1]), vals));
 				}
-				
+				clearResultTable();
 				for (int i = 0; i < result[0].length; i++) {
 					if (i==0){
 						Column<CountryStat, String> thisColumn = new Column<CountryStat, String>(new TextCell()) {
@@ -85,6 +102,24 @@ public class WRSResultTable extends Composite {
 								return cstat.getCountry();
 							}
 						};
+						thisColumn.setSortable(true);
+						thisColumn.setFieldUpdater(new FieldUpdater<CountryStat, String>() {
+							
+							@Override
+							public void update(int index, CountryStat object, String value) {
+								// TODO Auto-generated method stub
+								object.setCountry(value);
+								queryresult.refresh();
+							}
+						});
+						ResultHandler.setComparator(thisColumn, new Comparator<CountryStat>() {
+							
+							@Override
+							public int compare(CountryStat arg0, CountryStat arg1) {
+								// TODO Auto-generated method stub
+								return arg0.getCountry().compareTo(arg1.getCountry());
+							}
+						});
 						ctResult.addColumn(thisColumn,result[0][i]);
 					} else if (i==1){
 						Column<CountryStat, Number> thisColumn = new Column<CountryStat, Number>(new NumberCell(NumberFormat.getFormat("####"))) {
@@ -93,6 +128,25 @@ public class WRSResultTable extends Composite {
 								return (Number) cstat.getYear();
 							}
 						};
+						thisColumn.setSortable(true);
+						ResultHandler.setComparator(thisColumn, new Comparator<CountryStat>() {
+							
+							@Override
+							public int compare(CountryStat arg0, CountryStat arg1) {
+								// TODO Auto-generated method stub
+								return arg0.getYear()-arg1.getYear();
+							}
+						});
+						thisColumn.setFieldUpdater(new FieldUpdater<CountryStat, Number>() {
+
+							@Override
+							public void update(int index, CountryStat object,
+									Number value) {
+								// TODO Auto-generated method stub
+								object.setYear(value.intValue());
+								queryresult.refresh();
+							}
+						});
 						ctResult.addColumn(thisColumn,result[0][i]);
 					} else {
 						final int idx = i-2;
@@ -102,6 +156,17 @@ public class WRSResultTable extends Composite {
 								return (Number) cstat.getVarValue(idx);
 							}
 						};
+						thisColumn.setSortable(true);
+						thisColumn.setFieldUpdater(new FieldUpdater<CountryStat, Number>() {
+
+							@Override
+							public void update(int index, CountryStat object,
+									Number value) {
+								// TODO Auto-generated method stub
+								object.setVarValue(idx, value.floatValue());
+								queryresult.refresh();
+							}
+						});
 						ctResult.addColumn(thisColumn,result[0][i]);
 					}
 				}

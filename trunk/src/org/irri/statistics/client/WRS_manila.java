@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.PushButton;
 public class WRS_manila implements EntryPoint {
     DockLayoutPanel MainWrapper = new DockLayoutPanel(Unit.PX);
     		RPFiltering filterPanel = new RPFiltering();
+    		WRSResultTable myresult;
     		private DeckPanel ContentPanel;
             
     /** Creates a new instance of worldriceEntryPoint */
@@ -137,22 +138,20 @@ public class WRS_manila implements EntryPoint {
         vpFilters.add(filterPanel);
         filterPanel.initListBoxes();
         
+        myresult = new WRSResultTable("SELECT iso3, yr, SUM(IF(var_code='RicPr-USDA', val, null)) 'RicPr-USDA' FROM front_data WHERE yr=2010 GROUP BY 1,2 ORDER BY 3 DESC LIMIT 10;");
+        ContentPanel.add(myresult);
+
         filterPanel.setSubmitButtonClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
-				WRSResultTable mydata = new WRSResultTable(	filterPanel.sqlFromItems());
-				ContentPanel.add(mydata);
-				//dlpWRSHome.
-				
+				myresult.sqlPopulateTable(filterPanel.sqlFromItems());				
+				//dlpWRSHome.				
 			}
 		});
         vpFilters.setCellHeight(filterPanel, "80%");
         vpFilters.setCellHorizontalAlignment(filterPanel, HasHorizontalAlignment.ALIGN_CENTER);
-        
-        WRSResultTable myresult = new WRSResultTable("SELECT iso3, yr, SUM(IF(var_code='RicPr-USDA', val, null)) 'RicPr-USDA' FROM front_data WHERE yr=2010 GROUP BY 1,2 ORDER BY 3 DESC LIMIT 10;");
-        ContentPanel.add(myresult);
         
         PushButton pshbtnSelect = new PushButton("Select");
         pshbtnSelect.addClickHandler(new ClickHandler() {
