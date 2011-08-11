@@ -77,6 +77,19 @@ public class RPFiltering extends Composite {
                 System.out.println("Communication failed (RDV.InitVarBox)");
             }
         };
+        
+        final AsyncCallback<String[][]> InitYearBox = new AsyncCallback<String[][]>() {
+            public void onSuccess(String[][] out) {
+            	lbxYear.clear();
+            	for (int i = 1; i < out.length; i++) {
+					lbxYear.addItem(out[i][0]);
+				}
+            }
+
+            public void onFailure(Throwable caught) {
+                System.out.println("Communication failed (RDV.InitVarBox)");
+            }
+        };
 
 		
 		public RPFiltering() {
@@ -136,19 +149,26 @@ public class RPFiltering extends Composite {
 	        
 	        ChangeHandler varChangeHandler = new ChangeHandler() {
 	        	public void onChange(ChangeEvent event) {
+	        		lbxYear.clear();
 	        		String selregion = getSelectedItems(lbxRegion);
 	        		String selvargroups = getSelectedItems(lbxVarGroup);
 	        		
 	        		String sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code WHERE v.show_flag=1";
-	        		if (!selvargroups.equalsIgnoreCase("")){
-	        			sql = sql + " AND v.group_code in (" + selvargroups + ")"; 
-	        		}
-	        		if (!selregion.equalsIgnoreCase("")){
+	        		if (!selvargroups.equalsIgnoreCase("") & !selregion.equalsIgnoreCase("")){
+	        			sql = sql + " AND v.group_code in (" + selvargroups + ") AND s.iso3 in (" + selregion + ")"; 
+	        		} else if (!selregion.equalsIgnoreCase("")){
 	        			sql = sql + " AND s.iso3 in (" + selregion + ")";
+	        		} else if (!selvargroups.equalsIgnoreCase("")){
+	        			sql = sql + " AND v.group_code in (" + selvargroups + ")";
+	        		} else {
+	        			sql = "";
 	        		}
-	        		
-	        		sql = sql +  " GROUP BY s.var_code";
-	        		UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitVarBox);
+	        		if (!sql.equalsIgnoreCase("")){
+		        		sql = sql +  " GROUP BY s.var_code";
+		        		UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitVarBox);
+	        		} else {
+	        			lbxVariable.clear();	        			
+	        		}
 	        		
 	        	}
 	        };
@@ -181,6 +201,26 @@ public class RPFiltering extends Composite {
 	        
 	        Label lblVariables = new Label("Variables");
 	        verticalPanel_2.add(lblVariables);
+	        lbxVariable.addChangeHandler(new ChangeHandler() {
+	        	public void onChange(ChangeEvent event) {
+	        		String selregion = getSelectedItems(lbxRegion);
+	        		String selvars = getSelectedItems(lbxVariable);
+	        		
+	        		String sql = "SELECT yr FROM " + srctable + " s";
+	        		if (!selvars.equalsIgnoreCase("")){
+	        			sql = sql + " WHERE s.var_code in (" + selvars + ")"; 
+	        		} else sql = "";
+	        		if (!selregion.equalsIgnoreCase("")){
+	        			sql = sql + " AND s.iso3 in (" + selregion + ")";
+	        		}  else sql = "";
+	        		
+	        		if (!sql.equalsIgnoreCase("")){
+	        			sql = sql +  " GROUP BY 1";
+		        		UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitYearBox);
+	        		} else lbxYear.clear();	        		
+	        	}
+	        });
+	        
 	        verticalPanel_2.add(lbxVariable);
 	        lbxVariable.setSize("420px", "195px");
 	        lbxVariable.setVisibleItemCount(10);
@@ -207,6 +247,7 @@ public class RPFiltering extends Composite {
 	        });
 	        hpBtns.add(btnClear);
 	        btnClear.setHeight("30px");
+	        btnSubmit.setEnabled(false);
 	        
 	        hpBtns.add(btnSubmit);
 			//initListBoxes();
