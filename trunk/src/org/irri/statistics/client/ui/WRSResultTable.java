@@ -4,9 +4,11 @@ import java.util.Comparator;
 
 import org.irri.statistics.client.UtilsRPC;
 import org.irri.statistics.client.WRS_DataClasses.CountryStat;
+import org.irri.statistics.client.ui.charts.BarChartPanel;
 
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -16,55 +18,100 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.ui.CaptionPanel;
+import com.google.gwt.user.client.ui.FlexTable;
 
 public class WRSResultTable extends Composite {
 	private ListDataProvider<CountryStat> queryresult = new ListDataProvider<CountryStat>();
 	CellTable<CountryStat> ctResult = new CellTable<CountryStat>();
 	ListHandler<CountryStat> ResultHandler;
+	private String[][] resultmatrix; 
 	
 	public WRSResultTable(String selectquery) {
-		
+		// Main Wrapper
+		final String query = selectquery; 
 		DockLayoutPanel verticalPanel = new DockLayoutPanel(Unit.PX);
 		initWidget(verticalPanel);
 		
-		SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
-		
+		// West Panel for chart widgets
 		VerticalPanel verticalPanel_2 = new VerticalPanel();
-		verticalPanel.addWest(verticalPanel_2, 300.0);
+		verticalPanel_2.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		verticalPanel.addWest(verticalPanel_2, 250.0);
+		
+		CaptionPanel cptnpnlSource = new CaptionPanel("Source");
+		verticalPanel_2.add(cptnpnlSource);
+		
+		FlexTable flexTable = new FlexTable();
+		cptnpnlSource.setContentWidget(flexTable);
+		flexTable.setSize("5cm", "3cm");
 		
 		Image image = new Image("images/generichart.gif");
 		verticalPanel_2.add(image);
 		image.setSize("132px", "120px");
 		
-		ScrollPanel scrollPanel = new ScrollPanel();
-		verticalPanel.add(scrollPanel);
-		scrollPanel.setSize("100%", "100%");
-		
+		// Center panelfor cell table
 		VerticalPanel verticalPanel_1 = new VerticalPanel();
-		scrollPanel.setWidget(verticalPanel_1);
+		verticalPanel.add(verticalPanel_1);
+		verticalPanel_1.setBorderWidth(0);
 		verticalPanel_1.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		verticalPanel_1.setSize("100%", "100%");
-		
-		verticalPanel_1.add(ctResult);
-		ctResult.setSize("100%", "100%");
-		SimplePager pager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
-		pager.setSize("300px", "30px");
-		pager.setDisplay(ctResult);
-		verticalPanel_1.add(pager);
-		sqlPopulateTable(selectquery);
 		
 		ResultHandler = new ListHandler<CountryStat>(queryresult.getList());
 		ctResult.addColumnSortHandler(ResultHandler);
+
+		ScrollPanel scrollPanel = new ScrollPanel();
+		verticalPanel_1.add(scrollPanel);
+		scrollPanel.setSize("650px", "400px");
+		scrollPanel.setWidget(ctResult);
+		ctResult.setSize("100%", "100%");
+		queryresult.addDataDisplay(ctResult);
 		
+		// Controls for viewing cell table
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		verticalPanel_1.add(horizontalPanel);
 		
+		SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
+		SimplePager pager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
+		pager.setDisplay(ctResult);
+		horizontalPanel.add(pager);
+		Button btnDownload = new Button("Download");
+		btnDownload.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				// TODO Download result
+			}
+		});
+		btnDownload.setText("Download");
+		horizontalPanel.add(btnDownload);
+		
+		GWT.runAsync(new RunAsyncCallback() {
+			
+			@Override
+			public void onSuccess() {
+				// TODO Auto-generated method stub
+				sqlPopulateTable(query);
+			}
+			
+			@Override
+			public void onFailure(Throwable reason) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		BarChartPanel topprod = new BarChartPanel(query, "Top Producers", 250, 250);
 	}
 	
 	public void clearResultTable(){
@@ -85,11 +132,14 @@ public class WRSResultTable extends Composite {
 			@Override
 			public void onSuccess(String[][] result) {
 				// TODO Auto-generated method stub
+				resultmatrix = result;
 				queryresult.getList().clear();
 				for (int i = 1; i < result.length; i++) {
 					float[] vals = new float[result[i].length-2];					
 					for (int j = 0; j < vals.length; j++) {
-						vals[j] = Float.parseFloat(result[i][j+2]);
+						if (result[i][j+2]==null){
+							vals[j] = -9999;
+						} else vals[j] = Float.parseFloat(result[i][j+2]);
 					}
 					queryresult.getList().add(new CountryStat(result[i][0], Integer.parseInt(result[i][1]), vals));
 				}
@@ -169,7 +219,7 @@ public class WRSResultTable extends Composite {
 						});
 						ctResult.addColumn(thisColumn,result[0][i]);
 					}
-				}
+				}				
 			    ctResult.setRowCount(queryresult.getList().size(), true);
 			    // Push the data into the widget.
 			    ctResult.setRowData(0, queryresult.getList());

@@ -38,7 +38,7 @@ public class MySQLServiceImpl extends RemoteServiceServlet implements
     
     public String[][] RunSELECT(String Query){
         String[][] out;
-        
+        //System.out.println(System.getenv("PATH"));
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             Connection connection = DriverManager.getConnection(
@@ -80,8 +80,9 @@ public class MySQLServiceImpl extends RemoteServiceServlet implements
     
     public String SaveCSV(String data){
        String filename = createFilename();
+       String htdocs = System.getenv("HTDOCS") + "/csvs";
        String url = "http://geo.irri.org/csvs/"+filename;
-       File csvFile = new File("/www/csvs/"+filename);
+       File csvFile = new File(htdocs+"/"+filename);
        //String url = "http://localhost/csvs/"+filename;
        //File csvFile = new File("C:/Program Files/Apache Software Foundation/Apache2.2/htdocs/csvs/"+filename);
               

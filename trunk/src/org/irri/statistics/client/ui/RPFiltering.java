@@ -80,6 +80,7 @@ public class RPFiltering extends Composite {
         
         final AsyncCallback<String[][]> InitYearBox = new AsyncCallback<String[][]>() {
             public void onSuccess(String[][] out) {
+            	populateListBox(lbxYear, out);
             	lbxYear.clear();
             	for (int i = 1; i < out.length; i++) {
 					lbxYear.addItem(out[i][0]);
@@ -150,8 +151,9 @@ public class RPFiltering extends Composite {
 	        ChangeHandler varChangeHandler = new ChangeHandler() {
 	        	public void onChange(ChangeEvent event) {
 	        		lbxYear.clear();
-	        		String selregion = getSelectedItems(lbxRegion);
-	        		String selvargroups = getSelectedItems(lbxVarGroup);
+	        		btnSubmit.setEnabled(false);
+	        		String selregion = getSelectedItems(lbxRegion, false);
+	        		String selvargroups = getSelectedItems(lbxVarGroup, false);
 	        		
 	        		String sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code WHERE v.show_flag=1";
 	        		if (!selvargroups.equalsIgnoreCase("") & !selregion.equalsIgnoreCase("")){
@@ -203,21 +205,22 @@ public class RPFiltering extends Composite {
 	        verticalPanel_2.add(lblVariables);
 	        lbxVariable.addChangeHandler(new ChangeHandler() {
 	        	public void onChange(ChangeEvent event) {
-	        		String selregion = getSelectedItems(lbxRegion);
-	        		String selvars = getSelectedItems(lbxVariable);
+	        		String selregion = getSelectedItems(lbxRegion, false);
+	        		String selvars = getSelectedItems(lbxVariable, false);
 	        		
-	        		String sql = "SELECT yr FROM " + srctable + " s";
+	        		String sql = "SELECT yr, yr FROM " + srctable + " s";
 	        		if (!selvars.equalsIgnoreCase("")){
 	        			sql = sql + " WHERE s.var_code in (" + selvars + ")"; 
 	        		} else sql = "";
 	        		if (!selregion.equalsIgnoreCase("")){
 	        			sql = sql + " AND s.iso3 in (" + selregion + ")";
-	        		}  else sql = "";
+	        		}
 	        		
 	        		if (!sql.equalsIgnoreCase("")){
 	        			sql = sql +  " GROUP BY 1";
 		        		UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitYearBox);
-	        		} else lbxYear.clear();	        		
+	        		} else lbxYear.clear();
+	        		btnSubmit.setEnabled(false);
 	        	}
 	        });
 	        
@@ -230,6 +233,11 @@ public class RPFiltering extends Composite {
 	        
 	        Label lblYears = new Label("Years");
 	        verticalPanel_3.add(lblYears);
+	        lbxYear.addChangeHandler(new ChangeHandler() {
+	        	public void onChange(ChangeEvent event) {
+	        		btnSubmit.setEnabled(true);
+	        	}
+	        });
 	        verticalPanel_3.add(lbxYear);
 	        lbxYear.setSize("80px", "195px");
 	        lbxYear.setVisibleItemCount(10);
@@ -250,7 +258,7 @@ public class RPFiltering extends Composite {
 	        btnSubmit.setEnabled(false);
 	        
 	        hpBtns.add(btnSubmit);
-			//initListBoxes();
+			//initListBoxes();	        
 		}
 		
 		public void setSubmitButtonClickHandler(ClickHandler click){
@@ -264,22 +272,53 @@ public class RPFiltering extends Composite {
 			UtilsRPC.getService("mysqlservice").RunSELECT("SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code",InitVarGroupBox);			
 		}
 		
-		public String getSelectedItems(ListBox lbx){
+		public String getSelectedItems(ListBox lbx, boolean noquote){
 			String selitems = "";
 			for (int i = 0; i < lbx.getItemCount(); i++) {
 				if (lbx.isItemSelected(i)) {
-					selitems = selitems + "'" + lbx.getValue(i) + "',";
-				}
+					if (noquote){ selitems = selitems + lbx.getValue(i) + ","; } else selitems = selitems + "'" + lbx.getValue(i) + "',"; 
+				} 
+			}			
+			if (selitems.length()>0) selitems = selitems.substring(0, selitems.length()-1);
+			return(selitems);
+		}
+		
+		public String getVarColumns(){
+			String selitems = "";
+			for (int i = 0; i < lbxVariable.getItemCount(); i++) {
+				if (lbxVariable.isItemSelected(i)) {
+					selitems = selitems + "SUM(IF(s.var_code='" + lbxVariable.getValue(i) + "', val, null)) AS '" + lbxVariable.getValue(i) + "',";
+				}   
 			}			
 			if (selitems.length()>0) selitems = selitems.substring(0, selitems.length()-1);
 			return(selitems);
 		}
 		
 		public String sqlFromItems(){
+			String regfilter = getSelectedItems(lbxRegion, false);
+			String yrfilter = getSelectedItems(lbxYear, true);
+			String varcols = getVarColumns();
+			
+			String sql = "";
+			if (!regfilter.equalsIgnoreCase("") && !yrfilter.equalsIgnoreCase("")){
+				sql = "SELECT c.NAME_ENGLISH AS 'country', s.yr AS 'year', " + varcols +
+						" FROM " + srctable + " s INNER JOIN countries c ON s.iso3 = c.ISO3 " +
+			            " WHERE s.iso3 in ("+regfilter+") AND yr IN (" +yrfilter +")" +
+			            " GROUP BY s.iso3 ASC, s.yr;";
+			} else if (!yrfilter.equalsIgnoreCase("")){
+				sql = "SELECT c.NAME_ENGLISH AS 'country', s.yr AS 'year', " + varcols +
+						" FROM " + srctable + " s INNER JOIN countries c ON s.iso3 = c.ISO3 " +
+			            " WHERE yr IN (" +yrfilter +")" +
+			            " GROUP BY s.iso3 ASC, s.yr;";
+			}
+			return sql;
+		}
+		
+		public String sqlQueryTest(){
 			return "SELECT c.NAME_ENGLISH AS 'country', d.yr AS 'year', sum(if(d.var_code='RicPr-USDA',val,null)) 'RicPr-USDA', sum(if(d.var_code='RicYldUSDA',val,null)) 'RicYldUSDA', sum(if(d.var_code='RicHa-USDA',val,null)) 'RicHa-USDA'" +
-			"FROM front_data d inner join countries c on d.iso3 = c.ISO3 " +
-            "WHERE d.iso3 in ('PHL') AND yr between 1960 AND 2011 "+
-            "GROUP BY d.iso3 ASC, d.yr DESC;";
+					"FROM front_data d inner join countries c on d.iso3 = c.ISO3 " +
+		            "WHERE d.iso3 in ('PHL') AND yr between 1960 AND 2011 "+
+		            "GROUP BY d.iso3 ASC, d.yr DESC;";
 		}
 		
 		private void populateListBox(ListBox listbox, String[][] data){

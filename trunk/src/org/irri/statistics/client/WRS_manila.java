@@ -30,6 +30,7 @@ public class WRS_manila implements EntryPoint {
     		RPFiltering filterPanel = new RPFiltering();
     		WRSResultTable myresult;
     		private DeckPanel ContentPanel;
+    		Label lblStatusGoesHere = new Label("Status Goes Here");
             
     /** Creates a new instance of worldriceEntryPoint */
     public WRS_manila() {
@@ -59,8 +60,7 @@ public class WRS_manila implements EntryPoint {
         StatusPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
         MainWrapper.addSouth(StatusPanel,25.8);
         StatusPanel.setSize("100%", "100%");
-        
-        Label lblStatusGoesHere = new Label("Status Goes Here");
+                
         StatusPanel.add(lblStatusGoesHere);
         StatusPanel.setCellVerticalAlignment(lblStatusGoesHere, HasVerticalAlignment.ALIGN_BOTTOM);
         lblStatusGoesHere.setStyleName("status");
@@ -146,8 +146,11 @@ public class WRS_manila implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
-				myresult.sqlPopulateTable(filterPanel.sqlFromItems());				
-				//dlpWRSHome.				
+				String sql = filterPanel.sqlFromItems();
+				if (!sql.equalsIgnoreCase("")) {
+					myresult.sqlPopulateTable(sql);
+					ContentPanel.showWidget(1);
+				} else lblStatusGoesHere.setText("Please select a year.");
 			}
 		});
         vpFilters.setCellHeight(filterPanel, "80%");
