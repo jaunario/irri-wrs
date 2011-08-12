@@ -2,6 +2,9 @@ package org.irri.statistics.client;
 
 import org.irri.statistics.client.ui.RPFiltering;
 import org.irri.statistics.client.ui.WRSResultTable;
+//import org.irri.statistics.client.ui.charts.BarChartPanel;
+//import org.irri.statistics.client.ui.charts.PieChartPanel;
+import org.irri.statistics.client.ui.charts.VizTablePanel;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Style.Position;
@@ -15,12 +18,15 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HTMLPanel;
+//import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.DeckPanel;
-import com.google.gwt.user.client.ui.Image;
+//import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.CaptionPanel;
+import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -31,6 +37,7 @@ public class WRS_manila implements EntryPoint {
     		WRSResultTable myresult;
     		private DeckPanel ContentPanel;
     		Label lblStatusGoesHere = new Label("Status Goes Here");
+    		private VerticalPanel ChartWrapper;
             
     /** Creates a new instance of worldriceEntryPoint */
     public WRS_manila() {
@@ -105,56 +112,34 @@ public class WRS_manila implements EntryPoint {
         ContentPanel = new DeckPanel();
         MainWrapper.add(ContentPanel);
         
-        DockLayoutPanel dockPanel = new DockLayoutPanel(Unit.PX);
+        SplitLayoutPanel dockPanel = new SplitLayoutPanel();
         ContentPanel.add(dockPanel);
+        dockPanel.setSize("100%", "100%");
         
         ScrollPanel scrollPanel_1 = new ScrollPanel();
-        dockPanel.addEast(scrollPanel_1, 300.0);
-        VerticalPanel vpText = new VerticalPanel();
-        scrollPanel_1.setWidget(vpText);
-        vpText.setSize("95%", "100%");
+        dockPanel.addEast(scrollPanel_1, 250.0);
         
-        HTML htmlhowToUse = new HTML("<h3>How to Use this Facility</h3> <p>The procedure in retrieving data from this facility is sequential to minimize empty result sets. Please follow the steps enumerated below.</p><ol> <li>Select the level of geographical extent (i.e. continental, national, or subnational)</li> <li>Select region/country/organization of interest.</li> <li>Select variable(s) from either <i>Supply and Demand Variables Box</i> or <i>Other Variables Box</i>.</li> <li>Select year(s).</li><li>Click <b><i>Get Data</i>.</b></li></ol>", true);
-        vpText.add(htmlhowToUse);
-        htmlhowToUse.setSize("90%", "90%");
+                ChartWrapper = new VerticalPanel();
+                scrollPanel_1.setWidget(ChartWrapper);
+                ChartWrapper.setSize("100%", "100%");
+                
+                CaptionPanel cptnpnlTopProducers = new CaptionPanel("Top Producers");
+                ChartWrapper.add(cptnpnlTopProducers);
+                cptnpnlTopProducers.setSize("80%", "85%");
+                
+                VizTablePanel topprod = new VizTablePanel("SELECT c.NAME_ENGLISH AS 'country', SUM(IF(s.var_code='RicPr-USDA', val, null)) AS 'Production' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE yr = YEAR(CURDATE())-1  GROUP BY s.iso3 ASC, s.yr ORDER BY 2 DESC LIMIT 10 ", "2010");
+                cptnpnlTopProducers.add(topprod);
+                
+                CaptionPanel cptnpnlBigRiceAreas = new CaptionPanel("Biggest Rice Areas");
+                ChartWrapper.add(cptnpnlBigRiceAreas);
+                cptnpnlBigRiceAreas.setSize("80%", "85%");
+                
+                VizTablePanel bigarea = new VizTablePanel("SELECT c.NAME_ENGLISH AS 'country', SUM(IF(s.var_code='RicHa-USDA', val, null)) AS 'Harvested Area' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE yr = YEAR(CURDATE())-1  GROUP BY s.iso3 ASC, s.yr ORDER BY 2 DESC LIMIT 10 ", "2010");
+                cptnpnlBigRiceAreas.add(bigarea);
         
-        HTML htmlNewHtml = new HTML("<h3>Hint:</h3>\r\n<ul><li>After clicking on an item, wait for the list boxes to be populated.</li><li>To select multiple items, hold the <b><i>Ctrl</i></b> button on your keyboard and then click on the item.</li><li>If you have multiple selections, deselect an item by just clicking on an item again.</li><li>In <i>Subnational Geographic Extent</i>, selecting a country retrievs data from all the selected country's provices/states.</li></ul>", true);
-        vpText.add(htmlNewHtml);
-        htmlNewHtml.setSize("90%", "90%");
-        
-        HTMLPanel htmlDisclaimer = new HTMLPanel("<h3>Disclaimer </h3>\r\nData and information released from the International Rice Research Institute (IRRI) are provided on an \"AS IS\" basis, without warranty of any kind, including without limitation the warranties of merchantability, fitness for a particular purpose and non-infringement. Availability of this data and information does not constitute scientific publication. Data and/or information may contain errors or be incomplete.");
-        vpText.add(htmlDisclaimer);
-        htmlDisclaimer.setStyleName("notes");
-        htmlDisclaimer.setSize("90%", "100%");
-        
-        ScrollPanel scrollPanel = new ScrollPanel();
-        dockPanel.add(scrollPanel);
-        
-        VerticalPanel vpFilters = new VerticalPanel();
-        vpFilters.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        scrollPanel.setWidget(vpFilters);
-        vpFilters.setSpacing(5);
-        vpFilters.setSize("100%", "100%");
-        vpFilters.add(filterPanel);
-        filterPanel.initListBoxes();
-        
-        myresult = new WRSResultTable("SELECT iso3, yr, SUM(IF(var_code='RicPr-USDA', val, null)) 'RicPr-USDA' FROM front_data WHERE yr=2010 GROUP BY 1,2 ORDER BY 3 DESC LIMIT 10;");
+        myresult = new WRSResultTable();
         ContentPanel.add(myresult);
-
-        filterPanel.setSubmitButtonClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				String sql = filterPanel.sqlFromItems();
-				if (!sql.equalsIgnoreCase("")) {
-					myresult.sqlPopulateTable(sql);
-					ContentPanel.showWidget(1);
-				} else lblStatusGoesHere.setText("Please select a year.");
-			}
-		});
-        vpFilters.setCellHeight(filterPanel, "80%");
-        vpFilters.setCellHorizontalAlignment(filterPanel, HasHorizontalAlignment.ALIGN_CENTER);
+        myresult.setSize("100%", "100%");
         
         PushButton pshbtnSelect = new PushButton("Select");
         pshbtnSelect.addClickHandler(new ClickHandler() {
@@ -173,41 +158,51 @@ public class WRS_manila implements EntryPoint {
         });
         NavigationBar.add(pshbtnResults);
         NavigationBar.setCellHorizontalAlignment(pshbtnResults, HasHorizontalAlignment.ALIGN_CENTER);
-
-        HorizontalPanel horizontalPanel_1 = new HorizontalPanel();
-        vpFilters.add(horizontalPanel_1);
-        horizontalPanel_1.setSize("100%", "102px");
+                                
+        VerticalPanel vpText = new VerticalPanel();
+        dockPanel.addWest(vpText, 250.0);
+                                
+        CaptionPanel cptnpnlHowToUse = new CaptionPanel("How to use this facility");
+        vpText.add(cptnpnlHowToUse);
+        cptnpnlHowToUse.setSize("90%", "100%");
+                                
+        HTML htmlhowToUse = new HTML("<p>The procedure in retrieving data is sequential to minimize empty result sets. Please follow the steps enumerated below.</p><ol><li>Select the level of geographical extent (i.e. continental, national, or subnational)</li><li>Select region/country/organization of interest.</li><li>Select variable(s) from either <i>Supply and Demand Variables Box</i> or <i>Other Variables Box</i>.</li> <li>Select year(s).</li><li>Click <b><i>Get Data</i>.</b></li></ol>", true);
+        cptnpnlHowToUse.setContentWidget(htmlhowToUse);
+        htmlhowToUse.setSize("100%", "94%");
+                                
+        DisclosurePanel disclosurePanel = new DisclosurePanel("Hint");
+        disclosurePanel.setOpen(true);
+        vpText.add(disclosurePanel);
+        disclosurePanel.setSize("100%", "100%");
+                                
+        HTML htmlNewHtml = new HTML("<ul><li>After clicking on an item, wait for the list boxes to be populated.</li><li>To select multiple items, hold the <b><i>Ctrl</i></b> button on your keyboard and then click on the item.</li><li>If you have multiple selections, deselect an item by just clicking on an item again.</li><li>In <i>Subnational Geographic Extent</i>, selecting a country retrievs data from all the selected country's provices/states.</li></ul>", true);
+        disclosurePanel.setContent(htmlNewHtml);
+        htmlNewHtml.setSize("90%", "100%");
+                                
+        ScrollPanel scrollPanel = new ScrollPanel();
+        scrollPanel.setTouchScrollingDisabled(false);
+        dockPanel.add(scrollPanel);
+        scrollPanel.setWidget(filterPanel);
+        filterPanel.initListBoxes();
+        filterPanel.setSubmitButtonClickHandler(new ClickHandler() {
+        	@Override
+            public void onClick(ClickEvent event) {
+        		String sql = filterPanel.sqlFromItems();
+                if (!sql.equalsIgnoreCase("")) {					
+                	myresult.sqlPopulateTable(sql);
+                    ContentPanel.showWidget(1);
+                } else lblStatusGoesHere.setText("Please select a year.");
+            }
+        });
         
-        Image image = new Image("images/generichart.gif");
-        horizontalPanel_1.add(image);
-        image.setSize("140px", "100px");
-        
-        Image image_1 = new Image("images/generichart.gif");
-        horizontalPanel_1.add(image_1);
-        image_1.setSize("124px", "100px");
-        
-        Image image_2 = new Image("images/generichart.gif");
-        horizontalPanel_1.add(image_2);
-        image_2.setSize("129px", "100px");
-        
-        HorizontalPanel horizontalPanel_2 = new HorizontalPanel();
-        vpFilters.add(horizontalPanel_2);
-        horizontalPanel_2.setSize("100%", "25%");
-        
-        Image image_3 = new Image("images/generichart.gif");
-        horizontalPanel_2.add(image_3);
-        image_3.setSize("140px", "100px");
-        
-        Image image_4 = new Image("images/generichart.gif");
-        horizontalPanel_2.add(image_4);
-        image_4.setSize("124px", "100px");
-        
-        Image image_5 = new Image("images/generichart.gif");
-        horizontalPanel_2.add(image_5);
-        image_5.setSize("129px", "100px");
         ContentPanel.showWidget(0);
+        
     }
+    
 	public DeckPanel getDeckPanel() {
 		return ContentPanel;
+	}
+	public VerticalPanel getHorizontalPanel_1() {
+		return ChartWrapper;
 	}
 }

@@ -98,7 +98,7 @@ public class RPFiltering extends Composite {
 			vpWrapper.setSpacing(5);
 			vpWrapper.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			initWidget(vpWrapper);
-			vpWrapper.setSize("521px", "392px");
+			vpWrapper.setSize("368px", "441px");
 	        
 	        HorizontalPanel hpGExtent = new HorizontalPanel();
 	        hpGExtent.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
@@ -107,7 +107,7 @@ public class RPFiltering extends Composite {
 	        
 	        Label lblGeographicExtent = new Label("Geographic Extent");
 	        hpGExtent.add(lblGeographicExtent);
-	        lblGeographicExtent.setSize("146px", "18px");
+	        lblGeographicExtent.setSize("130px", "18px");
 	        hpGExtent.add(lbxExtent);
 	        lbxExtent.addChangeHandler(new ChangeHandler() {
 	        	public void onChange(ChangeEvent event) {
@@ -139,7 +139,7 @@ public class RPFiltering extends Composite {
 	        lbxExtent.addItem("Continent/Organization");
 	        lbxExtent.addItem("Country");
 	        lbxExtent.addItem("State/Province");
-	        lbxExtent.setSize("310px", "22px");
+	        lbxExtent.setSize("300px", "22px");
 	        
 	        HorizontalPanel hpVarL1 = new HorizontalPanel();
 	        hpVarL1.setSpacing(5);
@@ -181,7 +181,7 @@ public class RPFiltering extends Composite {
 	        verticalPanel.add(lbxRegion);
 	        
 	        lbxRegion.setVisibleItemCount(5);
-	        lbxRegion.setSize("250px", "100px");
+	        lbxRegion.setSize("215px", "100px");
 	        
 	        VerticalPanel verticalPanel_1 = new VerticalPanel();
 	        hpVarL1.add(verticalPanel_1);
@@ -192,7 +192,7 @@ public class RPFiltering extends Composite {
 	        verticalPanel_1.add(lbxVarGroup);
 	        
 	        lbxVarGroup.setVisibleItemCount(5);
-	        lbxVarGroup.setSize("250px", "100px");
+	        lbxVarGroup.setSize("215px", "100px");
 	        
 	        HorizontalPanel hpVarL2 = new HorizontalPanel();
 	        hpVarL2.setSpacing(5);
@@ -225,7 +225,7 @@ public class RPFiltering extends Composite {
 	        });
 	        
 	        verticalPanel_2.add(lbxVariable);
-	        lbxVariable.setSize("420px", "195px");
+	        lbxVariable.setSize("350px", "195px");
 	        lbxVariable.setVisibleItemCount(10);
 	        
 	        VerticalPanel verticalPanel_3 = new VerticalPanel();
@@ -246,7 +246,6 @@ public class RPFiltering extends Composite {
 	        hpBtns.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 	        hpBtns.setSpacing(5);
 	        vpWrapper.add(hpBtns);
-	        hpBtns.setSize("190px", "35px");
 	        
 	        Button btnClear = new Button("Clear Selection");
 	        btnClear.addClickHandler(new ClickHandler() {
@@ -283,33 +282,37 @@ public class RPFiltering extends Composite {
 			return(selitems);
 		}
 		
-		public String getVarColumns(){
-			String selitems = "";
+		public String[] getVarColumns(){
+			String[] selitems = new String[2];
+			selitems[0] = "";
+			selitems[1] = "";
 			for (int i = 0; i < lbxVariable.getItemCount(); i++) {
 				if (lbxVariable.isItemSelected(i)) {
-					selitems = selitems + "SUM(IF(s.var_code='" + lbxVariable.getValue(i) + "', val, null)) AS '" + lbxVariable.getValue(i) + "',";
+					selitems[0] = selitems[0] + "SUM(IF(s.var_code='" + lbxVariable.getValue(i) + "', ROUND(val,2), null)) AS '" + lbxVariable.getValue(i) + "',";
+					selitems[1] = selitems[1] + "SUM(IF(s.var_code='" + lbxVariable.getValue(i) + "', ROUND(val,2), null)) IS NOT NULL OR ";
 				}   
 			}			
-			if (selitems.length()>0) selitems = selitems.substring(0, selitems.length()-1);
+			if (selitems[0].length()>0) selitems[0] = selitems[0].substring(0, selitems[0].length()-1);
+			if (selitems[1].length()>0) selitems[1] = selitems[1].substring(0, selitems[1].length()-3);
 			return(selitems);
 		}
 		
 		public String sqlFromItems(){
 			String regfilter = getSelectedItems(lbxRegion, false);
 			String yrfilter = getSelectedItems(lbxYear, true);
-			String varcols = getVarColumns();
+			String[] varcols = getVarColumns();
 			
 			String sql = "";
 			if (!regfilter.equalsIgnoreCase("") && !yrfilter.equalsIgnoreCase("")){
-				sql = "SELECT c.NAME_ENGLISH AS 'country', s.yr AS 'year', " + varcols +
+				sql = "SELECT c.NAME_ENGLISH AS 'country', s.yr AS 'year', " + varcols[0] +
 						" FROM " + srctable + " s INNER JOIN countries c ON s.iso3 = c.ISO3 " +
-			            " WHERE s.iso3 in ("+regfilter+") AND yr IN (" +yrfilter +")" +
-			            " GROUP BY s.iso3 ASC, s.yr;";
+			            " WHERE s.iso3 in ("+regfilter+") AND yr IN (" +yrfilter +") " +
+			            " GROUP BY s.iso3 ASC, s.yr HAVING " + varcols[1] ;
 			} else if (!yrfilter.equalsIgnoreCase("")){
-				sql = "SELECT c.NAME_ENGLISH AS 'country', s.yr AS 'year', " + varcols +
+				sql = "SELECT c.NAME_ENGLISH AS 'country', s.yr AS 'year', " + varcols[0] +
 						" FROM " + srctable + " s INNER JOIN countries c ON s.iso3 = c.ISO3 " +
-			            " WHERE yr IN (" +yrfilter +")" +
-			            " GROUP BY s.iso3 ASC, s.yr;";
+			            " WHERE yr IN (" +yrfilter +") " +
+			            " GROUP BY s.iso3 ASC, s.yr HAVING " + varcols[1] ;
 			}
 			return sql;
 		}
