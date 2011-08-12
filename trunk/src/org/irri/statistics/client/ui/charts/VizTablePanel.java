@@ -45,14 +45,17 @@ public class VizTablePanel extends Composite {
     }
 
     private AbstractDataTable createTable(String[][] qdata){
-    	DataTable data = DataTable.create();
-    	for (int i=0;i<qdata[0].length;i++){
-    		data.addColumn(AbstractDataTable.ColumnType.NUMBER, qdata[0][i]);
-    	}
-    	data.addRows(qdata.length-1);
-    	for (int i=1;i<qdata.length;i++){
-    		for (int j=0;j<qdata[0].length;j++){
-    			data.setValue(i-1, j, Double.parseDouble(qdata[i][j]));
+    	DataTable data = DataTable.create();    	
+    	for (int i=0;i<qdata.length;i++){
+    		if (i==1) data.addRows(qdata.length-1);
+    		for (int j=0;j<qdata[i].length;j++){
+    			if (i==0) {
+    				if (j==0) data.addColumn(AbstractDataTable.ColumnType.STRING, qdata[0][j]);
+    				else data.addColumn(AbstractDataTable.ColumnType.NUMBER, qdata[0][j]);
+    			} else {
+    				if (j==0) data.setValue(i-1, j, qdata[i][j]);
+    				else data.setValue(i-1, j, Double.parseDouble(qdata[i][j]));
+    			}
     		}
     	}
     	return data;

@@ -40,11 +40,9 @@ h1 {
 	margin-right: auto;	
 }
 .gwt-HTML {
-	margin: 10px 10px;
 	text-align: justify;
 	font-size: 11px;
 	font-family: Arial, Verdana;
-	padding-right:10px;
 }
 .status {
 	font-size: 10px;
@@ -69,7 +67,6 @@ h1 {
 	text-align: justify;
     padding: 5px 15px;
     background-color: #ddd;
-    margin-right:15px;
 }
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabs {
 	align: right;
@@ -83,4 +80,11 @@ h1 {
 	font-size: 18px;
 	font-weight: bold;
 	font-family: Verdana, Arial, Calibri ;
+}
+li {
+ margin-left: 0px;
+}
+
+ul {
+ margin-left: 0px;
 }
