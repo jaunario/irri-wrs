@@ -27,7 +27,7 @@ public class VizTablePanel extends Composite {
     			Runnable onLoadCallback = new Runnable() {
 
     				public void run() {
-    					Table viztab = new Table(createTable(out), createOptions());
+    					Table viztab = new Table(createTable(out), createOptions());    					
     					TablePanel.add(viztab);
     				}
     			};
@@ -41,6 +41,7 @@ public class VizTablePanel extends Composite {
 
     private Options createOptions() {
     	Options options = Options.create();
+    	options.setPageSize(5);
     	return options;
     }
 
