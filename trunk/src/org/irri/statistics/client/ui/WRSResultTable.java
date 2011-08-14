@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import org.irri.statistics.client.UtilsRPC;
 import org.irri.statistics.client.WRS_DataClasses.CountryStat;
-import org.irri.statistics.client.ui.charts.LineChartPanel;
+import org.irri.statistics.client.ui.charts.DBLineChart;
 
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
+import com.google.gwt.user.client.ui.DeckPanel;
 
 
 public class WRSResultTable extends Composite {
@@ -49,7 +50,12 @@ public class WRSResultTable extends Composite {
 		// West Panel for chart widgets
 		vpCharts = new VerticalPanel();
 		vpCharts.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		verticalPanel.addWest(vpCharts, 250.0);
+		verticalPanel.addWest(vpCharts, 350.0);
+		vpCharts.setSize("100%", "100%");
+		
+		CaptionPanel cptnpnlGraphs = new CaptionPanel("Visualize");
+		vpCharts.add(cptnpnlGraphs);
+		cptnpnlGraphs.setSize("325px", "325px");
 		
 		ResultHandler = new ListHandler<CountryStat>(queryresult.getList());
 		
@@ -210,7 +216,7 @@ public class WRSResultTable extends Composite {
 			    // Push the data into the widget.
 			    ctResult.setRowData(0, queryresult.getList());
 
-			    LineChartPanel linechart = new LineChartPanel(resultmatrix, "Top Producers", 250, 250);
+			    DBLineChart linechart = new DBLineChart(resultmatrix, "Top Producers", 250, 250);
 				vpCharts.add(linechart);
 
 			}

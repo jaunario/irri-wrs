@@ -257,6 +257,7 @@ public class RPFiltering extends Composite {
 	        btnSubmit.setEnabled(false);
 	        
 	        hpBtns.add(btnSubmit);
+	        btnSubmit.setHeight("30px");
 			//initListBoxes();	        
 		}
 		

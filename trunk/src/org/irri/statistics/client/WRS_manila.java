@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
+import com.google.gwt.user.client.ui.Image;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -147,6 +148,9 @@ public class WRS_manila implements EntryPoint {
         		ContentPanel.showWidget(0);
         	}
         });
+        Image image = new Image("images/search.png");
+        image.setPixelSize(25, 25);
+        pshbtnSelect.getUpFace().setImage(image);
         NavigationBar.add(pshbtnSelect);
         NavigationBar.setCellHorizontalAlignment(pshbtnSelect, HasHorizontalAlignment.ALIGN_CENTER);
         
@@ -156,6 +160,7 @@ public class WRS_manila implements EntryPoint {
         		ContentPanel.showWidget(1);
         	}
         });
+        
         NavigationBar.add(pshbtnResults);
         NavigationBar.setCellHorizontalAlignment(pshbtnResults, HasHorizontalAlignment.ALIGN_CENTER);
                                 
