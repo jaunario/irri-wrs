@@ -1,6 +1,7 @@
 package org.irri.statistics.client;
 
 import org.irri.statistics.client.ui.RPFiltering;
+import org.irri.statistics.client.ui.ResultDataTable;
 import org.irri.statistics.client.ui.WRSResultTable;
 //import org.irri.statistics.client.ui.charts.BarChartPanel;
 //import org.irri.statistics.client.ui.charts.PieChartPanel;
@@ -317,9 +318,10 @@ public class WRS_manila implements EntryPoint {
 	
 	public void showdata(){
 		myresult.populateResultTable(resultmatrix);		
-	    DBLineChart linechart = new DBLineChart(resultmatrix, "Top Producers", 250, 250);
-	    cptnpnlResultCharts.clear();
-	    cptnpnlResultCharts.add(linechart);    			    
+	    //DBLineChart linechart = new DBLineChart(resultmatrix, "Top Producers", 250, 250);
+	    DBLineChart linechart2 = new DBLineChart(ResultDataTable.regroup(resultmatrix, 2), DBLineChart.createOptions());
+	    if (cptnpnlResultCharts.getContentWidget()!=null) cptnpnlResultCharts.clear();
+	    cptnpnlResultCharts.add(linechart2);    			    
     }
 	public SplitLayoutPanel getResultPanel() {
 		return ResultPanel;

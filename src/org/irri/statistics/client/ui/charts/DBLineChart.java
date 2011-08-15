@@ -19,6 +19,7 @@ public class DBLineChart extends Composite {
 	}
 	
 	public DBLineChart(AbstractDataTable datatable, Options options){
+		initWidget(VisBox);
 		plot(datatable, options);
 	}
 	
@@ -35,7 +36,7 @@ public class DBLineChart extends Composite {
 		};
 		VisualizationUtils.loadVisualizationApi(onLoadCallback, LineChart.PACKAGE);
 	}
-	public Options createOptions() {
+	public static Options createOptions() {
         Options options = Options.create();
         AxisOptions hAxisOptions = AxisOptions.create();
     	AxisOptions vAxisOptions = AxisOptions.create();
