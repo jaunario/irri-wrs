@@ -43,9 +43,10 @@ public class DBLineChart extends Composite {
     	//vAxisOptions.setTitle("Year");
     	options.setHAxisOptions(hAxisOptions);
     	options.setVAxisOptions(vAxisOptions);
-        options.setWidth(400);
-        options.setHeight(400);
+        options.setWidth(320);
+        options.setHeight(300);
         options.setTitle("This is a lince chart");
+        options.set("legend", "bottom");
         return options;
 
 	}
