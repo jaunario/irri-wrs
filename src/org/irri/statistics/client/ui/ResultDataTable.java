@@ -8,7 +8,7 @@ import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
 
 public class ResultDataTable{
-
+	
 	public static AbstractDataTable create(String[][] data, int[] numcols){
 		DataTable datatable = GWT.create(null);
 		Arrays.sort(numcols);
@@ -34,11 +34,9 @@ public class ResultDataTable{
 	
 	public static AbstractDataTable createFilteredTable (String[][] data, String filterval){
 		DataTable datatable = GWT.create(null);
-		int incrows = 0; 
 		for (int i = 0; i < data.length; i++) {
 			if(data[i][0].equalsIgnoreCase(filterval)) {
 				datatable.addRow();
-				incrows++;
 			}
 			for (int j = 1; j < data[i].length; j++) {
 				if (i==0){
@@ -50,7 +48,17 @@ public class ResultDataTable{
 				}
 			}
 		}
+		
 		return datatable;
 	}
+	
+	public static AbstractDataTable regroup(String[][] data, int grpcol, int xcol, int ycol){
+		DataTable datatable = GWT.create(null);
+				
+		return datatable;
+	}
+	
+	
+	
 	
 }
