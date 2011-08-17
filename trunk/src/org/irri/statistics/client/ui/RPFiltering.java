@@ -115,21 +115,29 @@ public class RPFiltering extends Composite {
 	        		String vgsql = "";
 	        		lbxYear.clear();
 	        		lbxVariable.clear();
-
-	        		if (lbxExtent.getSelectedIndex()==0){
-
-	        			srctable = "reg_data";
-		            	varlisttable = "variables";
+	        		int selected = lbxExtent.getSelectedIndex();
+	        		switch (selected) {
+					case 0:
+	        			srctable = "reg_data";		            	
 		            	rsql =  "SELECT c.name_english, r.iso3 FROM "+ srctable +" r INNER JOIN countries c ON c.iso3=r.iso3 WHERE c.ci=0 GROUP BY 1 ASC";
 		            	vgsql =  "SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code";
-		            } else if (lbxExtent.getSelectedIndex()==1){
+						break;
+
+					case 1:
 		            	srctable = "front_data";
 		            	rsql =  "SELECT c.name_english, r.iso3 FROM "+ srctable +" r INNER JOIN countries c ON c.iso3=r.iso3 WHERE c.ci=1 GROUP BY 1 ASC";
-		            	vgsql =  "SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code";		            } else{
-		            	srctable = "pays";
+		            	vgsql =  "SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code";		            
+		            	
+		            	break;
+					
+					case 2:
+						srctable = "pays";
 		            	varlisttable = "svar_list";
-		            	rsql = "SELECT c.name_english, iso3 FROM sncountry_list ORDER BY country";
-		            }
+		            	rsql = "SELECT c.name_english, c.iso3 FROM countries c INNER JOIN pays ON LEFT(geo_code,2)=c.iso2 GROUP BY LEFT(geo_code,2)";
+		            	vgsql =  "SELECT NULL, NULL";
+						break;
+					}
+
 		            UtilsRPC.getService("mysqlservice").RunSELECT(rsql,InitRegionBox);
 		            UtilsRPC.getService("mysqlservice").RunSELECT(vgsql,InitVarGroupBox);
 		            //else MainPanel.add(new HTML("Under Construction"));
@@ -150,28 +158,25 @@ public class RPFiltering extends Composite {
 	        
 	        ChangeHandler varChangeHandler = new ChangeHandler() {
 	        	public void onChange(ChangeEvent event) {
+	        		String selregion = getSelectedItems(lbxRegion, false);
+	        		String selvargroups = "";
+	        		String sql = "";
+	        		
 	        		lbxYear.clear();
 	        		btnSubmit.setEnabled(false);
-	        		String selregion = getSelectedItems(lbxRegion, false);
-	        		String selvargroups = getSelectedItems(lbxVarGroup, false);
-	        		
-	        		String sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code WHERE v.show_flag=1";
-	        		if (!selvargroups.equalsIgnoreCase("") & !selregion.equalsIgnoreCase("")){
-	        			sql = sql + " AND v.group_code in (" + selvargroups + ") AND s.iso3 in (" + selregion + ")"; 
-	        		} else if (!selregion.equalsIgnoreCase("")){
-	        			sql = sql + " AND s.iso3 in (" + selregion + ")";
-	        		} else if (!selvargroups.equalsIgnoreCase("")){
-	        			sql = sql + " AND v.group_code in (" + selvargroups + ")";
-	        		} else {
-	        			sql = "";
+	        		if (!selregion.equals("")){
+	        			if (lbxExtent.getSelectedIndex()==2){
+		        			sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM svar_list v INNER JOIN subnat_avail s ON v.var_code=s.var_code WHERE s.iso3 in (" + selregion + ")";
+		        		} else {
+		        			sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code WHERE v.show_flag=1 AND s.iso3 in (" + selregion + ")";
+		        			selvargroups = getSelectedItems(lbxVarGroup, false);
+		        			if (!selvargroups.equals("")){
+			        			sql = sql + " AND v.group_code in (" + selvargroups + ")";
+			        		}
+		        		}
+	        			sql = sql +  " GROUP BY s.var_code ORDER BY v.var_name";
+	        			UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitVarBox);
 	        		}
-	        		if (!sql.equalsIgnoreCase("")){
-		        		sql = sql +  " GROUP BY s.var_code ORDER BY v.var_name";
-		        		UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitVarBox);
-	        		} else {
-	        			lbxVariable.clear();	        			
-	        		}
-	        		
 	        	}
 	        };
 
@@ -207,20 +212,20 @@ public class RPFiltering extends Composite {
 	        	public void onChange(ChangeEvent event) {
 	        		String selregion = getSelectedItems(lbxRegion, false);
 	        		String selvars = getSelectedItems(lbxVariable, false);
+	        		String sql = "";
 	        		
-	        		String sql = "SELECT yr, yr FROM " + srctable + " s";
-	        		if (!selvars.equalsIgnoreCase("")){
-	        			sql = sql + " WHERE s.var_code in (" + selvars + ")"; 
-	        		} else sql = "";
-	        		if (!selregion.equalsIgnoreCase("")){
-	        			sql = sql + " AND s.iso3 in (" + selregion + ")";
-	        		}
+	        		btnSubmit.setEnabled(false);
 	        		
-	        		if (!sql.equalsIgnoreCase("")){
-	        			sql = sql +  " GROUP BY 1";
+	        		if (!selvars.equals("") && !selregion.equals("")){
+		        		if (lbxExtent.getSelectedIndex()==2){
+		        			sql = "SELECT yr, yr FROM subnat_avail s";
+		        		} else {
+		        			sql = "SELECT yr, yr FROM " + srctable + " s";
+		        		}
+		        		sql = sql + " WHERE s.var_code in (" + selvars + ") AND s.iso3 in (" + selregion + ") GROUP BY 1";
 		        		UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitYearBox);
 	        		} else lbxYear.clear();
-	        		btnSubmit.setEnabled(false);
+	        		
 	        	}
 	        });
 	        
@@ -289,10 +294,16 @@ public class RPFiltering extends Composite {
 			String[] selitems = new String[2];
 			selitems[0] = "";
 			selitems[1] = "";
+			int lvl = lbxExtent.getSelectedIndex();
 			for (int i = 0; i < lbxVariable.getItemCount(); i++) {
 				if (lbxVariable.isItemSelected(i)) {
-					selitems[0] = selitems[0] + "SUM(IF(s.var_code='" + lbxVariable.getValue(i) + "', ROUND(val,2), null)) AS '" + lbxVariable.getValue(i) + "',";
-					selitems[1] = selitems[1] + "SUM(IF(s.var_code='" + lbxVariable.getValue(i) + "', ROUND(val,2), null)) IS NOT NULL OR ";
+					if (lvl==2){
+						selitems[0] = selitems[0] + " ROUND(" + lbxVariable.getValue(i) + ",2) AS '"+ lbxVariable.getValue(i) +"',";
+						selitems[1] = selitems[1] + lbxVariable.getValue(i) + " IS NOT NULL OR ";
+					} else {
+						selitems[0] = selitems[0] + "SUM(IF(s.var_code='" + lbxVariable.getValue(i) + "', ROUND(val,2), null)) AS '" + lbxVariable.getValue(i) + "',";
+						selitems[1] = selitems[1] + "SUM(IF(s.var_code='" + lbxVariable.getValue(i) + "', ROUND(val,2), null)) IS NOT NULL OR ";
+					}
 				}   
 			}			
 			if (selitems[0].length()>0) selitems[0] = selitems[0].substring(0, selitems[0].length()-1);
@@ -306,25 +317,20 @@ public class RPFiltering extends Composite {
 			String[] varcols = getVarColumns();
 			
 			String sql = "";
-			if (!regfilter.equalsIgnoreCase("") && !yrfilter.equalsIgnoreCase("")){
-				sql = "SELECT c.NAME_ENGLISH AS 'country', s.yr AS 'year', " + varcols[0] +
-						" FROM " + srctable + " s INNER JOIN countries c ON s.iso3 = c.ISO3 " +
-			            " WHERE s.iso3 in ("+regfilter+") AND yr IN (" +yrfilter +") " +
-			            " GROUP BY s.iso3 ASC, s.yr HAVING " + varcols[1] ;
-			} else if (!yrfilter.equalsIgnoreCase("")){
-				sql = "SELECT c.NAME_ENGLISH AS 'country', s.yr AS 'year', " + varcols[0] +
-						" FROM " + srctable + " s INNER JOIN countries c ON s.iso3 = c.ISO3 " +
-			            " WHERE yr IN (" +yrfilter +") " +
-			            " GROUP BY s.iso3 ASC, s.yr HAVING " + varcols[1] ;
+			if (!regfilter.equals("") && !yrfilter.equals("") && !varcols[0].equals("") && !varcols[1].equals("")){
+				if (lbxExtent.getSelectedIndex()==2){
+					sql = "SELECT CONCAT(c.name_english,'-',l.geo_name) AS 'region', s.yr AS 'year'," + varcols[0] +
+					" FROM locales l NATURAL JOIN " + srctable + " s, countries c" +
+		            " WHERE c.iso3 in ("+regfilter+") AND yr IN (" +yrfilter +") AND variety='All' AND ecosystem='All' AND season='All' AND ("+ varcols[1] + ")" + 
+		            " GROUP BY 1 ASC, s.yr ASC" ;
+				} else {
+					sql = "SELECT c.NAME_ENGLISH AS 'region', s.yr AS 'year', " + varcols[0] +
+					" FROM " + srctable + " s INNER JOIN countries c ON s.iso3 = c.ISO3 " +
+		            " WHERE c.iso3=l.iso3 AND c.iso3 in ("+regfilter+") AND yr IN (" +yrfilter +") " +
+		            " GROUP BY s.iso3 ASC, s.yr HAVING " + varcols[1] ;
+				}
 			}
 			return sql;
-		}
-		
-		public String sqlQueryTest(){
-			return "SELECT c.NAME_ENGLISH AS 'country', d.yr AS 'year', sum(if(d.var_code='RicPr-USDA',val,null)) 'RicPr-USDA', sum(if(d.var_code='RicYldUSDA',val,null)) 'RicYldUSDA', sum(if(d.var_code='RicHa-USDA',val,null)) 'RicHa-USDA'" +
-					"FROM front_data d inner join countries c on d.iso3 = c.ISO3 " +
-		            "WHERE d.iso3 in ('PHL') AND yr between 1960 AND 2011 "+
-		            "GROUP BY d.iso3 ASC, d.yr DESC;";
 		}
 		
 		private void populateListBox(ListBox listbox, String[][] data){
