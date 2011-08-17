@@ -166,7 +166,7 @@ public class RPFiltering extends Composite {
 	        			sql = "";
 	        		}
 	        		if (!sql.equalsIgnoreCase("")){
-		        		sql = sql +  " GROUP BY s.var_code";
+		        		sql = sql +  " GROUP BY s.var_code ORDER BY v.var_name";
 		        		UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitVarBox);
 	        		} else {
 	        			lbxVariable.clear();	        			
@@ -243,9 +243,9 @@ public class RPFiltering extends Composite {
 	        lbxYear.setVisibleItemCount(10);
 	        
 	        HorizontalPanel hpBtns = new HorizontalPanel();
-	        hpBtns.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 	        hpBtns.setSpacing(5);
 	        vpWrapper.add(hpBtns);
+	        vpWrapper.setCellHorizontalAlignment(hpBtns, HasHorizontalAlignment.ALIGN_CENTER);
 	        
 	        Button btnClear = new Button("Clear Selection");
 	        btnClear.addClickHandler(new ClickHandler() {
@@ -253,10 +253,12 @@ public class RPFiltering extends Composite {
 	        		initListBoxes();				}
 	        });
 	        hpBtns.add(btnClear);
+	        hpBtns.setCellHorizontalAlignment(btnClear, HasHorizontalAlignment.ALIGN_CENTER);
 	        btnClear.setHeight("30px");
 	        btnSubmit.setEnabled(false);
 	        
 	        hpBtns.add(btnSubmit);
+	        hpBtns.setCellHorizontalAlignment(btnSubmit, HasHorizontalAlignment.ALIGN_CENTER);
 	        btnSubmit.setHeight("30px");
 			//initListBoxes();	        
 		}

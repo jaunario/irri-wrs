@@ -21,11 +21,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
 
 
 public class WRSResultTable extends Composite {
@@ -37,10 +32,10 @@ public class WRSResultTable extends Composite {
 		// Main Wrapper
 		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		
 		initWidget(verticalPanel);
 		
 		ScrollPanel scrollPanel = new ScrollPanel();
+		ctResult.setPageSize(20);
 		scrollPanel.setWidget(ctResult);
 		verticalPanel.add(scrollPanel);
 		
@@ -49,26 +44,11 @@ public class WRSResultTable extends Composite {
 		
 		SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
 				
-		ctResult.setSize("100%", "100%");
 		queryresult.addDataDisplay(ctResult);
-						
-		// Controls for viewing cell table
-		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		horizontalPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		verticalPanel.add(horizontalPanel);
-						
+		
 		SimplePager pager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
 		pager.setDisplay(ctResult);
-		horizontalPanel.add(pager);
-
-		Button btnDownload = new Button("Download");
-		btnDownload.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-			// TODO Download result
-			}
-		});
-		btnDownload.setText("Download");
-		horizontalPanel.add(btnDownload);
+		verticalPanel.add(pager);
 		
 	}
 	

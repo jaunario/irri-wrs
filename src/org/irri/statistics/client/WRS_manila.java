@@ -36,6 +36,8 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DockPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -276,15 +278,28 @@ public class WRS_manila implements EntryPoint {
         vpResultCharts.add(cptnpnlYourSelection);
         cptnpnlYourSelection.setSize("325px", "150px");
         
-        HorizontalPanel horizontalPanel = new HorizontalPanel();
-        ResultPanel.addSouth(horizontalPanel, 300.0);
+        Grid grid_1 = new Grid(2, 1);
+        ResultPanel.addSouth(grid_1, 100.0);
         
         HTMLPanel htmlDisclaimer = new HTMLPanel("<h3>Disclaimer </h3>\r\nData and information released from the International Rice Research Institute (IRRI) are provided on an \"AS IS\" basis, without warranty of any kind, including without limitation the warranties of merchantability, fitness for a particular purpose and non-infringement. Availability of this data and information does not constitute scientific publication. Data and/or information may contain errors or be incomplete.");
+        grid_1.setWidget(1, 0, htmlDisclaimer);
         htmlDisclaimer.setStyleName("notes");
-        horizontalPanel.add(htmlDisclaimer);
         htmlDisclaimer.setSize("90%", "100%");
         
-        ResultPanel.add(myresult);
+        DockLayoutPanel dockPanel_1 = new DockLayoutPanel(Unit.PX);
+        ResultPanel.add(dockPanel_1);
+        
+        HorizontalPanel horizontalPanel_1 = new HorizontalPanel();
+        horizontalPanel_1.setSpacing(5);
+        dockPanel_1.addNorth(horizontalPanel_1, 30.0);
+        horizontalPanel_1.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+        horizontalPanel_1.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        horizontalPanel_1.setSize("100%", "100%");
+        
+        Button btnDownload = new Button("Download");
+        horizontalPanel_1.add(btnDownload);
+        dockPanel_1.add(myresult);
+        myresult.setSize("100%", "100%");
         
         ContentPanel.showWidget(0);
         
