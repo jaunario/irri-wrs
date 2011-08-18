@@ -3,8 +3,6 @@ package org.irri.statistics.client;
 import org.irri.statistics.client.ui.RPFiltering;
 import org.irri.statistics.client.ui.ResultDataTable;
 import org.irri.statistics.client.ui.WRSResultTable;
-//import org.irri.statistics.client.ui.charts.BarChartPanel;
-//import org.irri.statistics.client.ui.charts.PieChartPanel;
 import org.irri.statistics.client.ui.charts.DBLineChart;
 import org.irri.statistics.client.ui.charts.VizTablePanel;
 
@@ -23,21 +21,21 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-//import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.DeckPanel;
-//import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.TabBar;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -120,7 +118,6 @@ public class WRS_manila implements EntryPoint {
         lblWorldRiceStatistics.setStyleName("gwt-Label-title");
         NavigationBar.add(lblWorldRiceStatistics);
         lblWorldRiceStatistics.setHeight("100%");
-        NavigationBar.setCellVerticalAlignment(lblWorldRiceStatistics, HasVerticalAlignment.ALIGN_BOTTOM);
         
         ContentPanel = new DeckPanel();
         MainWrapper.add(ContentPanel);
@@ -129,27 +126,21 @@ public class WRS_manila implements EntryPoint {
         ContentPanel.add(SelectionPanel);
         SelectionPanel.setSize("100%", "100%");
         
-        PushButton pshbtnSelect = new PushButton("Select");
-        pshbtnSelect.addClickHandler(new ClickHandler() {
-        	public void onClick(ClickEvent event) {
-        		ContentPanel.showWidget(0);
+        TabBar tabBar = new TabBar();
+        tabBar.addTab("Search");
+        tabBar.addTab("Result\t");
+        tabBar.addTab("Trend It");
+        tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
+        	public void onSelection(SelectionEvent<Integer> event) {
+        		ContentPanel.showWidget(event.getSelectedItem());
         	}
         });
-        Image image = new Image("images/search.png");
-        image.setPixelSize(25, 25);
-        pshbtnSelect.getUpFace().setImage(image);
-        NavigationBar.add(pshbtnSelect);
-        NavigationBar.setCellHorizontalAlignment(pshbtnSelect, HasHorizontalAlignment.ALIGN_CENTER);
-        
-        PushButton pshbtnResults = new PushButton("Results");
-        pshbtnResults.addClickHandler(new ClickHandler() {
-        	public void onClick(ClickEvent event) {
-        		ContentPanel.showWidget(1);
-        	}
-        });
-        
-        NavigationBar.add(pshbtnResults);
-        NavigationBar.setCellHorizontalAlignment(pshbtnResults, HasHorizontalAlignment.ALIGN_CENTER);
+        NavigationBar.add(tabBar);
+        NavigationBar.setCellHeight(tabBar, "100%");
+        tabBar.setWidth("100");
+        NavigationBar.setCellHorizontalAlignment(tabBar, HasHorizontalAlignment.ALIGN_RIGHT);
+        NavigationBar.setCellWidth(tabBar, "50%");
+        NavigationBar.setCellVerticalAlignment(tabBar, HasVerticalAlignment.ALIGN_BOTTOM);
         
         ScrollPanel scpnlGenChart = new ScrollPanel();
         SelectionPanel.addEast(scpnlGenChart, 300.0);
@@ -165,7 +156,7 @@ public class WRS_manila implements EntryPoint {
         ScrollPanel scrpnlChartScroll = new ScrollPanel();
         cptnpnlTopProducers.setContentWidget(scrpnlChartScroll);
         
-        VizTablePanel topprod = new VizTablePanel("SELECT c.NAME_ENGLISH AS 'country', SUM(IF(s.var_code='RicPr-USDA', val, null)) AS 'Production' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE yr = YEAR(CURDATE())-1  GROUP BY s.iso3 ASC, s.yr ORDER BY 2 DESC LIMIT 10 ", "2010");
+        VizTablePanel topprod = new VizTablePanel();
         scrpnlChartScroll.setWidget(topprod);
         topprod.setSize("100%", "90%");
                 
@@ -290,16 +281,34 @@ public class WRS_manila implements EntryPoint {
         ResultPanel.add(dockPanel_1);
         
         HorizontalPanel horizontalPanel_1 = new HorizontalPanel();
-        horizontalPanel_1.setSpacing(5);
-        dockPanel_1.addNorth(horizontalPanel_1, 30.0);
-        horizontalPanel_1.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
         horizontalPanel_1.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-        horizontalPanel_1.setSize("100%", "100%");
+        horizontalPanel_1.setSpacing(5);
+        horizontalPanel_1.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+        dockPanel_1.addNorth(horizontalPanel_1, 30.0);
+        
         
         Button btnDownload = new Button("Download");
+        btnDownload.addClickHandler(new ClickHandler() {
+        	public void onClick(ClickEvent event) {
+        		
+        	}
+        });
+        
+        Button btnSendEmail = new Button("Send Email");
+        horizontalPanel_1.add(btnSendEmail);
+        
+        Button btnSendToGoogle = new Button("Send to Google Docs");
+        horizontalPanel_1.add(btnSendToGoogle);
         horizontalPanel_1.add(btnDownload);
         dockPanel_1.add(myresult);
         myresult.setSize("100%", "100%");
+        
+        ScrollPanel scrollPanel_1 = new ScrollPanel();
+        ContentPanel.add(scrollPanel_1);
+        
+        Frame frame = new Frame("http://geo.irri.org/vis/wrs_Motion.php");
+        scrollPanel_1.setWidget(frame);
+        frame.setSize("100%", "100%");
         
         ContentPanel.showWidget(0);
         

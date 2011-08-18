@@ -70,7 +70,10 @@ h1 {
     margin-right:15px;
 }
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabs {
-	align: right;
+	text-align: center;
+	border-width:2px;
+	border-style:solid;
+	border-color:aa4411;
 }
 .banner {
 	border-bottom-width: 1px;
@@ -88,4 +91,12 @@ li {
 
 ul {
  margin-left: 0px;
+}
+.gwt-TabLayoutPanel {
+	font-family: Calibri, Verdana, Arial;
+	font-size: 1em;
+}
+.gwt-PushButton {
+	font-family: Calibri, Arial, Verdana;
+	font-size: 1.1em;
 }
