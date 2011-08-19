@@ -1,6 +1,7 @@
 package org.irri.statistics.client.ui.charts;
 
-import org.irri.statistics.client.UtilsRPC;
+import org.irri.statistics.client.utils.RPCUtils;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -44,7 +45,7 @@ public class PieChartPanel extends Composite{
             }
             
         };
-        UtilsRPC.getService("mysqlservice").RunSELECT(query, DBDataTable);
+        RPCUtils.getService("mysqlservice").RunSELECT(query, DBDataTable);
         initWidget(VisBox);
         
     }

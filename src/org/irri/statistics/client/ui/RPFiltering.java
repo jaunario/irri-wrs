@@ -1,6 +1,6 @@
 package org.irri.statistics.client.ui;
 
-import org.irri.statistics.client.UtilsRPC;
+import org.irri.statistics.client.utils.RPCUtils;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -138,8 +138,8 @@ public class RPFiltering extends Composite {
 						break;
 					}
 
-		            UtilsRPC.getService("mysqlservice").RunSELECT(rsql,InitRegionBox);
-		            UtilsRPC.getService("mysqlservice").RunSELECT(vgsql,InitVarGroupBox);
+		            RPCUtils.getService("mysqlservice").RunSELECT(rsql,InitRegionBox);
+		            RPCUtils.getService("mysqlservice").RunSELECT(vgsql,InitVarGroupBox);
 		            //else MainPanel.add(new HTML("Under Construction"));
 	        	}
 	        });
@@ -175,7 +175,7 @@ public class RPFiltering extends Composite {
 			        		}
 		        		}
 	        			sql = sql +  " GROUP BY s.var_code ORDER BY v.var_name";
-	        			UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitVarBox);
+	        			RPCUtils.getService("mysqlservice").RunSELECT(sql,InitVarBox);
 	        		}
 	        	}
 	        };
@@ -223,7 +223,7 @@ public class RPFiltering extends Composite {
 		        			sql = "SELECT yr, yr FROM " + srctable + " s";
 		        		}
 		        		sql = sql + " WHERE s.var_code in (" + selvars + ") AND s.iso3 in (" + selregion + ") GROUP BY 1";
-		        		UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitYearBox);
+		        		RPCUtils.getService("mysqlservice").RunSELECT(sql,InitYearBox);
 	        		} else lbxYear.clear();
 	        		
 	        	}
@@ -275,8 +275,8 @@ public class RPFiltering extends Composite {
 		public void initListBoxes(){
 			lbxYear.clear();
 			lbxVariable.clear();
-			UtilsRPC.getService("mysqlservice").RunSELECT("SELECT c.name_english, r.iso3 FROM "+ srctable +" r INNER JOIN countries c ON c.iso3=r.iso3 WHERE c.ci=0 GROUP BY 1 ASC",InitRegionBox);
-			UtilsRPC.getService("mysqlservice").RunSELECT("SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code",InitVarGroupBox);			
+			RPCUtils.getService("mysqlservice").RunSELECT("SELECT c.name_english, r.iso3 FROM "+ srctable +" r INNER JOIN countries c ON c.iso3=r.iso3 WHERE c.ci=0 GROUP BY 1 ASC",InitRegionBox);
+			RPCUtils.getService("mysqlservice").RunSELECT("SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code",InitVarGroupBox);			
 		}
 		
 		public String getSelectedItems(ListBox lbx, boolean noquote){
@@ -326,7 +326,7 @@ public class RPFiltering extends Composite {
 				} else {
 					sql = "SELECT c.NAME_ENGLISH AS 'region', s.yr AS 'year', " + varcols[0] +
 					" FROM " + srctable + " s INNER JOIN countries c ON s.iso3 = c.ISO3 " +
-		            " WHERE c.iso3=l.iso3 AND c.iso3 in ("+regfilter+") AND yr IN (" +yrfilter +") " +
+		            " WHERE c.iso3=s.iso3 AND c.iso3 in ("+regfilter+") AND yr IN (" +yrfilter +") " +
 		            " GROUP BY s.iso3 ASC, s.yr HAVING " + varcols[1] ;
 				}
 			}

@@ -5,6 +5,8 @@
 
 package org.irri.statistics.client;
 
+import org.irri.statistics.client.utils.RPCUtils;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -151,7 +153,7 @@ public class DataViewer extends TabPanel{
 
         Label LblRegion = new Label("Region");
         LblRegion.addStyleName("filter-lbl");
-        UtilsRPC.getService("mysqlservice").RunSELECT("SELECT region, iso3 FROM region_list ORDER BY region", InitRegionBox);
+        RPCUtils.getService("mysqlservice").RunSELECT("SELECT region, iso3 FROM region_list ORDER BY region", InitRegionBox);
         
         VariableFilter.setTitle("Variable List");
         VariableFilter.setEnabled(false);
@@ -259,7 +261,7 @@ public class DataViewer extends TabPanel{
                     varlisttable = "svar_list";
                     sql = "SELECT country, iso3 FROM sncountry_list ORDER BY country";
                 }
-                UtilsRPC.getService("mysqlservice").RunSELECT(sql,InitRegionBox);
+                RPCUtils.getService("mysqlservice").RunSELECT(sql,InitRegionBox);
                 //else MainPanel.add(new HTML("Under Construction"));
             }
         });
@@ -273,7 +275,7 @@ public class DataViewer extends TabPanel{
                 YearFilter.clear();
                 BtFetchData.setEnabled(false);
                 cleanTabs();
-                UtilsRPC.getService("mysqlservice").RunSELECT("SELECT region, iso3 FROM region_list ORDER BY region", InitRegionBox);
+                RPCUtils.getService("mysqlservice").RunSELECT("SELECT region, iso3 FROM region_list ORDER BY region", InitRegionBox);
             }
         });
 
@@ -431,7 +433,7 @@ public class DataViewer extends TabPanel{
                     ResultsPan.add(VpDataContainer);
                     add(ResultsPan, "Results");
                     add(VpMetadata, "Metadata");
-                    UtilsRPC.getService("mysqlservice").RunSELECT(query, GetDataCallback);
+                    RPCUtils.getService("mysqlservice").RunSELECT(query, GetDataCallback);
                     BtCSV.setEnabled(true);
                     selectTab(1);
                 }             
@@ -461,7 +463,7 @@ public class DataViewer extends TabPanel{
                         queryContent = queryContent.substring(0, queryContent.length()-1)+"\n";
 
                     }
-                    UtilsRPC.getService("mysqlservice").SaveCSV(queryContent, DownloadCSV);
+                    RPCUtils.getService("mysqlservice").SaveCSV(queryContent, DownloadCSV);
                 }
             }
         });
@@ -528,15 +530,15 @@ public class DataViewer extends TabPanel{
                     if (!selreg.equals("") && LbRegLevel.getSelectedIndex()!=2){
                         selreg = selreg.substring(0, selreg.length()-1);
                         String que = "SELECT v.var_name, v.unit, d.var_code FROM "+srctable+" d natural join "+varlisttable+" v where iso3 in ("+selreg+") AND v.group_code<>'SND' AND v.show_flag=1 GROUP BY d.var_code ORDER BY v.var_name";
-                        UtilsRPC.getService("mysqlservice").RunSELECT(que, InitVarBox);
+                        RPCUtils.getService("mysqlservice").RunSELECT(que, InitVarBox);
                         String que2 = "SELECT v.var_name, v.unit, d.var_code FROM "+srctable+" d natural join "+varlisttable+" v where iso3 in ("+selreg+") AND v.group_code='SND' AND v.show_flag=1 GROUP BY d.var_code ORDER BY v.var_name";
-                        UtilsRPC.getService("mysqlservice").RunSELECT(que2, InitVarGrpBox);
+                        RPCUtils.getService("mysqlservice").RunSELECT(que2, InitVarGrpBox);
                         changeSDSelectionStatus(true);
                         changeVarSelectionStatus(true);
                     } else if (!selreg.equals("") && LbRegLevel.getSelectedIndex()==2){
                         selreg = selreg.substring(0, selreg.length()-1);
                         String que = "SELECT v.var_name, v.unit, v.var_code FROM "+varlisttable+" v";
-                        UtilsRPC.getService("mysqlservice").RunSELECT(que, InitVarGrpBox);
+                        RPCUtils.getService("mysqlservice").RunSELECT(que, InitVarGrpBox);
                         changeSDSelectionStatus(true);
                         changeVarSelectionStatus(false);
                     } else {
@@ -660,11 +662,11 @@ public class DataViewer extends TabPanel{
         
         if (!selvars.equals("") && LbRegLevel.getSelectedIndex()!=2){
             selvars = selvars.substring(0, selvars.length()-1);
-            UtilsRPC.getService("mysqlservice").RunSELECT("SELECT yr FROM "+srctable+" d where iso3 in ("+selectedCountries+") and var_code in ("+selvars +") GROUP BY yr ", InitYearBox);
+            RPCUtils.getService("mysqlservice").RunSELECT("SELECT yr FROM "+srctable+" d where iso3 in ("+selectedCountries+") and var_code in ("+selvars +") GROUP BY yr ", InitYearBox);
             changeYearSelectionStatus(true);
         } else if (!selvars.equals("") && LbRegLevel.getSelectedIndex()==2){
             selvars = selvars.substring(0, selvars.length()-1);
-            UtilsRPC.getService("mysqlservice").RunSELECT("SELECT yr FROM "+srctable+" d natural join locales l where l.iso3 in ("+selectedCountries+") GROUP BY yr ", InitYearBox);
+            RPCUtils.getService("mysqlservice").RunSELECT("SELECT yr FROM "+srctable+" d natural join locales l where l.iso3 in ("+selectedCountries+") GROUP BY yr ", InitYearBox);
             changeYearSelectionStatus(true);
         }
         else {
