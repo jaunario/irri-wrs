@@ -1,14 +1,14 @@
 package org.irri.statistics.client;
 
 import org.irri.statistics.client.ui.RPFiltering;
-import org.irri.statistics.client.ui.ResultDataTable;
 import org.irri.statistics.client.ui.WRSResultTable;
 import org.irri.statistics.client.ui.charts.DBLineChart;
+import org.irri.statistics.client.ui.charts.ChartDataTable;
 import org.irri.statistics.client.ui.charts.VizTablePanel;
+import org.irri.statistics.client.utils.NumberUtils;
+import org.irri.statistics.client.utils.RPCUtils;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -49,12 +49,6 @@ public class WRS_manila implements EntryPoint {
     	private Label lblStatusGoesHere = new Label("Status Goes Here");
     		private CaptionPanel cptnpnlResultCharts;
     		private SplitLayoutPanel ResultPanel;
-            
-    /** Creates a new instance of worldriceEntryPoint */
-    public WRS_manila() {
-
-    }
-
 
     /** 
      * The entry point method, called automatically by loading a module
@@ -156,7 +150,7 @@ public class WRS_manila implements EntryPoint {
         ScrollPanel scrpnlChartScroll = new ScrollPanel();
         cptnpnlTopProducers.setContentWidget(scrpnlChartScroll);
         
-        VizTablePanel topprod = new VizTablePanel();
+        VizTablePanel topprod = new VizTablePanel("SELECT c.NAME_ENGLISH AS 'country', SUM(IF(s.var_code='RicHa-USDA', val, null)) AS 'Harvested Area' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE yr = YEAR(CURDATE())-1  GROUP BY s.iso3 ASC, s.yr ORDER BY 2 DESC LIMIT 10 ", "2010", NumberUtils.createIntSeries(1, 1, 1));
         scrpnlChartScroll.setWidget(topprod);
         topprod.setSize("100%", "90%");
                 
@@ -164,7 +158,7 @@ public class WRS_manila implements EntryPoint {
         vpGenCharts.add(cptnpnlBigRiceAreas);
         cptnpnlBigRiceAreas.setSize("80%", "80%");
                 
-        VizTablePanel bigarea = new VizTablePanel("SELECT c.NAME_ENGLISH AS 'country', SUM(IF(s.var_code='RicHa-USDA', val, null)) AS 'Harvested Area' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE yr = YEAR(CURDATE())-1  GROUP BY s.iso3 ASC, s.yr ORDER BY 2 DESC LIMIT 10 ", "2010");
+        VizTablePanel bigarea = new VizTablePanel("SELECT c.NAME_ENGLISH AS 'country', SUM(IF(s.var_code='RicHa-USDA', val, null)) AS 'Harvested Area' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE yr = YEAR(CURDATE())-1  GROUP BY s.iso3 ASC, s.yr ORDER BY 2 DESC LIMIT 10 ", "2010", NumberUtils.createIntSeries(1, 1, 1));
         cptnpnlBigRiceAreas.add(bigarea);
         bigarea.setSize("100%", "90%");
         
@@ -226,20 +220,6 @@ public class WRS_manila implements EntryPoint {
                     public void onClick(ClickEvent event) {
                 		final String sql = filterPanel.sqlFromItems();
                         if (!sql.equalsIgnoreCase("")) {					
-                        	GWT.runAsync(new RunAsyncCallback() {
-						
-						@Override
-						public void onSuccess() {
-							
-							
-						}
-						
-						@Override
-						public void onFailure(Throwable reason) {
-							// TODO Auto-generated method stub
-							
-						}
-					});
                         	getQueryResult(sql);
                             ContentPanel.showWidget(1);
                         } else lblStatusGoesHere.setText("Please select a year.");
@@ -334,7 +314,7 @@ public class WRS_manila implements EntryPoint {
 				
 			}
 		};
-		UtilsRPC.getService("mysqlservice").RunSELECT(query, resultAsyncCallback);
+		RPCUtils.getService("mysqlservice").RunSELECT(query, resultAsyncCallback);
 	}
 	public CaptionPanel getCptnpnlResultCharts() {
 		return cptnpnlResultCharts;
@@ -343,7 +323,7 @@ public class WRS_manila implements EntryPoint {
 	public void showdata(){
 		myresult.populateResultTable(resultmatrix);		
 	    //DBLineChart linechart = new DBLineChart(resultmatrix, "Top Producers", 250, 250);
-	    DBLineChart linechart2 = new DBLineChart(ResultDataTable.regroup(resultmatrix, 2), DBLineChart.createOptions());
+	    DBLineChart linechart2 = new DBLineChart(ChartDataTable.regroup(resultmatrix, 2), DBLineChart.createOptions());
 	    if (cptnpnlResultCharts.getContentWidget()!=null) cptnpnlResultCharts.clear();
 	    cptnpnlResultCharts.add(linechart2);    			    
     }

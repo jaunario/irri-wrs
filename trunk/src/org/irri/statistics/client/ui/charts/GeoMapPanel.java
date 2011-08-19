@@ -1,6 +1,7 @@
 package org.irri.statistics.client.ui.charts;
 
-import org.irri.statistics.client.UtilsRPC;
+import org.irri.statistics.client.utils.RPCUtils;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -35,7 +36,7 @@ public class GeoMapPanel extends Composite{
                 VisualizationUtils.loadVisualizationApi(onLoadCallback, GeoMap.PACKAGE);
             }
         };
-        UtilsRPC.getService("mysqlservice").RunSELECT(query, ChartAsyncCallback);
+        RPCUtils.getService("mysqlservice").RunSELECT(query, ChartAsyncCallback);
         initWidget(MapBox);
     }
 
