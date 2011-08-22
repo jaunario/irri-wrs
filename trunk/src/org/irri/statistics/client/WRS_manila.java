@@ -136,27 +136,22 @@ public class WRS_manila implements EntryPoint {
         NavigationBar.setCellWidth(tabBar, "50%");
         NavigationBar.setCellVerticalAlignment(tabBar, HasVerticalAlignment.ALIGN_BOTTOM);
         
-        ScrollPanel scpnlGenChart = new ScrollPanel();
-        SelectionPanel.addEast(scpnlGenChart, 300.0);
-        
         VerticalPanel vpGenCharts = new VerticalPanel();
-        scpnlGenChart.setWidget(vpGenCharts);
         vpGenCharts.setSize("100%", "100%");
+        SelectionPanel.addEast(vpGenCharts, 300.0);
+        
         
         CaptionPanel cptnpnlTopProducers = new CaptionPanel("Top Producers");
         vpGenCharts.add(cptnpnlTopProducers);
         cptnpnlTopProducers.setSize("80%", "80%");
         
-        ScrollPanel scrpnlChartScroll = new ScrollPanel();
-        cptnpnlTopProducers.setContentWidget(scrpnlChartScroll);
-        
-        VizTablePanel topprod = new VizTablePanel("SELECT c.NAME_ENGLISH AS 'country', SUM(IF(s.var_code='RicHa-USDA', val, null)) AS 'Harvested Area' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE yr = YEAR(CURDATE())-1  GROUP BY s.iso3 ASC, s.yr ORDER BY 2 DESC LIMIT 10 ", "2010", NumberUtils.createIntSeries(1, 1, 1));
-        scrpnlChartScroll.setWidget(topprod);
+        VizTablePanel topprod = new VizTablePanel("SELECT c.NAME_ENGLISH AS 'country', SUM(IF(s.var_code='RicPr-USDA', val, null)) AS 'Production' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE yr = YEAR(CURDATE())-1  GROUP BY s.iso3 ASC, s.yr ORDER BY 2 DESC LIMIT 10 ", "2010", NumberUtils.createIntSeries(1, 1, 1));
+        cptnpnlTopProducers.add(topprod);
         topprod.setSize("100%", "90%");
                 
         CaptionPanel cptnpnlBigRiceAreas = new CaptionPanel("Biggest Rice Areas");
         vpGenCharts.add(cptnpnlBigRiceAreas);
-        cptnpnlBigRiceAreas.setSize("80%", "80%");
+        cptnpnlBigRiceAreas.setSize("100%", "80%");
                 
         VizTablePanel bigarea = new VizTablePanel("SELECT c.NAME_ENGLISH AS 'country', SUM(IF(s.var_code='RicHa-USDA', val, null)) AS 'Harvested Area' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE yr = YEAR(CURDATE())-1  GROUP BY s.iso3 ASC, s.yr ORDER BY 2 DESC LIMIT 10 ", "2010", NumberUtils.createIntSeries(1, 1, 1));
         cptnpnlBigRiceAreas.add(bigarea);
