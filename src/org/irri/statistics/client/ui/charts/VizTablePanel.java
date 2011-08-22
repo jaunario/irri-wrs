@@ -6,6 +6,7 @@ import org.irri.statistics.client.utils.RPCUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.Table;
 import com.google.gwt.visualization.client.visualizations.Table.Options;
@@ -13,6 +14,24 @@ import com.google.gwt.visualization.client.visualizations.Table.Options;
 
 public class VizTablePanel extends Composite {
 	private VerticalPanel TablePanel = new VerticalPanel();
+	private Table viztab;
+	/**
+	 * @wbp.parser.constructor
+	 */
+	public VizTablePanel(){
+		Runnable onLoadCallBack = new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				viztab = new Table();
+				TablePanel.add(viztab);
+			}
+		};
+		VisualizationUtils.loadVisualizationApi(onLoadCallBack, Table.PACKAGE);
+		initWidget(TablePanel);
+	}
+	
     public VizTablePanel(String query, String title, int[] numcols){
     	final int[] ncols = numcols;
     	final AsyncCallback<String[][]> DBDataTable = new AsyncCallback<String[][]>() {
@@ -26,7 +45,7 @@ public class VizTablePanel extends Composite {
     			Runnable onLoadCallback = new Runnable() {
     				
     				public void run() {    					
-    					Table viztab = new Table(ChartDataTable.create(out, ncols), createOptions());    					
+    					viztab = new Table(ChartDataTable.create(out, ncols), createOptions());    					
     					TablePanel.add(viztab);
     				}
     			};
@@ -40,8 +59,15 @@ public class VizTablePanel extends Composite {
 
     private Options createOptions() {
     	Options options = Options.create();
-    	options.setPageSize(5);
+    	options.setHeight("80%");
+    	options.setWidth("80%");
     	return options;
+    }
+    
+    public void show(AbstractDataTable datatable, Options options){
+    	if (this.viztab != null) {
+    		viztab.draw(datatable);
+    	}
     }
 
 //    private AbstractDataTable createTable(String[][] qdata){
