@@ -96,7 +96,7 @@ public class RPFiltering extends Composite {
 		public RPFiltering() {
 			VerticalPanel vpWrapper = new VerticalPanel();
 			vpWrapper.setSpacing(5);
-			vpWrapper.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+			vpWrapper.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 			initWidget(vpWrapper);
 			vpWrapper.setSize("368px", "441px");
 	        
@@ -344,6 +344,14 @@ public class RPFiltering extends Composite {
 	            }
 	            listbox.setEnabled(true);
 			}
+		}
+		
+		public int selectedItemsCount(){
+			int sel = 0;
+			for (int i = 0; i < lbxVariable.getItemCount()-1; i++) {
+				if (lbxVariable.isItemSelected(i)) sel++;
+			}
+			return sel;
 		}
 
   	}
