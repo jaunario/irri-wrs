@@ -57,7 +57,21 @@ public class VizTablePanel extends Composite {
     	initWidget(TablePanel);
     }
 
-    private Options createOptions() {
+    public VizTablePanel(String[][] data, int[] numcols){
+    	final int[] ncols = numcols;
+		final String[][] out = data;
+		Runnable onLoadCallback = new Runnable() {
+			
+			public void run() {    					
+				viztab = new Table(ChartDataTable.create(out, ncols), createOptions());    					
+				TablePanel.add(viztab);
+			}
+		};
+		VisualizationUtils.loadVisualizationApi(onLoadCallback, Table.PACKAGE);
+    	initWidget(TablePanel);
+    }
+
+    public Options createOptions() {
     	Options options = Options.create();
     	options.setHeight("80%");
     	options.setWidth("80%");
@@ -66,7 +80,7 @@ public class VizTablePanel extends Composite {
     
     public void show(AbstractDataTable datatable, Options options){
     	if (this.viztab != null) {
-    		viztab.draw(datatable);
+    		viztab.draw(datatable, options);
     	}
     }
 

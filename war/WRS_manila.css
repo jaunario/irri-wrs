@@ -100,3 +100,15 @@ ul {
 	font-family: Calibri, Arial, Verdana;
 	font-size: 1.1em;
 }
+.gwt-DisclosurePanel gwt-DisclosurePanel-open {
+	font-size: 10px;
+	font-family: Calibri, Verdana, Arial;
+	font-weight: normal;
+}
+.gwt-DisclosurePanel {
+	font-size: 8px;
+	font-family: Calibri, Verdana, Arial;	
+}
+.gwt-Frame {
+	border-width: 0px;
+}
