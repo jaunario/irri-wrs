@@ -32,8 +32,10 @@ public class VizTablePanel extends Composite {
 		initWidget(TablePanel);
 	}
 	
-    public VizTablePanel(String query, String title, int[] numcols){
+    public VizTablePanel(String query, String title, int[] numcols, String width, String height){
     	final int[] ncols = numcols;
+    	final String h = height;
+    	final String w = width;
     	final AsyncCallback<String[][]> DBDataTable = new AsyncCallback<String[][]>() {
 
     		public void onFailure(Throwable caught) {
@@ -45,7 +47,7 @@ public class VizTablePanel extends Composite {
     			Runnable onLoadCallback = new Runnable() {
     				
     				public void run() {    					
-    					viztab = new Table(ChartDataTable.create(out, ncols), createOptions());    					
+    					viztab = new Table(ChartDataTable.create(out, ncols), setTableSize(w, h));    					
     					TablePanel.add(viztab);
     				}
     			};
@@ -57,13 +59,15 @@ public class VizTablePanel extends Composite {
     	initWidget(TablePanel);
     }
 
-    public VizTablePanel(String[][] data, int[] numcols){
+    public VizTablePanel(String[][] data, int[] numcols, String width, String height){
     	final int[] ncols = numcols;
-		final String[][] out = data;
+    	final String h = height;
+    	final String w = width;
+    	final String[][] out = data;
 		Runnable onLoadCallback = new Runnable() {
 			
 			public void run() {    					
-				viztab = new Table(ChartDataTable.create(out, ncols), createOptions());    					
+				viztab = new Table(ChartDataTable.create(out, ncols), setTableSize(w, h));    					
 				TablePanel.add(viztab);
 			}
 		};
@@ -71,10 +75,10 @@ public class VizTablePanel extends Composite {
     	initWidget(TablePanel);
     }
 
-    public Options createOptions() {
+    public Options setTableSize(String w, String h) {
     	Options options = Options.create();
-    	options.setHeight("80%");
-    	options.setWidth("80%");
+    	options.setHeight(h);
+    	options.setWidth(w);
     	return options;
     }
     
