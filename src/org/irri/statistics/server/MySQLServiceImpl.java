@@ -12,6 +12,7 @@ package org.irri.statistics.server;
 import org.irri.statistics.client.MySQLService;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+
 import java.sql.*;
 import java.io.*;
 import java.util.Random;
@@ -81,7 +82,8 @@ public class MySQLServiceImpl extends RemoteServiceServlet implements
     public String SaveCSV(String data){
        String filename = createFilename();
        String htdocs = System.getenv("HTDOCS") + "/csvs";
-       String url = "http://geo.irri.org/csvs/"+filename;
+       String hostname = System.getenv("DOMAIN");
+       String url = "http://"+ hostname +"/csvs/"+filename;
        File csvFile = new File(htdocs+"/"+filename);
        //String url = "http://localhost/csvs/"+filename;
        //File csvFile = new File("C:/Program Files/Apache Software Foundation/Apache2.2/htdocs/csvs/"+filename);

@@ -42,8 +42,12 @@ public class Slider extends Composite {
 		deckPanel.setSize("100%", "100%");
 		
 		HorizontalPanel hpTabBar = new HorizontalPanel();
+		hpTabBar.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		hpTabBar.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		hpTabBar.setSpacing(2);
 		vpWrapper.add(hpTabBar);
+		vpWrapper.setCellVerticalAlignment(hpTabBar, HasVerticalAlignment.ALIGN_MIDDLE);
+		vpWrapper.setCellHorizontalAlignment(hpTabBar, HasHorizontalAlignment.ALIGN_CENTER);
 		
 		pshbtnPlay = new ToggleButton("Play");
 		pshbtnPlay.addClickHandler(new ClickHandler() {
@@ -53,16 +57,23 @@ public class Slider extends Composite {
 			}
 		});
 		pshbtnPlay.setDown(true);
-		Image image_1 = new Image("images/play.jpg");
-		image_1.setSize("15", "15");
-		pshbtnPlay.getUpFace().setImage(image_1);
-		Image image = new Image("images/play.jpg");
+		Image imgpause = new Image("images/pause.jpg");
+		imgpause.setSize("15", "15");
+		Image imgplay = new Image("images/play.jpg");
+		imgplay.setSize("15", "15");
+		pshbtnPlay.getDownFace().setImage(imgpause);
+		pshbtnPlay.getUpFace().setImage(imgplay);
+		Image image = new Image("images/pause.jpg");
 		image.setSize("15px", "15px");
+		Image image_1 = new Image("images/play.jpg");
+		image_1.setSize("15px", "15px");
+		
 		hpTabBar.add(pshbtnPlay);
 		pshbtnPlay.setSize("15px", "15px");
 		
 		tabBar = new DecoratedTabBar();
 		hpTabBar.add(tabBar);
+		tabBar.setHeight("15");
 		hpTabBar.setCellVerticalAlignment(tabBar, HasVerticalAlignment.ALIGN_MIDDLE);
 		hpTabBar.setCellHorizontalAlignment(tabBar, HasHorizontalAlignment.ALIGN_CENTER);
 		
@@ -100,6 +111,7 @@ public class Slider extends Composite {
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				pshbtnPlay.setDown(false);
+				stopSlide();
 			}
 		});			
 		transition.scheduleRepeating(5000);
