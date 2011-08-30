@@ -10,11 +10,14 @@ import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.Table;
 import com.google.gwt.visualization.client.visualizations.Table.Options;
+//import com.google.gwt.visualization.client.visualizations.Toolbar;
+//import com.google.gwt.visualization.client.visualizations.Toolbar.Component;
 
 
 public class VizTablePanel extends Composite {
 	private VerticalPanel TablePanel = new VerticalPanel();
 	private Table viztab;
+//	private Toolbar TBTable;
 	/**
 	 * @wbp.parser.constructor
 	 */
@@ -44,9 +47,10 @@ public class VizTablePanel extends Composite {
 
     		public void onSuccess(String[][] result) {
     			final String[][] out = result;
+//    			drawToolBar();
     			Runnable onLoadCallback = new Runnable() {
     				
-    				public void run() {    					
+    				public void run() {
     					viztab = new Table(ChartDataTable.create(out, ncols), setTableSize(w, h));    					
     					TablePanel.add(viztab);
     				}
@@ -64,9 +68,11 @@ public class VizTablePanel extends Composite {
     	final String h = height;
     	final String w = width;
     	final String[][] out = data;
+//    	drawToolBar();
 		Runnable onLoadCallback = new Runnable() {
 			
-			public void run() {    					
+			public void run() {
+				
 				viztab = new Table(ChartDataTable.create(out, ncols), setTableSize(w, h));    					
 				TablePanel.add(viztab);
 			}
@@ -87,6 +93,26 @@ public class VizTablePanel extends Composite {
     		viztab.draw(datatable, options);
     	}
     }
+    
+//    public void drawToolBar(){
+//    	Runnable onLoadCallback = new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+//				TBTable = new Toolbar(); 
+//				Component cmp = Component.create();
+//				cmp.setType(Toolbar.Type.CSV);
+//				TBTable.addComponent(cmp);
+//				TablePanel.add(TBTable);
+//			}
+//		}; 
+//		VisualizationUtils.loadVisualizationApi(onLoadCallback, Toolbar.PACKAGE);
+//    }
+//    
+//    public AbstractDataTable getData(){
+//    	
+//    }
 
 //    private AbstractDataTable createTable(String[][] qdata){
 //    	DataTable data = DataTable.create();    	

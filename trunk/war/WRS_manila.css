@@ -141,3 +141,7 @@ ul {
 	color: #aaa;
     width: 100%;
 }
+.gwt-DecoratedTabBar {
+	font-size: 10px;
+	font-family: Calibri, Verdana, Arial;
+}

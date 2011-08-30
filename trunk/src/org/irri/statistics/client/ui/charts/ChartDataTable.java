@@ -6,6 +6,8 @@ import java.util.Vector;
 import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
+import com.google.gwt.visualization.client.formatters.NumberFormat;
+import com.google.gwt.visualization.client.formatters.NumberFormat.Options;
 
 public class ChartDataTable{
 	
@@ -14,6 +16,12 @@ public class ChartDataTable{
 		boolean isnumeric = false;
 		int searchcol = 0;
 		Arrays.sort(numcols);
+		
+		Options options = Options.create();
+		options.setFractionDigits(2);
+		options.setNegativeColor("red");
+		NumberFormat formatter = NumberFormat.create(options);
+		
 		for (int i = 0; i < data.length; i++) {
 			if(i==1) datatable.addRows(data.length); 
 			for (int j = 0; j < data[i].length; j++) {
@@ -21,8 +29,10 @@ public class ChartDataTable{
 				isnumeric = searchcol  >= 0 & searchcol < numcols.length;
 				if (i==0){
 					// Add column
-					if (isnumeric) datatable.addColumn(ColumnType.NUMBER,data[i][j]);
-					else datatable.addColumn(ColumnType.STRING,data[i][j]);
+					if (isnumeric) {
+						datatable.addColumn(ColumnType.NUMBER,data[i][j]);
+						formatter.format(datatable, i);						
+					} else datatable.addColumn(ColumnType.STRING,data[i][j]);
 				} else {
 					// Add record row
 					if (data[i][j]!= null){
@@ -99,5 +109,17 @@ public class ChartDataTable{
 			} 
 		}		
 		return datatable;
+	}
+	
+	public static String csvData(String[][] data){
+		String csv = "";
+		for (int i = 0; i < data.length; i++) {
+			for (int j = 0; j < data[i].length; j++) {
+				csv = csv + data[i][j];
+				if (j<data[i].length-1) csv = csv + ",";
+			}
+			csv = csv + "\n";			
+		}
+		return csv;
 	}
 }

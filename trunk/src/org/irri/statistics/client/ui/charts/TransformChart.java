@@ -8,7 +8,7 @@ import com.google.gwt.user.client.Command;
 
 
 public class TransformChart extends Composite {
-	String[][] data;
+	String[][] basedata;
 	public TransformChart() {
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
@@ -35,7 +35,10 @@ public class TransformChart extends Composite {
 		MenuItem mntmChartType = new MenuItem("Chart Type", false, menuBar_3);
 		menuBar.addItem(mntmChartType);
 		
-		MenuItem mntmInteractive = new MenuItem("Interactive", false, (Command) null);
+		MenuItem mntmInteractive = new MenuItem("Interactive", false, new Command() {
+			public void execute() {
+			}
+		});
 		menuBar.addItem(mntmInteractive);
 		
 	}
