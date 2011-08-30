@@ -5,6 +5,7 @@ import org.irri.statistics.client.ui.Slider;
 import org.irri.statistics.client.ui.charts.BarChartPanel;
 import org.irri.statistics.client.ui.charts.DBLineChart;
 import org.irri.statistics.client.ui.charts.ChartDataTable;
+import org.irri.statistics.client.ui.charts.GeoMapPanel;
 import org.irri.statistics.client.ui.charts.VizTablePanel;
 import org.irri.statistics.client.utils.NumberUtils;
 import org.irri.statistics.client.utils.RPCUtils;
@@ -225,7 +226,7 @@ public class WRS_manila implements EntryPoint {
         cptnpnlTopProducers.add(sldGlobalStats);
         sldGlobalStats.setSize("24em", "18em");
         
-        VizTablePanel prodMap = new VizTablePanel("SELECT c.NAME_ENGLISH AS 'country', SUM(IF(s.var_code='RicPr-USDA', val, null)) AS 'Production' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE yr = YEAR(CURDATE())-1  GROUP BY s.iso3 ASC, s.yr ORDER BY 2 DESC LIMIT 10 ", "2010", NumberUtils.createIntSeries(1, 1, 1), "18em", "15em");
+        GeoMapPanel prodMap = new GeoMapPanel("SELECT c.ISO2 AS 'country', s.val AS 'Production' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE s.var_code='RicPr-USDA' AND yr = YEAR(CURDATE())-1 AND val > 1000 ORDER BY 2 DESC LIMIT 15;", 250, 180);
         sldGlobalStats.add(prodMap, "1");
         
         BarChartPanel bigarea = new BarChartPanel("SELECT c.NAME_ENGLISH AS 'country', SUM(IF(s.var_code='RicHa-USDA', val, null)) AS 'Harvested Area' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE yr = YEAR(CURDATE())-1  GROUP BY s.iso3 ASC, s.yr ORDER BY 2 DESC LIMIT 10 ", "Top 10 Largest Harvested Area", 300, 200);

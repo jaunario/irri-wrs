@@ -98,7 +98,7 @@ public class RPFiltering extends Composite {
 			vpWrapper.setSpacing(5);
 			vpWrapper.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 			initWidget(vpWrapper);
-			vpWrapper.setSize("368px", "441px");
+			vpWrapper.setSize("368px", "350px");
 	        
 	        HorizontalPanel hpGExtent = new HorizontalPanel();
 	        hpGExtent.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
@@ -230,8 +230,8 @@ public class RPFiltering extends Composite {
 	        });
 	        
 	        verticalPanel_2.add(lbxVariable);
-	        lbxVariable.setSize("350px", "195px");
-	        lbxVariable.setVisibleItemCount(10);
+	        lbxVariable.setSize("350px", "100px");
+	        lbxVariable.setVisibleItemCount(5);
 	        
 	        VerticalPanel verticalPanel_3 = new VerticalPanel();
 	        hpVarL2.add(verticalPanel_3);
@@ -244,8 +244,8 @@ public class RPFiltering extends Composite {
 	        	}
 	        });
 	        verticalPanel_3.add(lbxYear);
-	        lbxYear.setSize("80px", "195px");
-	        lbxYear.setVisibleItemCount(10);
+	        lbxYear.setSize("80px", "100px");
+	        lbxYear.setVisibleItemCount(5);
 	        
 	        HorizontalPanel hpBtns = new HorizontalPanel();
 	        hpBtns.setSpacing(5);
