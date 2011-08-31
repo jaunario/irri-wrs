@@ -47,7 +47,7 @@ public class GeoMapPanel extends Composite{
         options.setShowLegend(true);
         options.setShowZoomOut(true);
         options.setDataMode(DataMode.REGIONS);
-        options.setColors(0xAAAAAA,0xCE0000,0xFF9E00,0xF7D708,0x9CCF31);
+        options.setColors(0xDDDDDD,0xCE0000,0xFF9E00,0xF7D708,0x9CCF31);
         return options;
     }
 

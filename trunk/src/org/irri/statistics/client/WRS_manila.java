@@ -1,5 +1,6 @@
 package org.irri.statistics.client;
 
+import org.irri.statistics.client.ui.ProgressBar;
 import org.irri.statistics.client.ui.RPFiltering;
 import org.irri.statistics.client.ui.Slider;
 import org.irri.statistics.client.ui.charts.BarChartPanel;
@@ -50,7 +51,7 @@ public class WRS_manila implements EntryPoint {
     		private CaptionPanel cptnpnlResultCharts;
     	private Frame fVizWrapper;
     	private HorizontalPanel hpResultTable;
-    	
+    	private ProgressBar pbQueryStatus = new ProgressBar(); 
 
     	private ToggleButton tglbtnViewResults = new ToggleButton("RESULTS");
         private ToggleButton tglbtnSelection = new ToggleButton("SELECT");
@@ -71,19 +72,23 @@ public class WRS_manila implements EntryPoint {
         rootLayoutPanel.setSize("100%", "100%");
         rootLayoutPanel.setStyleName("wrapper");
         rootLayoutPanel.add(MainWrapper);
-        rootLayoutPanel.setWidgetLeftRight(MainWrapper, 105.0, Unit.PX, 105.0, Unit.PX);
+        rootLayoutPanel.setWidgetLeftRight(MainWrapper, 90.0, Unit.PX, 90.0, Unit.PX);
         
         HorizontalPanel StatusPanel = new HorizontalPanel();
         StatusPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-        MainWrapper.addSouth(StatusPanel,25.8);
+        MainWrapper.addSouth(StatusPanel,35.0);
         StatusPanel.setSize("100%", "100%");
                 
         StatusPanel.add(lblStatusGoesHere);
-        StatusPanel.setCellVerticalAlignment(lblStatusGoesHere, HasVerticalAlignment.ALIGN_BOTTOM);
+        StatusPanel.setCellVerticalAlignment(lblStatusGoesHere, HasVerticalAlignment.ALIGN_MIDDLE);
         lblStatusGoesHere.setStyleName("status");
         StatusPanel.setCellHeight(lblStatusGoesHere, "100%");
         StatusPanel.setCellWidth(lblStatusGoesHere, "100%");
         lblStatusGoesHere.setSize("100%", "14px");
+        
+        StatusPanel.add(pbQueryStatus);
+        pbQueryStatus.setSize("166px", "15px");
+        StatusPanel.setCellVerticalAlignment(pbQueryStatus, HasVerticalAlignment.ALIGN_MIDDLE);
         
         VerticalPanel IRRIBanner = new VerticalPanel();
         IRRIBanner.setStyleName("banner");
@@ -163,9 +168,6 @@ public class WRS_manila implements EntryPoint {
         		tglbtnViewResults.setDown(true);
         	}
         });
-        tglbtnViewResults.setEnabled(false);
-        vpOnlineQuery.add(tglbtnViewResults);
-        tglbtnViewResults.setSize("95%", "25");
         
         DisclosurePanel dclpHowToUse = new DisclosurePanel("How to use this facility");
         dclpHowToUse.setOpen(true);
@@ -184,6 +186,9 @@ public class WRS_manila implements EntryPoint {
         HTML html = new HTML("<ul><li>After clicking on an item, wait for the list boxes to be populated.</li><li>To select multiple items, hold the <b><i>Ctrl</i></b> button on your keyboard and then click on the item.</li><li>If you have multiple selections, deselect an item by just clicking on an item again.</li><li>In <i>Subnational Geographic Extent</i>, selecting a country retrievs data from all the selected country's provices/states.</li></ul>", true);
         dcplHints.setContent(html);
         html.setSize("90%", "100%");
+        tglbtnViewResults.setEnabled(false);
+        vpOnlineQuery.add(tglbtnViewResults);
+        tglbtnViewResults.setSize("95%", "25");
         
         VerticalPanel vpVisualization = new VerticalPanel();
         decoratedStackPanel.add(vpVisualization, "Visualize", false);
