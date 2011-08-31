@@ -201,74 +201,80 @@ public class WRS_manila implements EntryPoint {
         vpVisualization.add(hplnk3D);
         hplnk3D.setSize("185", "25");
         
-        ContentPanel = new DeckPanel();
-        ContentPanel.setAnimationEnabled(true);
-        dpContentWrapper.add(ContentPanel);
-        ContentPanel.setSize("100%", "100%");
+        GeoMapPanel prodMap = new GeoMapPanel("SELECT c.NAME_ENGLISH AS 'country', s.val AS 'Yield' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE s.var_code='RicYldUSDA' AND yr = YEAR(CURDATE())-1 AND val IS NOT NULL ORDER BY 2 DESC;", 350, 280);
         
-        DockLayoutPanel dpSelectionWrapper = new DockLayoutPanel(Unit.PCT);
-        ContentPanel.add(dpSelectionWrapper);
-        dpSelectionWrapper.setSize("100%", "100%");
-        
-        HorizontalPanel vpGenCharts = new HorizontalPanel();
-        vpGenCharts.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        dpSelectionWrapper.addSouth(vpGenCharts, 40.0);
-        vpGenCharts.setSize("100%", "100%");
-        
-        
-        CaptionPanel cptnpnlTopProducers = new CaptionPanel("Global Stats");
-        vpGenCharts.add(cptnpnlTopProducers);
-        cptnpnlTopProducers.setSize("25em", "23em");
-        
-        Slider sldGlobalStats = new Slider();
-        sldGlobalStats.getDeckPanel().setSize("100%", "100%");
-        sldGlobalStats.getDeckPanel().setAnimationEnabled(true);
-        cptnpnlTopProducers.add(sldGlobalStats);
-        sldGlobalStats.setSize("24em", "18em");
-        
-        GeoMapPanel prodMap = new GeoMapPanel("SELECT c.ISO2 AS 'country', s.val AS 'Production' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE s.var_code='RicPr-USDA' AND yr = YEAR(CURDATE())-1 AND val > 1000 ORDER BY 2 DESC LIMIT 15;", 250, 180);
-        sldGlobalStats.add(prodMap, "1");
-        
-        BarChartPanel bigarea = new BarChartPanel("SELECT c.NAME_ENGLISH AS 'country', SUM(IF(s.var_code='RicHa-USDA', val, null)) AS 'Harvested Area' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE yr = YEAR(CURDATE())-1  GROUP BY s.iso3 ASC, s.yr ORDER BY 2 DESC LIMIT 10 ", "Top 10 Largest Harvested Area", 300, 200);
-        sldGlobalStats.add(bigarea, "2");
-
-        ScrollPanel scrollPanel = new ScrollPanel();
-        dpSelectionWrapper.add(scrollPanel);
-        
-        VerticalPanel vpAlignCenter = new VerticalPanel();
-        scrollPanel.setWidget(vpAlignCenter);
-        vpAlignCenter.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        vpAlignCenter.setSize("100%", "100%");
-        vpAlignCenter.add(filterPanel);
-        filterPanel.initListBoxes();
-        filterPanel.setSubmitButtonClickHandler(new ClickHandler() {
-                	@Override
-                    public void onClick(ClickEvent event) {
-                		final String sql = filterPanel.sqlFromItems();
-                        if (!sql.equalsIgnoreCase("")) {					
-                        	getQueryResult(sql);
-                            ContentPanel.showWidget(1);
-                            tglbtnViewResults.setEnabled(true);
-                            tglbtnViewResults.setDown(true);
-                            tglbtnSelection.setDown(false);
-                        } else lblStatusGoesHere.setText("Please select a year.");
-                    }
-                });
-        
-        DockLayoutPanel dpResultWrapper = new DockLayoutPanel(Unit.PX);
-        ContentPanel.add(dpResultWrapper);
-        
-        HorizontalPanel horizontalPanel_1 = new HorizontalPanel();
-        horizontalPanel_1.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        horizontalPanel_1.setSpacing(5);
-        horizontalPanel_1.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-        dpResultWrapper.addNorth(horizontalPanel_1, 39.6);
-        
-        
-        Button btnDownload = new Button("Download");
-        btnDownload.addClickHandler(new ClickHandler() {
-        	public void onClick(ClickEvent event) {
-        		AsyncCallback<String> downloadAsyncCallback = new AsyncCallback<String>() {
+        BarChartPanel bigarea = new BarChartPanel("SELECT c.NAME_ENGLISH AS 'country', s.val AS 'Harvested Area' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE s.var_code='RicHa-USDA' AND yr = YEAR(CURDATE())-1 AND val IS NOT NULL ORDER BY 2 DESC LIMIT 10;", "Top 10 Largest Harvested Area", 300, 200);
+                
+                ScrollPanel scrlSelector = new ScrollPanel();
+                dpContentWrapper.add(scrlSelector);
+                
+                ContentPanel = new DeckPanel();
+                scrlSelector.setWidget(ContentPanel);
+                ContentPanel.setAnimationEnabled(true);
+                ContentPanel.setSize("100%", "100%");
+                
+                DockLayoutPanel dpSelectionWrapper = new DockLayoutPanel(Unit.PCT);
+                ContentPanel.add(dpSelectionWrapper);
+                
+                HorizontalPanel vpGenCharts = new HorizontalPanel();
+                vpGenCharts.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+                dpSelectionWrapper.addSouth(vpGenCharts, 40.0);
+                vpGenCharts.setSize("100%", "100%");
+                
+                
+                CaptionPanel cptnpnlTopProducers = new CaptionPanel("Global Stats");
+                vpGenCharts.add(cptnpnlTopProducers);
+                cptnpnlTopProducers.setSize("25em", "23em");
+                
+                Slider sldGlobalStats = new Slider();
+                sldGlobalStats.getDeckPanel().setSize("100%", "100%");
+                sldGlobalStats.getDeckPanel().setAnimationEnabled(true);
+                cptnpnlTopProducers.add(sldGlobalStats);
+                sldGlobalStats.setSize("24em", "18em");
+                sldGlobalStats.add(prodMap, "1");
+                sldGlobalStats.add(bigarea, "2");
+                
+                        ScrollPanel scrollPanel = new ScrollPanel();
+                        dpSelectionWrapper.add(scrollPanel);
+                        
+                        VerticalPanel vpAlignCenter = new VerticalPanel();
+                        scrollPanel.setWidget(vpAlignCenter);
+                        vpAlignCenter.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+                        vpAlignCenter.setSize("100%", "100%");
+                        vpAlignCenter.add(filterPanel);
+                        filterPanel.initListBoxes();
+                        filterPanel.setSubmitButtonClickHandler(new ClickHandler() {
+                                	@Override
+                                    public void onClick(ClickEvent event) {
+                                		final String sql = filterPanel.sqlFromItems();
+                                        if (!sql.equalsIgnoreCase("")) {					
+                                        	getQueryResult(sql);
+                                            ContentPanel.showWidget(1);
+                                            tglbtnViewResults.setEnabled(true);
+                                            tglbtnViewResults.setDown(true);
+                                            tglbtnSelection.setDown(false);
+                                        } else lblStatusGoesHere.setText("Please select a year.");
+                                    }
+                                });
+                        
+                        ScrollPanel scrlResult = new ScrollPanel();
+                        ContentPanel.add(scrlResult);
+                        
+                        DockLayoutPanel dpResultWrapper = new DockLayoutPanel(Unit.PX);
+                        scrlResult.setWidget(dpResultWrapper);
+                        dpResultWrapper.setSize("100%", "100%");
+                        
+                        HorizontalPanel horizontalPanel_1 = new HorizontalPanel();
+                        horizontalPanel_1.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+                        horizontalPanel_1.setSpacing(5);
+                        horizontalPanel_1.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+                        dpResultWrapper.addNorth(horizontalPanel_1, 39.6);
+                        
+                        
+                        Button btnDownload = new Button("Download");
+                        btnDownload.addClickHandler(new ClickHandler() {
+                        	public void onClick(ClickEvent event) {
+                        		AsyncCallback<String> downloadAsyncCallback = new AsyncCallback<String>() {
 					
 					@Override
 					public void onSuccess(String result) {
@@ -283,50 +289,50 @@ public class WRS_manila implements EntryPoint {
 						
 					}
 				};
-        		RPCUtils.getService("mysqlservice").SaveCSV(ChartDataTable.csvData(resultmatrix), downloadAsyncCallback);
-        	}
-        });
-        
-        Button btnSendEmail = new Button("Send Email");
-        btnSendEmail.setVisible(false);
-        horizontalPanel_1.add(btnSendEmail);
-        btnSendEmail.setSize("85", "30");
-        horizontalPanel_1.setCellHorizontalAlignment(btnSendEmail, HasHorizontalAlignment.ALIGN_RIGHT);
-        
-        Button btnSendToGoogle = new Button("Send to Google Docs");
-        btnSendToGoogle.setVisible(false);
-        horizontalPanel_1.add(btnSendToGoogle);
-        btnSendToGoogle.setSize("140", "30");
-        horizontalPanel_1.setCellHorizontalAlignment(btnSendToGoogle, HasHorizontalAlignment.ALIGN_RIGHT);
-        horizontalPanel_1.add(btnDownload);
-        btnDownload.setSize("75", "30");
-        horizontalPanel_1.setCellHorizontalAlignment(btnDownload, HasHorizontalAlignment.ALIGN_RIGHT);
-        
-        HorizontalPanel vpResultCharts = new HorizontalPanel();
-        dpResultWrapper.addSouth(vpResultCharts, 277.6);
-        vpResultCharts.setSize("100%", "100%");
-        
-        cptnpnlResultCharts = new CaptionPanel("Visualize");
-        vpResultCharts.add(cptnpnlResultCharts);
-        cptnpnlResultCharts.setSize("100%", "100%");
-        
-        
-        CaptionPanel cptnpnlSource = new CaptionPanel("Source");
-        vpResultCharts.add(cptnpnlSource);
-        cptnpnlSource.setSize("100%", "100%");
-        
-        FlexTable flexTable = new FlexTable();
-        cptnpnlSource.setContentWidget(flexTable);
-        flexTable.setSize("5cm", "3cm");
-        
-        hpResultTable = new HorizontalPanel();
-        dpResultWrapper.add(hpResultTable);
-        hpResultTable.setSize("100%", "100%");
-        
-        fVizWrapper = new Frame("http://geo.irri.org/vis/wrs_Motion.php");
-        ContentPanel.add(fVizWrapper);
-        
-        ContentPanel.showWidget(0);
+                        		RPCUtils.getService("mysqlservice").SaveCSV(ChartDataTable.csvData(resultmatrix), downloadAsyncCallback);
+                        	}
+                        });
+                        
+                        Button btnSendEmail = new Button("Send Email");
+                        btnSendEmail.setVisible(false);
+                        horizontalPanel_1.add(btnSendEmail);
+                        btnSendEmail.setSize("85", "30");
+                        horizontalPanel_1.setCellHorizontalAlignment(btnSendEmail, HasHorizontalAlignment.ALIGN_RIGHT);
+                        
+                        Button btnSendToGoogle = new Button("Send to Google Docs");
+                        btnSendToGoogle.setVisible(false);
+                        horizontalPanel_1.add(btnSendToGoogle);
+                        btnSendToGoogle.setSize("140", "30");
+                        horizontalPanel_1.setCellHorizontalAlignment(btnSendToGoogle, HasHorizontalAlignment.ALIGN_RIGHT);
+                        horizontalPanel_1.add(btnDownload);
+                        btnDownload.setSize("75", "30");
+                        horizontalPanel_1.setCellHorizontalAlignment(btnDownload, HasHorizontalAlignment.ALIGN_RIGHT);
+                        
+                        HorizontalPanel vpResultCharts = new HorizontalPanel();
+                        dpResultWrapper.addSouth(vpResultCharts, 277.6);
+                        vpResultCharts.setSize("100%", "100%");
+                        
+                        cptnpnlResultCharts = new CaptionPanel("Visualize");
+                        vpResultCharts.add(cptnpnlResultCharts);
+                        cptnpnlResultCharts.setSize("100%", "100%");
+                        
+                        
+                        CaptionPanel cptnpnlSource = new CaptionPanel("Source");
+                        vpResultCharts.add(cptnpnlSource);
+                        cptnpnlSource.setSize("100%", "100%");
+                        
+                        FlexTable flexTable = new FlexTable();
+                        cptnpnlSource.setContentWidget(flexTable);
+                        flexTable.setSize("5cm", "3cm");
+                        
+                        hpResultTable = new HorizontalPanel();
+                        dpResultWrapper.add(hpResultTable);
+                        hpResultTable.setSize("100%", "100%");
+                        
+                        fVizWrapper = new Frame("http://geo.irri.org/vis/wrs_Motion.php");
+                        ContentPanel.add(fVizWrapper);
+                        
+                        ContentPanel.showWidget(0);
         
     }
     

@@ -11,6 +11,7 @@ import com.google.gwt.visualization.client.visualizations.corechart.Options;
 
 public class DBLineChart extends Composite {
 	private VerticalPanel VisBox = new VerticalPanel();
+	public boolean interactive = true;
 	public DBLineChart(String[][] data, String title, int width, int height) {
 		initWidget(VisBox);
 		final AbstractDataTable mydata = createTable(data);
