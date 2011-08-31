@@ -16,7 +16,7 @@ import com.google.gwt.visualization.client.visualizations.corechart.Options;
 public class BarChartPanel extends Composite {
 	private VerticalPanel VisBox = new VerticalPanel();
 	public String[][] mydata;
-	public boolean isimg = false; 
+	public boolean interactive = true; 
 	public BarChartPanel(String query, String title, int w, int h) {
 		
 		final String ChartTitle = title;		
@@ -31,7 +31,7 @@ public class BarChartPanel extends Composite {
 
                     public void run() {
                     	mydata = out;
-                    	plotImageBarchart(ChartDataTable.create(out, numcols), ChartTitle,width,height);                        
+                    	plotImage(ChartDataTable.create(out, numcols), ChartTitle,width,height);                        
                     }
                 };
                 VisualizationUtils.loadVisualizationApi(onLoadCallback, BarChart.PACKAGE);
@@ -47,16 +47,17 @@ public class BarChartPanel extends Composite {
 		
 	}
 	
-	public BarChartPanel(AbstractDataTable data, String title, int w, int h, boolean img){
-		if (img){
-			plotImageBarchart(data, title, w, h);
+	public BarChartPanel(AbstractDataTable data, String title, int w, int h, boolean isinteractive){
+		interactive =  isinteractive;
+		if (interactive){
+			plotImage(data, title, w, h);
 		} else {
-			plotInteractiveBarchart(data, title, w, h);
+			plotInteractive(data, title, w, h);
 		}
 		initWidget(VisBox);
 	}
 	
-	public void plotInteractiveBarchart(AbstractDataTable datatable, String title, int w, int h){
+	public void plotInteractive(AbstractDataTable datatable, String title, int w, int h){
 		final AbstractDataTable data = datatable;
 		final Options opts = createOptions(title,w,h);
 		Runnable onLoadCallback = new Runnable() {
@@ -72,7 +73,7 @@ public class BarChartPanel extends Composite {
 		
 	}
 	
-	public void plotImageBarchart(AbstractDataTable datatable, String title, int w, int h){
+	public void plotImage(AbstractDataTable datatable, String title, int w, int h){
 		final AbstractDataTable data = datatable;
 		final String Title = title;
 		final int width = w;

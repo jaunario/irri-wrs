@@ -5,12 +5,34 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.visualization.client.AbstractDataTable;
 
 
 public class TransformChart extends Composite {
+	private VerticalPanel vpChartWrapper = new VerticalPanel();
 	String[][] basedata;
-	public TransformChart() {
-		
+	public int charttype = 1;
+	public int[] numerics;
+	public int plotcol = 0;
+	public TransformChart(String[][] data,int[] numcols, int type, boolean interactive) {
+		initmenu();	
+		basedata = data;
+		numerics = numcols;
+		AbstractDataTable datatable = ChartDataTable.create(basedata, numerics);
+		switch (type) {
+		case 0:
+			BarChartPanel barchar = new BarChartPanel(datatable, "Your barchart", 300, 300, true);
+			vpChartWrapper.add(barchar);
+			break;
+		case 1:
+			break;
+		default:
+			break;
+		}
+		initWidget(vpChartWrapper);
+	}
+	
+	private void initmenu(){
 		VerticalPanel verticalPanel = new VerticalPanel();
 		initWidget(verticalPanel);
 		
@@ -33,6 +55,15 @@ public class TransformChart extends Composite {
 		MenuBar menuBar_3 = new MenuBar(true);
 		
 		MenuItem mntmChartType = new MenuItem("Chart Type", false, menuBar_3);
+		
+		MenuItem mntmLine = new MenuItem("Line", false, (Command) null);
+		menuBar_3.addItem(mntmLine);
+		
+		MenuItem mntmBar = new MenuItem("Bar", false, (Command) null);
+		menuBar_3.addItem(mntmBar);
+		
+		MenuItem mntmScatter = new MenuItem("Scatter", false, (Command) null);
+		menuBar_3.addItem(mntmScatter);
 		menuBar.addItem(mntmChartType);
 		
 		MenuItem mntmInteractive = new MenuItem("Interactive", false, new Command() {
@@ -42,5 +73,10 @@ public class TransformChart extends Composite {
 		menuBar.addItem(mntmInteractive);
 		
 	}
+	
+	public void setInteractive(boolean isinteractive){
+		
+	}
+		
 
 }
