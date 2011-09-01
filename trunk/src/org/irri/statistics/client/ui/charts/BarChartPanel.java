@@ -31,7 +31,7 @@ public class BarChartPanel extends Composite {
 
                     public void run() {
                     	mydata = out;
-                    	plotImage(ChartDataTable.create(out, numcols), ChartTitle,width,height);                        
+                    	plotInteractive(ChartDataTable.create(out, numcols), ChartTitle,width,height);                        
                     }
                 };
                 VisualizationUtils.loadVisualizationApi(onLoadCallback, BarChart.PACKAGE);

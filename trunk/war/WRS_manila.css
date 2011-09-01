@@ -32,7 +32,9 @@ h1 {
   margin: 15px 6px 6px;
 }
 .gwt-Label {
-	font-weight: bold;	
+	font-weight: bold;
+	font-size:14px;
+	font-family: Calibri, Verdana, Arial;	
 }
 .wrapper {
 	margin-left: auto;
@@ -80,9 +82,9 @@ h1 {
 	border-bottom-color: #aaa;
 }
 .gwt-Label-title {
-	font-size: 18px;
+	font-size: 24px;
 	font-weight: bold;
-	font-family: Verdana, Arial, Calibri ;
+	font-family: Arial;
 }
 li {
  margin-left: 0px;
@@ -144,4 +146,34 @@ ul {
 .gwt-DecoratedTabBar {
 	font-size: 10px;
 	font-family: Calibri, Verdana, Arial;
+}
+.gwt-Label-version {
+	font-family: Courier;
+	font-size: 12px;
+	color: #777;
+}
+.wrs-rpfilter {
+	font-family: Calibri, Verdana, Arial;
+	font-size: 14px;
+	
+}
+.gwt-StackPanel {	
+	font-size: 16px;
+	font-family: Calibri, Verdana, Arial;
+
+}
+.gwt-StackPanel .gwt-StackPanelContent {
+	background-color: #fff;
+}
+body {
+	font-family: Calibri, Verdana, Arial;
+}
+.gwt-StackPanel .gwt-StackPanelItem {
+	background-color: #B0E57C;
+	font-weight: normal;
+	font-size: 16px;
+	padding:  5px 10px;
+}
+.gwt-StackPanel .gwt-StackPanelItem-selected {
+	font-weight: bold;
 }
