@@ -38,8 +38,8 @@ public class Slider extends Composite {
 		initWidget(vpWrapper);
 		
 		deckPanel = new DeckPanel();
+		deckPanel.setAnimationEnabled(true);
 		vpWrapper.add(deckPanel);
-		deckPanel.setSize("100%", "100%");
 		
 		HorizontalPanel hpTabBar = new HorizontalPanel();
 		hpTabBar.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);

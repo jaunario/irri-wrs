@@ -2,11 +2,8 @@ package org.irri.statistics.client;
 
 import org.irri.statistics.client.ui.ProgressBar;
 import org.irri.statistics.client.ui.RPFiltering;
-import org.irri.statistics.client.ui.Slider;
-import org.irri.statistics.client.ui.charts.BarChartPanel;
 import org.irri.statistics.client.ui.charts.DBLineChart;
 import org.irri.statistics.client.ui.charts.ChartDataTable;
-import org.irri.statistics.client.ui.charts.GeoMapPanel;
 import org.irri.statistics.client.ui.charts.VizTablePanel;
 import org.irri.statistics.client.utils.NumberUtils;
 import org.irri.statistics.client.utils.RPCUtils;
@@ -21,6 +18,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -36,7 +34,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.StackPanel;
 
 
 /**
@@ -111,22 +108,30 @@ public class WRS_manila implements EntryPoint {
         lblInternationalRiceResearch.setSize("100%", "80%");
         
         HorizontalPanel NavigationBar = new HorizontalPanel();
-        NavigationBar.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-        NavigationBar.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
         NavigationBar.setSpacing(5);
-        MainWrapper.addNorth(NavigationBar, 40.0);
+        MainWrapper.addNorth(NavigationBar, 50.0);
         NavigationBar.setSize("100%", "100%");
         
+        HorizontalPanel horizontalPanel_2 = new HorizontalPanel();
+        NavigationBar.add(horizontalPanel_2);
+        
         Label lblWorldRiceStatistics = new Label("World Rice Statistics");
-        lblWorldRiceStatistics.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
         lblWorldRiceStatistics.setStyleName("gwt-Label-title");
-        NavigationBar.add(lblWorldRiceStatistics);
-        NavigationBar.setCellHorizontalAlignment(lblWorldRiceStatistics, HasHorizontalAlignment.ALIGN_RIGHT);
-        lblWorldRiceStatistics.setSize("100%", "100%");
+        horizontalPanel_2.add(lblWorldRiceStatistics);
+        lblWorldRiceStatistics.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+        
+        
+        Label lblBeta = new Label("[BETA]");
+        horizontalPanel_2.add(lblBeta);
+        lblBeta.setStyleName("gwt-Label-version");
+        NavigationBar.setCellVerticalAlignment(lblBeta, HasVerticalAlignment.ALIGN_MIDDLE);
+        lblBeta.setHeight("22px");
         
         HorizontalPanel horizontalPanel = new HorizontalPanel();
         horizontalPanel.setSpacing(5);
         NavigationBar.add(horizontalPanel);
+        NavigationBar.setCellVerticalAlignment(horizontalPanel, HasVerticalAlignment.ALIGN_BOTTOM);
+        NavigationBar.setCellHorizontalAlignment(horizontalPanel, HasHorizontalAlignment.ALIGN_RIGHT);
         
         HTML htmlIrriHome = new HTML("<a href=\"http://www.irri.org\">IRRI Home</a>", true);
         horizontalPanel.add(htmlIrriHome);
@@ -138,148 +143,128 @@ public class WRS_manila implements EntryPoint {
         htmlFarmHouseholdSurvey.setStyleName("gwt-HTML-Link");
         htmlFarmHouseholdSurvey.setSize("105px", "15px");
         
-        DockLayoutPanel dpContentWrapper = new DockLayoutPanel(Unit.PX);
-        MainWrapper.add(dpContentWrapper);
-        dpContentWrapper.setSize("100%", "100%");
-        
-        StackPanel decoratedStackPanel = new StackPanel();
-        dpContentWrapper.addWest(decoratedStackPanel, 250.0);
-        decoratedStackPanel.setSize("100%", "100%");
-        
-        VerticalPanel vpOnlineQuery = new VerticalPanel();
-        decoratedStackPanel.add(vpOnlineQuery, "Online Query", false);
-        vpOnlineQuery.setSize("100%", "");
-        
-        tglbtnSelection.addClickHandler(new ClickHandler() {
-        	public void onClick(ClickEvent event) {
-        		if (ContentPanel.getVisibleWidget()!=0) ContentPanel.showWidget(0);
-        		tglbtnSelection.setDown(true);
-        		tglbtnViewResults.setDown(false);
-        	}
-        });
-        
-        vpOnlineQuery.add(tglbtnSelection);
-        tglbtnSelection.setSize("95%", "25");
-        
-        tglbtnViewResults.addClickHandler(new ClickHandler() {
-        	public void onClick(ClickEvent event) {
-        		if (ContentPanel.getVisibleWidget()!=1) ContentPanel.showWidget(1);
-        		tglbtnSelection.setDown(false);
-        		tglbtnViewResults.setDown(true);
-        	}
-        });
-        
-        DisclosurePanel dclpHowToUse = new DisclosurePanel("How to use this facility");
-        dclpHowToUse.setOpen(true);
-        vpOnlineQuery.add(dclpHowToUse);
-        dclpHowToUse.setSize("100%", "100%");
-        
-        HTML htmlhowToUse = new HTML("<p>The procedure in retrieving data is sequential to minimize empty result sets. Please follow the steps enumerated below.</p><ol><li>Select the level of geographical extent (i.e. continental, national, or subnational)</li><li>Select region/country/organization of interest.</li><li>Select variable(s) from either <i>Supply and Demand Variables Box</i> or <i>Other Variables Box</i>.</li> <li>Select year(s).</li><li>Click <b><i>Get Data</i>.</b></li></ol>", true);
-        dclpHowToUse.add(htmlhowToUse);
-        htmlhowToUse.setSize("90%", "100%");
-        
-        DisclosurePanel dcplHints = new DisclosurePanel("Hint");
-        dcplHints.setAnimationEnabled(true);
-        vpOnlineQuery.add(dcplHints);
-        dcplHints.setSize("100%", "100%");
-        
-        HTML html = new HTML("<ul><li>After clicking on an item, wait for the list boxes to be populated.</li><li>To select multiple items, hold the <b><i>Ctrl</i></b> button on your keyboard and then click on the item.</li><li>If you have multiple selections, deselect an item by just clicking on an item again.</li><li>In <i>Subnational Geographic Extent</i>, selecting a country retrievs data from all the selected country's provices/states.</li></ul>", true);
-        dcplHints.setContent(html);
-        html.setSize("90%", "100%");
-        tglbtnViewResults.setEnabled(false);
-        vpOnlineQuery.add(tglbtnViewResults);
-        tglbtnViewResults.setSize("95%", "25");
-        
-        VerticalPanel vpVisualization = new VerticalPanel();
-        decoratedStackPanel.add(vpVisualization, "Visualize", false);
-        vpVisualization.setSize("100%", "");
-        
-        Hyperlink hplnkMapIt = new Hyperlink("Map It!", false, "newHistoryToken");
-        vpVisualization.add(hplnkMapIt);
-        hplnkMapIt.setSize("185", "25");
-        
-        Hyperlink hplnkTrendIt = new Hyperlink("Trend It!", false, "newHistoryToken");
-        vpVisualization.add(hplnkTrendIt);
-        hplnkTrendIt.setSize("185", "25");
-        
-        Hyperlink hplnk3D = new Hyperlink("3D", false, "newHistoryToken");
-        vpVisualization.add(hplnk3D);
-        hplnk3D.setSize("185", "25");
-        
-        GeoMapPanel prodMap = new GeoMapPanel("SELECT c.NAME_ENGLISH AS 'country', s.val AS 'Yield' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE s.var_code='RicYldUSDA' AND yr = YEAR(CURDATE())-1 AND val IS NOT NULL ORDER BY 2 DESC;", 350, 280);
-        
-        BarChartPanel bigarea = new BarChartPanel("SELECT c.NAME_ENGLISH AS 'country', s.val AS 'Harvested Area' FROM front_data s INNER JOIN countries c ON s.iso3 = c.ISO3  WHERE s.var_code='RicHa-USDA' AND yr = YEAR(CURDATE())-1 AND val IS NOT NULL ORDER BY 2 DESC LIMIT 10;", "Top 10 Largest Harvested Area", 300, 200);
-                
-                ScrollPanel scrlSelector = new ScrollPanel();
-                dpContentWrapper.add(scrlSelector);
-                
-                ContentPanel = new DeckPanel();
-                scrlSelector.setWidget(ContentPanel);
-                ContentPanel.setAnimationEnabled(true);
-                ContentPanel.setSize("100%", "100%");
-                
-                DockLayoutPanel dpSelectionWrapper = new DockLayoutPanel(Unit.PCT);
-                ContentPanel.add(dpSelectionWrapper);
-                
-                HorizontalPanel vpGenCharts = new HorizontalPanel();
-                vpGenCharts.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-                dpSelectionWrapper.addSouth(vpGenCharts, 40.0);
-                vpGenCharts.setSize("100%", "100%");
-                
-                
-                CaptionPanel cptnpnlTopProducers = new CaptionPanel("Global Stats");
-                vpGenCharts.add(cptnpnlTopProducers);
-                cptnpnlTopProducers.setSize("25em", "23em");
-                
-                Slider sldGlobalStats = new Slider();
-                sldGlobalStats.getDeckPanel().setSize("100%", "100%");
-                sldGlobalStats.getDeckPanel().setAnimationEnabled(true);
-                cptnpnlTopProducers.add(sldGlobalStats);
-                sldGlobalStats.setSize("24em", "18em");
-                sldGlobalStats.add(prodMap, "1");
-                sldGlobalStats.add(bigarea, "2");
-                
-                        ScrollPanel scrollPanel = new ScrollPanel();
-                        dpSelectionWrapper.add(scrollPanel);
                         
-                        VerticalPanel vpAlignCenter = new VerticalPanel();
-                        scrollPanel.setWidget(vpAlignCenter);
-                        vpAlignCenter.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-                        vpAlignCenter.setSize("100%", "100%");
-                        vpAlignCenter.add(filterPanel);
-                        filterPanel.initListBoxes();
-                        filterPanel.setSubmitButtonClickHandler(new ClickHandler() {
-                                	@Override
-                                    public void onClick(ClickEvent event) {
-                                		final String sql = filterPanel.sqlFromItems();
-                                        if (!sql.equalsIgnoreCase("")) {					
-                                        	getQueryResult(sql);
-                                            ContentPanel.showWidget(1);
-                                            tglbtnViewResults.setEnabled(true);
-                                            tglbtnViewResults.setDown(true);
-                                            tglbtnSelection.setDown(false);
-                                        } else lblStatusGoesHere.setText("Please select a year.");
-                                    }
-                                });
-                        
-                        ScrollPanel scrlResult = new ScrollPanel();
-                        ContentPanel.add(scrlResult);
-                        
-                        DockLayoutPanel dpResultWrapper = new DockLayoutPanel(Unit.PX);
-                        scrlResult.setWidget(dpResultWrapper);
-                        dpResultWrapper.setSize("100%", "100%");
-                        
-                        HorizontalPanel horizontalPanel_1 = new HorizontalPanel();
-                        horizontalPanel_1.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-                        horizontalPanel_1.setSpacing(5);
-                        horizontalPanel_1.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-                        dpResultWrapper.addNorth(horizontalPanel_1, 39.6);
+                        DeckPanel WRSPager = new DeckPanel();
+                        MainWrapper.add(WRSPager);
                         
                         
-                        Button btnDownload = new Button("Download");
-                        btnDownload.addClickHandler(new ClickHandler() {
+                        DockLayoutPanel dpContentWrapper = new DockLayoutPanel(Unit.PX);
+                        WRSPager.add(dpContentWrapper);
+                        dpContentWrapper.setSize("100%", "100%");
+                        
+                        StackLayoutPanel stkpWRSAppSelector = new StackLayoutPanel(Unit.PX);
+                        dpContentWrapper.addWest(stkpWRSAppSelector, 250.0);
+                        stkpWRSAppSelector.setSize("100%", "100%");
+                        
+                        VerticalPanel vpOnlineQuery = new VerticalPanel();
+                        stkpWRSAppSelector.add(vpOnlineQuery, "Online Query", false, 20);
+                        vpOnlineQuery.setSize("100%", "");
+                        
+                        tglbtnSelection.addClickHandler(new ClickHandler() {
                         	public void onClick(ClickEvent event) {
-                        		AsyncCallback<String> downloadAsyncCallback = new AsyncCallback<String>() {
+                        		if (ContentPanel.getVisibleWidget()!=0) ContentPanel.showWidget(0);
+                        		tglbtnSelection.setDown(true);
+                        		tglbtnViewResults.setDown(false);
+                        	}
+                        });
+                        
+                        vpOnlineQuery.add(tglbtnSelection);
+                        tglbtnSelection.setSize("95%", "25");
+                        
+                        tglbtnViewResults.addClickHandler(new ClickHandler() {
+                        	public void onClick(ClickEvent event) {
+                        		if (ContentPanel.getVisibleWidget()!=1) ContentPanel.showWidget(1);
+                        		tglbtnSelection.setDown(false);
+                        		tglbtnViewResults.setDown(true);
+                        	}
+                        });
+                        
+                        DisclosurePanel dclpHowToUse = new DisclosurePanel("How to use this facility");
+                        dclpHowToUse.setOpen(true);
+                        vpOnlineQuery.add(dclpHowToUse);
+                        dclpHowToUse.setSize("100%", "100%");
+                        
+                        HTML htmlhowToUse = new HTML("<p>The procedure in retrieving data is sequential to minimize empty result sets. Please follow the steps enumerated below.</p><ol><li>Select the level of geographical extent (i.e. continental, national, or subnational)</li><li>Select region/country/organization of interest.</li><li>Select variable(s) from either <i>Supply and Demand Variables Box</i> or <i>Other Variables Box</i>.</li> <li>Select year(s).</li><li>Click <b><i>Get Data</i>.</b></li></ol>", true);
+                        dclpHowToUse.add(htmlhowToUse);
+                        htmlhowToUse.setSize("90%", "100%");
+                        
+                        DisclosurePanel dcplHints = new DisclosurePanel("Hint");
+                        dcplHints.setAnimationEnabled(true);
+                        vpOnlineQuery.add(dcplHints);
+                        dcplHints.setSize("100%", "100%");
+                        
+                        HTML html = new HTML("<ul><li>After clicking on an item, wait for the list boxes to be populated.</li><li>To select multiple items, hold the <b><i>Ctrl</i></b> button on your keyboard and then click on the item.</li><li>If you have multiple selections, deselect an item by just clicking on an item again.</li><li>In <i>Subnational Geographic Extent</i>, selecting a country retrievs data from all the selected country's provices/states.</li></ul>", true);
+                        dcplHints.setContent(html);
+                        html.setSize("90%", "100%");
+                        tglbtnViewResults.setEnabled(false);
+                        vpOnlineQuery.add(tglbtnViewResults);
+                        tglbtnViewResults.setSize("95%", "25");
+                        
+                        VerticalPanel vpVisualization = new VerticalPanel();
+                        stkpWRSAppSelector.add(vpVisualization, "Visualize", false, 20);
+                        vpVisualization.setSize("100%", "");
+                        
+                        Hyperlink hplnkMapIt = new Hyperlink("Map It!", false, "newHistoryToken");
+                        vpVisualization.add(hplnkMapIt);
+                        hplnkMapIt.setSize("185", "25");
+                        
+                        Hyperlink hplnkTrendIt = new Hyperlink("Trend It!", false, "newHistoryToken");
+                        vpVisualization.add(hplnkTrendIt);
+                        hplnkTrendIt.setSize("185", "25");
+                        
+                        Hyperlink hplnk3D = new Hyperlink("3D", false, "newHistoryToken");
+                        vpVisualization.add(hplnk3D);
+                        hplnk3D.setSize("185", "25");
+                        
+                        ScrollPanel scrlSelector = new ScrollPanel();
+                        dpContentWrapper.add(scrlSelector);
+                        
+                        ContentPanel = new DeckPanel();
+                        scrlSelector.setWidget(ContentPanel);
+                        ContentPanel.setAnimationEnabled(true);
+                        ContentPanel.setSize("100%", "100%");
+                        
+                                ScrollPanel scrollPanel = new ScrollPanel();
+                                ContentPanel.add(scrollPanel);
+                                
+                                VerticalPanel vpAlignCenter = new VerticalPanel();
+                                scrollPanel.setWidget(vpAlignCenter);
+                                vpAlignCenter.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+                                vpAlignCenter.setSize("100%", "100%");
+                                vpAlignCenter.add(filterPanel);
+                                filterPanel.initListBoxes();
+                                filterPanel.setSubmitButtonClickHandler(new ClickHandler() {
+                                        	@Override
+                                            public void onClick(ClickEvent event) {
+                                        		final String sql = filterPanel.sqlFromItems();
+                                                if (!sql.equalsIgnoreCase("")) {					
+                                                	getQueryResult(sql);
+                                                    ContentPanel.showWidget(1);
+                                                    tglbtnViewResults.setEnabled(true);
+                                                    tglbtnViewResults.setDown(true);
+                                                    tglbtnSelection.setDown(false);
+                                                } else lblStatusGoesHere.setText("Please select a year.");
+                                            }
+                                        });
+                                
+                                ScrollPanel scrlResult = new ScrollPanel();
+                                ContentPanel.add(scrlResult);
+                                
+                                DockLayoutPanel dpResultWrapper = new DockLayoutPanel(Unit.PX);
+                                scrlResult.setWidget(dpResultWrapper);
+                                dpResultWrapper.setSize("100%", "100%");
+                                
+                                HorizontalPanel horizontalPanel_1 = new HorizontalPanel();
+                                horizontalPanel_1.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+                                horizontalPanel_1.setSpacing(5);
+                                horizontalPanel_1.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+                                dpResultWrapper.addNorth(horizontalPanel_1, 39.6);
+                                
+                                
+                                Button btnDownload = new Button("Download");
+                                btnDownload.addClickHandler(new ClickHandler() {
+                                	public void onClick(ClickEvent event) {
+                                		AsyncCallback<String> downloadAsyncCallback = new AsyncCallback<String>() {
 					
 					@Override
 					public void onSuccess(String result) {
@@ -294,50 +279,55 @@ public class WRS_manila implements EntryPoint {
 						
 					}
 				};
-                        		RPCUtils.getService("mysqlservice").SaveCSV(ChartDataTable.csvData(resultmatrix), downloadAsyncCallback);
-                        	}
-                        });
-                        
-                        Button btnSendEmail = new Button("Send Email");
-                        btnSendEmail.setVisible(false);
-                        horizontalPanel_1.add(btnSendEmail);
-                        btnSendEmail.setSize("85", "30");
-                        horizontalPanel_1.setCellHorizontalAlignment(btnSendEmail, HasHorizontalAlignment.ALIGN_RIGHT);
-                        
-                        Button btnSendToGoogle = new Button("Send to Google Docs");
-                        btnSendToGoogle.setVisible(false);
-                        horizontalPanel_1.add(btnSendToGoogle);
-                        btnSendToGoogle.setSize("140", "30");
-                        horizontalPanel_1.setCellHorizontalAlignment(btnSendToGoogle, HasHorizontalAlignment.ALIGN_RIGHT);
-                        horizontalPanel_1.add(btnDownload);
-                        btnDownload.setSize("75", "30");
-                        horizontalPanel_1.setCellHorizontalAlignment(btnDownload, HasHorizontalAlignment.ALIGN_RIGHT);
-                        
-                        HorizontalPanel vpResultCharts = new HorizontalPanel();
-                        dpResultWrapper.addSouth(vpResultCharts, 277.6);
-                        vpResultCharts.setSize("100%", "100%");
-                        
-                        cptnpnlResultCharts = new CaptionPanel("Visualize");
-                        vpResultCharts.add(cptnpnlResultCharts);
-                        cptnpnlResultCharts.setSize("100%", "100%");
-                        
-                        
-                        CaptionPanel cptnpnlSource = new CaptionPanel("Source");
-                        vpResultCharts.add(cptnpnlSource);
-                        cptnpnlSource.setSize("100%", "100%");
-                        
-                        FlexTable flexTable = new FlexTable();
-                        cptnpnlSource.setContentWidget(flexTable);
-                        flexTable.setSize("5cm", "3cm");
-                        
-                        hpResultTable = new HorizontalPanel();
-                        dpResultWrapper.add(hpResultTable);
-                        hpResultTable.setSize("100%", "100%");
-                        
-                        fVizWrapper = new Frame("http://geo.irri.org/vis/wrs_Motion.php");
-                        ContentPanel.add(fVizWrapper);
-                        
-                        ContentPanel.showWidget(0);
+                                		RPCUtils.getService("mysqlservice").SaveCSV(ChartDataTable.csvData(resultmatrix), downloadAsyncCallback);
+                                	}
+                                });
+                                
+                                Button btnSendEmail = new Button("Send Email");
+                                btnSendEmail.setVisible(false);
+                                horizontalPanel_1.add(btnSendEmail);
+                                btnSendEmail.setSize("85", "30");
+                                horizontalPanel_1.setCellHorizontalAlignment(btnSendEmail, HasHorizontalAlignment.ALIGN_RIGHT);
+                                
+                                Button btnSendToGoogle = new Button("Send to Google Docs");
+                                btnSendToGoogle.setVisible(false);
+                                horizontalPanel_1.add(btnSendToGoogle);
+                                btnSendToGoogle.setSize("140", "30");
+                                horizontalPanel_1.setCellHorizontalAlignment(btnSendToGoogle, HasHorizontalAlignment.ALIGN_RIGHT);
+                                horizontalPanel_1.add(btnDownload);
+                                btnDownload.setSize("75", "30");
+                                horizontalPanel_1.setCellHorizontalAlignment(btnDownload, HasHorizontalAlignment.ALIGN_RIGHT);
+                                
+                                HorizontalPanel vpResultCharts = new HorizontalPanel();
+                                dpResultWrapper.addSouth(vpResultCharts, 277.6);
+                                vpResultCharts.setSize("100%", "100%");
+                                
+                                cptnpnlResultCharts = new CaptionPanel("Visualize");
+                                vpResultCharts.add(cptnpnlResultCharts);
+                                cptnpnlResultCharts.setSize("100%", "100%");
+                                
+                                
+                                CaptionPanel cptnpnlSource = new CaptionPanel("Source");
+                                vpResultCharts.add(cptnpnlSource);
+                                cptnpnlSource.setSize("100%", "100%");
+                                
+                                FlexTable flexTable = new FlexTable();
+                                cptnpnlSource.setContentWidget(flexTable);
+                                flexTable.setSize("5cm", "3cm");
+                                
+                                hpResultTable = new HorizontalPanel();
+                                dpResultWrapper.add(hpResultTable);
+                                hpResultTable.setSize("100%", "100%");
+                                
+                                fVizWrapper = new Frame("http://geo.irri.org/vis/wrs_Motion.php");
+                                ContentPanel.add(fVizWrapper);
+                                
+                                ContentPanel.showWidget(0);
+                                
+                                WRSHome HomePage = new WRSHome();
+                                WRSPager.add(HomePage);
+                        WRSPager.showWidget(0);
+                                WRSPager.showWidget(0);
         
     }
     

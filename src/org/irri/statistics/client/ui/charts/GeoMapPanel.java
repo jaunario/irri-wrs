@@ -47,7 +47,7 @@ public class GeoMapPanel extends Composite{
         options.setShowLegend(true);
         options.setShowZoomOut(true);
         options.setDataMode(DataMode.REGIONS);
-        options.setColors(0xDDDDDD,0xCE0000,0xFF9E00,0xF7D708,0x9CCF31);
+        options.setColors(0xDDDDDD,0xCE0000,0xFF9E00,0xF7D708,0x9CCF31);        
         return options;
     }
 
@@ -57,8 +57,10 @@ public class GeoMapPanel extends Composite{
         data.addColumn(AbstractDataTable.ColumnType.NUMBER, qdata[0][1]);
         data.addRows(qdata.length-1);
         for (int i=1;i<qdata.length;i++){
-            data.setValue(i-1, 0, qdata[i][0]);
-            data.setValue(i-1, 1, Double.parseDouble(qdata[i][1]));
+        	if(qdata[i][1]!=null){
+                data.setValue(i-1, 0, qdata[i][0]);
+                data.setValue(i-1, 1, Double.parseDouble(qdata[i][1]));
+        	}
         }
         return data;
     }

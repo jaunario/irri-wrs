@@ -96,7 +96,6 @@ public class RPFiltering extends Composite {
 		public RPFiltering() {
 			VerticalPanel vpWrapper = new VerticalPanel();
 			vpWrapper.setSpacing(5);
-			vpWrapper.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 			initWidget(vpWrapper);
 			vpWrapper.setSize("368px", "350px");
 	        
@@ -107,7 +106,7 @@ public class RPFiltering extends Composite {
 	        
 	        Label lblGeographicExtent = new Label("Geographic Extent");
 	        hpGExtent.add(lblGeographicExtent);
-	        lblGeographicExtent.setSize("130px", "18px");
+	        lblGeographicExtent.setSize("175px", "18px");
 	        hpGExtent.add(lbxExtent);
 	        lbxExtent.addChangeHandler(new ChangeHandler() {
 	        	public void onChange(ChangeEvent event) {
@@ -147,7 +146,7 @@ public class RPFiltering extends Composite {
 	        lbxExtent.addItem("Continent/Organization");
 	        lbxExtent.addItem("Country");
 	        lbxExtent.addItem("State/Province");
-	        lbxExtent.setSize("300px", "22px");
+	        lbxExtent.setSize("369px", "22px");
 	        
 	        HorizontalPanel hpVarL1 = new HorizontalPanel();
 	        hpVarL1.setSpacing(5);
@@ -185,8 +184,8 @@ public class RPFiltering extends Composite {
 	        lbxRegion.addChangeHandler(varChangeHandler);
 	        verticalPanel.add(lbxRegion);
 	        
-	        lbxRegion.setVisibleItemCount(5);
-	        lbxRegion.setSize("215px", "100px");
+	        lbxRegion.setVisibleItemCount(10);
+	        lbxRegion.setSize("292px", "200px");
 	        
 	        VerticalPanel verticalPanel_1 = new VerticalPanel();
 	        hpVarL1.add(verticalPanel_1);
@@ -196,8 +195,8 @@ public class RPFiltering extends Composite {
 	        lbxVarGroup.addChangeHandler(varChangeHandler);
 	        verticalPanel_1.add(lbxVarGroup);
 	        
-	        lbxVarGroup.setVisibleItemCount(5);
-	        lbxVarGroup.setSize("215px", "100px");
+	        lbxVarGroup.setVisibleItemCount(10);
+	        lbxVarGroup.setSize("280px", "200px");
 	        
 	        HorizontalPanel hpVarL2 = new HorizontalPanel();
 	        hpVarL2.setSpacing(5);
@@ -230,8 +229,8 @@ public class RPFiltering extends Composite {
 	        });
 	        
 	        verticalPanel_2.add(lbxVariable);
-	        lbxVariable.setSize("350px", "100px");
-	        lbxVariable.setVisibleItemCount(5);
+	        lbxVariable.setSize("490px", "200px");
+	        lbxVariable.setVisibleItemCount(10);
 	        
 	        VerticalPanel verticalPanel_3 = new VerticalPanel();
 	        hpVarL2.add(verticalPanel_3);
@@ -244,13 +243,13 @@ public class RPFiltering extends Composite {
 	        	}
 	        });
 	        verticalPanel_3.add(lbxYear);
-	        lbxYear.setSize("80px", "100px");
-	        lbxYear.setVisibleItemCount(5);
+	        lbxYear.setSize("84px", "200px");
+	        lbxYear.setVisibleItemCount(10);
 	        
 	        HorizontalPanel hpBtns = new HorizontalPanel();
 	        hpBtns.setSpacing(5);
 	        vpWrapper.add(hpBtns);
-	        vpWrapper.setCellHorizontalAlignment(hpBtns, HasHorizontalAlignment.ALIGN_CENTER);
+	        vpWrapper.setCellHorizontalAlignment(hpBtns, HasHorizontalAlignment.ALIGN_RIGHT);
 	        
 	        Button btnClear = new Button("Clear Selection");
 	        btnClear.addClickHandler(new ClickHandler() {
@@ -259,12 +258,12 @@ public class RPFiltering extends Composite {
 	        });
 	        hpBtns.add(btnClear);
 	        hpBtns.setCellHorizontalAlignment(btnClear, HasHorizontalAlignment.ALIGN_CENTER);
-	        btnClear.setHeight("30px");
+	        btnClear.setHeight("40px");
 	        btnSubmit.setEnabled(false);
 	        
 	        hpBtns.add(btnSubmit);
 	        hpBtns.setCellHorizontalAlignment(btnSubmit, HasHorizontalAlignment.ALIGN_CENTER);
-	        btnSubmit.setHeight("30px");
+	        btnSubmit.setHeight("40px");
 			//initListBoxes();	        
 		}
 		
