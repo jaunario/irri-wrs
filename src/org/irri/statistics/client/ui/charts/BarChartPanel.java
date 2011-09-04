@@ -47,6 +47,9 @@ public class BarChartPanel extends Composite {
 		
 	}
 	
+	/**
+	 * @wbp.parser.constructor
+	 */
 	public BarChartPanel(AbstractDataTable data, String title, int w, int h, boolean isinteractive){
 		interactive =  isinteractive;
 		if (interactive){
