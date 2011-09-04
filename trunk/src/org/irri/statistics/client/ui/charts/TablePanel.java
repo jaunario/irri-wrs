@@ -5,23 +5,25 @@ import org.irri.statistics.client.utils.RPCUtils;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.Table;
 import com.google.gwt.visualization.client.visualizations.Table.Options;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.dom.client.Style.Unit;
 //import com.google.gwt.visualization.client.visualizations.Toolbar;
 //import com.google.gwt.visualization.client.visualizations.Toolbar.Component;
 
 
-public class VizTablePanel extends Composite {
-	private VerticalPanel TablePanel = new VerticalPanel();
+public class TablePanel extends Composite {
+	private DockLayoutPanel TablePanel = new DockLayoutPanel(Unit.PCT);
+	private AbstractDataTable BaseData;
 	private Table viztab;
 //	private Toolbar TBTable;
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public VizTablePanel(){
+	public TablePanel(){
 		Runnable onLoadCallBack = new Runnable() {
 			
 			@Override
@@ -35,7 +37,7 @@ public class VizTablePanel extends Composite {
 		initWidget(TablePanel);
 	}
 	
-    public VizTablePanel(String query, String title, int[] numcols, String width, String height){
+    public TablePanel(String query, String title, int[] numcols, String width, String height){
     	final int[] ncols = numcols;
     	final String h = height;
     	final String w = width;
@@ -63,7 +65,7 @@ public class VizTablePanel extends Composite {
     	initWidget(TablePanel);
     }
 
-    public VizTablePanel(String[][] data, int[] numcols, String width, String height){
+    public TablePanel(String[][] data, int[] numcols, String width, String height){
     	final int[] ncols = numcols;
     	final String h = height;
     	final String w = width;

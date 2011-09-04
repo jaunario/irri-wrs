@@ -185,7 +185,7 @@ public class RPFiltering extends Composite {
 	        verticalPanel.add(lbxRegion);
 	        
 	        lbxRegion.setVisibleItemCount(10);
-	        lbxRegion.setSize("292px", "200px");
+	        lbxRegion.setSize("292px", "190px");
 	        
 	        VerticalPanel verticalPanel_1 = new VerticalPanel();
 	        hpVarL1.add(verticalPanel_1);
@@ -196,7 +196,7 @@ public class RPFiltering extends Composite {
 	        verticalPanel_1.add(lbxVarGroup);
 	        
 	        lbxVarGroup.setVisibleItemCount(10);
-	        lbxVarGroup.setSize("280px", "200px");
+	        lbxVarGroup.setSize("280px", "190px");
 	        
 	        HorizontalPanel hpVarL2 = new HorizontalPanel();
 	        hpVarL2.setSpacing(5);
@@ -229,8 +229,8 @@ public class RPFiltering extends Composite {
 	        });
 	        
 	        verticalPanel_2.add(lbxVariable);
-	        lbxVariable.setSize("490px", "200px");
-	        lbxVariable.setVisibleItemCount(10);
+	        lbxVariable.setSize("490px", "270px");
+	        lbxVariable.setVisibleItemCount(15);
 	        
 	        VerticalPanel verticalPanel_3 = new VerticalPanel();
 	        hpVarL2.add(verticalPanel_3);
@@ -243,8 +243,8 @@ public class RPFiltering extends Composite {
 	        	}
 	        });
 	        verticalPanel_3.add(lbxYear);
-	        lbxYear.setSize("84px", "200px");
-	        lbxYear.setVisibleItemCount(10);
+	        lbxYear.setSize("84px", "270px");
+	        lbxYear.setVisibleItemCount(15);
 	        
 	        HorizontalPanel hpBtns = new HorizontalPanel();
 	        hpBtns.setSpacing(5);
@@ -254,7 +254,11 @@ public class RPFiltering extends Composite {
 	        Button btnClear = new Button("Clear Selection");
 	        btnClear.addClickHandler(new ClickHandler() {
 	        	public void onClick(ClickEvent event) {
-	        		initListBoxes();				}
+	    			lbxYear.clear();
+	    			lbxVariable.clear();
+	    			lbxRegion.setSelectedIndex(-1);
+
+	        	}
 	        });
 	        hpBtns.add(btnClear);
 	        hpBtns.setCellHorizontalAlignment(btnClear, HasHorizontalAlignment.ALIGN_CENTER);
@@ -347,7 +351,7 @@ public class RPFiltering extends Composite {
 		
 		public int selectedItemsCount(){
 			int sel = 0;
-			for (int i = 0; i < lbxVariable.getItemCount()-1; i++) {
+			for (int i = 0; i < lbxVariable.getItemCount(); i++) {
 				if (lbxVariable.isItemSelected(i)) sel++;
 			}
 			return sel;

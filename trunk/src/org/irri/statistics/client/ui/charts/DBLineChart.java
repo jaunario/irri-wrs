@@ -42,7 +42,6 @@ public class DBLineChart extends Composite {
         AxisOptions hAxisOptions = AxisOptions.create();
     	AxisOptions vAxisOptions = AxisOptions.create();
     	hAxisOptions.setTitle("Year");
-    	//vAxisOptions.setTitle("Year");
     	options.setHAxisOptions(hAxisOptions);
     	options.setVAxisOptions(vAxisOptions);
         options.setWidth(320);
@@ -71,7 +70,5 @@ public class DBLineChart extends Composite {
         return data;
 
 	}
-	
-	
 
 }
