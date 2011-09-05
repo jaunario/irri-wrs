@@ -17,7 +17,6 @@ import com.google.gwt.dom.client.Style.Unit;
 
 public class TablePanel extends Composite {
 	private DockLayoutPanel TablePanel = new DockLayoutPanel(Unit.PCT);
-	private AbstractDataTable BaseData;
 	private Table viztab;
 //	private Toolbar TBTable;
 	/**

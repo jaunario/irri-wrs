@@ -14,9 +14,12 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.GeoMap;
 import com.google.gwt.visualization.client.visualizations.Table;
+import com.google.gwt.visualization.client.visualizations.GeoMap.DataMode;
 import com.google.gwt.visualization.client.visualizations.corechart.LineChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
+import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.DecoratedTabBar;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -219,6 +222,8 @@ public class MultiChartPanel extends Composite {
 		if(vp2FactorChart.getWidgetCount()>0) vp2FactorChart.clear();
 		drawTable();
 		drawLineChart(1,2,0);
+		//drawPieChart(0, 2, 1, basedata.getValueString(0, 1));
+		drawMap(0, 2, 1, basedata.getValueString(0, 1));
 	}
 	
 	public void drawTable(){
@@ -250,6 +255,38 @@ public class MultiChartPanel extends Composite {
 		VisualizationUtils.loadVisualizationApi(onLoadCallback, LineChart.PACKAGE);
 	}
 	
+	public void drawPieChart(int x, int y, int filtercol, String filterval){
+		if (vp1FactorChart.getWidgetCount()>0) vp1FactorChart.clear();
+		final AbstractDataTable pcDataTable = ChartDataTable.filteredTable(basedata, x, y, filtercol, filterval);
+		Runnable onLoadCallback = new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Widget activewidget = deckChartPager.getWidget(deckChartPager.getVisibleWidget());
+				PieChart pie = new PieChart(pcDataTable, createCoreChartOptions(activewidget.getOffsetWidth(), activewidget.getOffsetWidth()));
+				vp1FactorChart.add(pie);
+			}
+		};
+		VisualizationUtils.loadVisualizationApi(onLoadCallback, PieChart.PACKAGE);
+	}
+	
+	public void drawMap(int loc, int val, int yr, String selectyr){
+		if (vp1FactorChart.getWidgetCount()>0) vp1FactorChart.clear();
+		final AbstractDataTable gmDataTable = ChartDataTable.filteredTable(basedata, loc, val, yr, selectyr);
+		Runnable onLoadCallback = new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Widget activewidget = deckChartPager.getWidget(deckChartPager.getVisibleWidget());
+				GeoMap map = new GeoMap(gmDataTable, createMapOptions(activewidget.getOffsetWidth(), activewidget.getOffsetWidth()));
+				vp1FactorChart.add(map);
+			}
+		};
+		VisualizationUtils.loadVisualizationApi(onLoadCallback, GeoMap.PACKAGE);
+	}
+	
 	public Options createCoreChartOptions(int w, int h){
 		Options options = Options.create();
 		options.setWidth(w);
@@ -266,6 +303,16 @@ public class MultiChartPanel extends Composite {
     	return options;
     }
     
+	public GeoMap.Options createMapOptions(int w, int h){
+		GeoMap.Options options = GeoMap.Options.create();
+		options.setWidth(w);
+        options.setHeight(h);
+        options.setShowLegend(true);
+        options.setShowZoomOut(true);
+        options.setDataMode(DataMode.REGIONS);
+        options.setColors(0xDDDDDD,0xCE0000,0xFF9E00,0xF7D708,0x9CCF31);        
+        return options;
+	}
 	public VerticalPanel getVpTablePage() {
 		return vpTablePage;
 	}
