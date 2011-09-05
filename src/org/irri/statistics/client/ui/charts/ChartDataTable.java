@@ -1,7 +1,8 @@
 package org.irri.statistics.client.ui.charts;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Vector;
+import java.util.Collections;
 
 import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
@@ -23,7 +24,7 @@ public class ChartDataTable{
 		NumberFormat formatter = NumberFormat.create(options);
 		
 		for (int i = 0; i < data.length; i++) {
-			if(i==1) datatable.addRows(data.length); 
+			if(i==1) datatable.addRows(data.length-1); 
 			for (int j = 0; j < data[i].length; j++) {
 				searchcol = Arrays.binarySearch(numcols, j);
 				isnumeric = searchcol  >= 0 & searchcol < numcols.length;
@@ -65,61 +66,91 @@ public class ChartDataTable{
 		return datatable;
 	}
 	
-	public static String[] getUniqueColumnVals(String[][] data, int col){
+	public static ArrayList<String> getUniqueColumnVals(AbstractDataTable data, int col){
 		
-		Vector<String> uniquev = new Vector<String>();
-		for (int i = 1; i < data.length; i++) {
-			if(!uniquev.contains(data[i][col])) {
-				uniquev.add(data[i][col]);
-			}
-		}
-		String[] unique = new String[uniquev.size()];
-		for (int i = 0; i < uniquev.size(); i++) {
-			unique[i] = uniquev.elementAt(i);
-		}
-		return(unique);
+		ArrayList<String> uniquev = new ArrayList<String>();
+		for (int i = 1; i < data.getNumberOfRows(); i++) {
+			if(!uniquev.contains(data.getValueString(i, col))) {
+				uniquev.add(data.getValueString(i, col));
+			}			
+		}		
+		return uniquev;
 	}
 
-	public static AbstractDataTable regroup(String[][] data, int valcol){
-		String[] grps = getUniqueColumnVals(data, 0);
-		Arrays.sort(grps);
-		String[] xs = getUniqueColumnVals(data, 1);
-		Arrays.sort(xs);
-		//xs = Arrays
-		 
-		DataTable datatable = DataTable.create();
-		datatable.addColumn(ColumnType.STRING, data[0][1]);
-		for (int i = 0; i < grps.length; i++) {
-			datatable.addColumn(ColumnType.NUMBER, grps[i]);
+	public static String csvData(AbstractDataTable data){
+		String csv = "";
+		for (int i = 0; i < data.getNumberOfColumns(); i++) {
+			csv = csv + data.getColumnLabel(i);
+			if (i<data.getNumberOfColumns()-1) csv = csv + ",";
+			else csv = csv + "\n";
 		}
-		datatable.addRows(xs.length);
+		for (int i = 0; i < data.getNumberOfRows(); i++) {
+			for (int j = 0; j < data.getNumberOfColumns(); j++) {
+				if (data.getColumnType(j)==ColumnType.STRING) csv = csv + data.getValueString(i, j);
+				else if (!data.isValueNull(i, j)) csv = csv + data.getValueDouble(i, j);
+				else csv = csv +"null";
+				if (j<data.getNumberOfColumns()-1) csv = csv + ",";
+				else csv = csv + "\n";
+			}						
+		}
+		return csv;
+	}
+	
+	public static AbstractDataTable getDataOfColumn(AbstractDataTable data, int colid){
 		
-		for (int i = 0; i < xs.length; i++) {
-			datatable.setValue(i, 0, xs[i]);
+		Options options = Options.create();
+		options.setFractionDigits(2);
+		
+		NumberFormat formatter = NumberFormat.create(options);
+		
+		DataTable subset = DataTable.create();
+		
+		subset.addColumn(ColumnType.STRING, data.getColumnLabel(0));
+		subset.addColumn(ColumnType.NUMBER, data.getColumnLabel(1));
+		formatter.format(subset, 1);
+		subset.addColumn(ColumnType.NUMBER, data.getColumnLabel(colid));
+		formatter.format(subset, 2);
+		
+		subset.addRows(data.getNumberOfRows());
+		for (int i = 0; i < data.getNumberOfRows(); i++) {
+			subset.setValue(i, 0, data.getValueString(i, 0));
+			subset.setValue(i, 1, data.getValueDouble(i, 1));
+			subset.setValue(i, 2, data.getValueDouble(i, colid));
+		}
+		return subset;
+	}
+	
+	public static AbstractDataTable dataIntoSeries(AbstractDataTable data, int x, int y, int series, boolean stringx){
+		DataTable seriesdata = DataTable.create();
+		ArrayList<String> xs = getUniqueColumnVals(data, x);
+		ArrayList<String> ss = getUniqueColumnVals(data, series);
+		Collections.sort(xs);
+		Collections.sort(ss);
+		
+		if (stringx) seriesdata.addColumn(ColumnType.STRING,data.getColumnLabel(x));
+			else seriesdata.addColumn(ColumnType.NUMBER,data.getColumnLabel(x));
+		
+		for (int i = 0; i < ss.size(); i++) {
+			seriesdata.addColumn(ColumnType.NUMBER, ss.get(i));
+		}
+		seriesdata.addRows(xs.size());
+		
+		for (int i = 0; i < xs.size(); i++) {
+			if (stringx) seriesdata.setValue(i,0,xs.get(i));
+			else seriesdata.setValue(i,0,Double.parseDouble(xs.get(i)));
 		}
 		
 		int r = 0; 
 		int curcol  = 0;
 
-		for (int i = 1; i < data.length; i++) {		
-			curcol = Arrays.binarySearch(grps, data[i][0]);
-			r = Arrays.binarySearch(xs, data[i][1]);
-			if(r<xs.length & r>=0 & data[i][valcol]!=null) {
-				datatable.setValue(r, curcol+1, Float.parseFloat(data[i][valcol]));
+		for (int i = 0; i < data.getNumberOfRows(); i++) {		
+			curcol = Collections.binarySearch(ss, data.getValueString(i,series));
+			r = Collections.binarySearch(xs, data.getValueString(i, x));
+						
+			if(r<xs.size() & r>=0 & !data.isValueNull(i, y)) {
+				seriesdata.setValue(r, curcol+1, data.getValueDouble(i,y));
 			} 
 		}		
-		return datatable;
-	}
-	
-	public static String csvData(String[][] data){
-		String csv = "";
-		for (int i = 0; i < data.length; i++) {
-			for (int j = 0; j < data[i].length; j++) {
-				csv = csv + data[i][j];
-				if (j<data[i].length-1) csv = csv + ",";
-			}
-			csv = csv + "\n";			
-		}
-		return csv;
+		return seriesdata;
 	}
 }
