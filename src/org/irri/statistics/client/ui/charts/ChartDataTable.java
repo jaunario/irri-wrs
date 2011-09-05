@@ -46,54 +46,20 @@ public class ChartDataTable{
 		return datatable;
 	}
 	
-	public static AbstractDataTable createFilteredTable (String[][] data, String filterval){
+	public static AbstractDataTable filteredTable (AbstractDataTable data, int x, int y, int filtercol, String filterval){
 		DataTable datatable = DataTable.create();
-		for (int i = 0; i < data.length; i++) {
-			if(data[i][0].equalsIgnoreCase(filterval)) {
-				datatable.addRow();
-			}
-			for (int j = 1; j < data[i].length; j++) {
-				if (i==0){
-					if (j==1) datatable.addColumn(ColumnType.STRING, data[i][j]);
-					else datatable.addColumn(ColumnType.NUMBER, data[i][j]);
-				} else {
-					if (j==1) datatable.setValue(i-1, j-1, data[i][j]);
-					else datatable.setValue(i-1, j-1, Float.parseFloat(data[i][j]));
-				}
-			}
-		}
-		
-		return datatable;
-	}
-	
-	public static ArrayList<String> getUniqueColumnVals(AbstractDataTable data, int col){
-		
-		ArrayList<String> uniquev = new ArrayList<String>();
-		for (int i = 1; i < data.getNumberOfRows(); i++) {
-			if(!uniquev.contains(data.getValueString(i, col))) {
-				uniquev.add(data.getValueString(i, col));
-			}			
-		}		
-		return uniquev;
-	}
-
-	public static String csvData(AbstractDataTable data){
-		String csv = "";
-		for (int i = 0; i < data.getNumberOfColumns(); i++) {
-			csv = csv + data.getColumnLabel(i);
-			if (i<data.getNumberOfColumns()-1) csv = csv + ",";
-			else csv = csv + "\n";
-		}
+		datatable.addColumn(ColumnType.STRING, data.getColumnLabel(x));
+		datatable.addColumn(ColumnType.NUMBER, data.getColumnLabel(y));
+		int rowcount = 0;
 		for (int i = 0; i < data.getNumberOfRows(); i++) {
-			for (int j = 0; j < data.getNumberOfColumns(); j++) {
-				if (data.getColumnType(j)==ColumnType.STRING) csv = csv + data.getValueString(i, j);
-				else if (!data.isValueNull(i, j)) csv = csv + data.getValueDouble(i, j);
-				else csv = csv +"null";
-				if (j<data.getNumberOfColumns()-1) csv = csv + ",";
-				else csv = csv + "\n";
-			}						
+			if(data.getValueString(i, filtercol).equalsIgnoreCase(filterval)) {
+				datatable.addRow();
+				datatable.setValue(rowcount, 0, data.getValueString(i, x));
+				if (!data.isValueNull(i, y)) datatable.setValue(rowcount, 1, data.getValueDouble(i, y));
+				rowcount++;
+			}
 		}
-		return csv;
+		return datatable;
 	}
 	
 	public static AbstractDataTable getDataOfColumn(AbstractDataTable data, int colid){
@@ -152,5 +118,34 @@ public class ChartDataTable{
 			} 
 		}		
 		return seriesdata;
+	}
+	public static String csvData(AbstractDataTable data){
+		String csv = "";
+		for (int i = 0; i < data.getNumberOfColumns(); i++) {
+			csv = csv + data.getColumnLabel(i);
+			if (i<data.getNumberOfColumns()-1) csv = csv + ",";
+			else csv = csv + "\n";
+		}
+		for (int i = 0; i < data.getNumberOfRows(); i++) {
+			for (int j = 0; j < data.getNumberOfColumns(); j++) {
+				if (data.getColumnType(j)==ColumnType.STRING) csv = csv + data.getValueString(i, j);
+				else if (!data.isValueNull(i, j)) csv = csv + data.getValueDouble(i, j);
+				else csv = csv +"null";
+				if (j<data.getNumberOfColumns()-1) csv = csv + ",";
+				else csv = csv + "\n";
+			}						
+		}
+		return csv;
+	}
+
+	public static ArrayList<String> getUniqueColumnVals(AbstractDataTable data, int col){
+		
+		ArrayList<String> uniquev = new ArrayList<String>();
+		for (int i = 1; i < data.getNumberOfRows(); i++) {
+			if(!uniquev.contains(data.getValueString(i, col))) {
+				uniquev.add(data.getValueString(i, col));
+			}			
+		}		
+		return uniquev;
 	}
 }
