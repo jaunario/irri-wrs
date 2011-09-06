@@ -132,7 +132,7 @@ public class MultiChartPanel extends Composite {
 				drawTable();
 				switch (charttype1f) {
 				case 0:
-					
+					drawMap(0, 2, 1, basedata.getValueString(0, 1));
 					break;
 
 				default:
@@ -232,8 +232,7 @@ public class MultiChartPanel extends Composite {
 			
 			@Override
 			public void run() {
-				Widget activewidget = deckChartPager.getWidget(deckChartPager.getVisibleWidget());
-				Table table = new Table(basedata, setTableSize(activewidget.getOffsetWidth(), activewidget.getOffsetWidth()));
+				Table table = new Table(basedata, setTableSize(vpTablePage.getOffsetWidth(), vpTablePage.getOffsetWidth()));
 				vpTablePage.add(table);
 			}
 		};
@@ -247,8 +246,7 @@ public class MultiChartPanel extends Composite {
 			
 			@Override
 			public void run() {
-				Widget activewidget = deckChartPager.getWidget(deckChartPager.getVisibleWidget());
-				LineChart line = new LineChart(lcDataTable, createCoreChartOptions(activewidget.getOffsetWidth(), activewidget.getOffsetWidth()));
+				LineChart line = new LineChart(lcDataTable, createCoreChartOptions(vpTablePage.getOffsetWidth(), vpTablePage.getOffsetWidth()));
 				vp2FactorChart.add(line);
 			}
 		};
@@ -263,8 +261,7 @@ public class MultiChartPanel extends Composite {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				Widget activewidget = deckChartPager.getWidget(deckChartPager.getVisibleWidget());
-				PieChart pie = new PieChart(pcDataTable, createCoreChartOptions(activewidget.getOffsetWidth(), activewidget.getOffsetWidth()));
+				PieChart pie = new PieChart(pcDataTable, createCoreChartOptions(vpTablePage.getOffsetWidth(), vpTablePage.getOffsetWidth()));
 				vp1FactorChart.add(pie);
 			}
 		};
@@ -279,8 +276,7 @@ public class MultiChartPanel extends Composite {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				Widget activewidget = deckChartPager.getWidget(deckChartPager.getVisibleWidget());
-				GeoMap map = new GeoMap(gmDataTable, createMapOptions(activewidget.getOffsetWidth(), activewidget.getOffsetWidth()));
+				GeoMap map = new GeoMap(gmDataTable, createMapOptions(vpTablePage.getOffsetWidth(), vpTablePage.getOffsetWidth()));
 				vp1FactorChart.add(map);
 			}
 		};

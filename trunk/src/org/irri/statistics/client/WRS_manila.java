@@ -159,11 +159,11 @@ public class WRS_manila implements EntryPoint {
             public void onClick(ClickEvent event) {
         		final String sql = filterPanel.sqlFromItems();
                 if (!sql.equalsIgnoreCase("")) {					
-                	getQueryResult(sql);
-                    ContentPanel.showWidget(1);
+                	ContentPanel.showWidget(1);
                     tglbtnViewResults.setEnabled(true);
                     tglbtnViewResults.setDown(true);
                     tglbtnSelection.setDown(false);
+                    getQueryResult(sql);                    
                 } else lblStatusGoesHere.setText("Please select a year.");
             }
         });
