@@ -28,7 +28,7 @@ public class RPFiltering extends Composite {
 	ListBox lbxVariable = new ListBox(true);
 	ListBox lbxYear = new ListBox(true);
 	Button btnSubmit = new Button("Get Data");
-		
+	public QueryOptions filteropts = new QueryOptions();	
 		String selectedCountries = "";    
 	    String srctable = "reg_data";
 	    String varlisttable = "variables";
@@ -260,6 +260,16 @@ public class RPFiltering extends Composite {
 
 	        	}
 	        });
+	        
+	        Button btnOptions = new Button("Options");
+	        btnOptions.addClickHandler(new ClickHandler() {
+	        	public void onClick(ClickEvent event) {
+	        		filteropts.center();
+	        		filteropts.show();
+	        	}
+	        });
+	        hpBtns.add(btnOptions);
+	        btnOptions.setHeight("40");
 	        hpBtns.add(btnClear);
 	        hpBtns.setCellHorizontalAlignment(btnClear, HasHorizontalAlignment.ALIGN_CENTER);
 	        btnClear.setHeight("40px");
@@ -333,6 +343,7 @@ public class RPFiltering extends Composite {
 		            " GROUP BY s.iso3 ASC, s.yr HAVING " + varcols[1] ;
 				}
 			}
+			if (filteropts.getChckbxLimitRecords().getValue()) sql = sql + " LIMIT " + filteropts.getIbRecLimit().getText();
 			return sql;
 		}
 		
