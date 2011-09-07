@@ -19,8 +19,11 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.GeoMap;
+import com.google.gwt.visualization.client.visualizations.ImageLineChart;
 import com.google.gwt.visualization.client.visualizations.Table;
 import com.google.gwt.visualization.client.visualizations.GeoMap.DataMode;
+import com.google.gwt.visualization.client.visualizations.corechart.ColumnChart;
+import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
 import com.google.gwt.visualization.client.visualizations.corechart.LineChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
 import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
@@ -40,6 +43,8 @@ public class MultiChartPanel extends Composite {
 	private int x = 1;
 	private int y = 2;
 	
+	private boolean interactive = true;
+	
 	public int[] numerics;
 
 	private DeckPanel deckChartPager;
@@ -48,6 +53,7 @@ public class MultiChartPanel extends Composite {
 	private VerticalPanel vp2FactorChart;
 	private MenuBar mbChart1Year;
 	private MenuBar mbChart1Region;
+	private MenuItem mntmInteractive;
 	/**
 	 * @wbp.parser.constructor
 	 */
@@ -118,11 +124,30 @@ public class MultiChartPanel extends Composite {
 			}
 		});
 		menuBar.addItem(mntmDownload);
-		mntmTableOptions.setVisible(false);
 		mbTableOptions.addItem(mntmTableOptions);
 		MenuBar mbChartClass = new MenuBar(true);
 		
 		MenuItem mntmChartOptions = new MenuItem("Chart Options", false, mbChartClass);
+		
+		mntmInteractive = new MenuItem("Image Only", false, new Command() {
+			public void execute() {
+				if(interactive){
+					interactive = false;
+					mntmInteractive.setText("Interactive");
+					mntmInteractive.setTitle("Plot interactive chart");
+				} else {
+					interactive = true;
+					mntmInteractive.setText("Image Only");
+					mntmInteractive.setTitle("Plot downloadable image");
+				}
+				draw2fChart();
+			}
+		});
+		mntmInteractive.setTitle("Plot downloadable image");
+		mbChartClass.addItem(mntmInteractive);
+		
+		MenuItemSeparator separator_2 = new MenuItemSeparator();
+		mbChartClass.addSeparator(separator_2);
 		MenuBar mbChart1Type = new MenuBar(true);
 		
 		MenuItem mntm1factorChart = new MenuItem("1-Factor Chart", false, mbChart1Type);
@@ -163,18 +188,33 @@ public class MultiChartPanel extends Composite {
 		MenuItem mntmLine = new MenuItem("Line", false, new Command() {
 			public void execute() {
 				charttype2f = 0;
+				draw2fChart();
 			}
 		});
 		menuBar_8.addItem(mntmLine);
 		
-		MenuItem mntmBar = new MenuItem("Bar", false, new Command() {
+		MenuItem mntmColumn = new MenuItem("Column", false, new Command() {
 			public void execute() {
 				charttype2f = 1;
+				draw2fChart();
+			}
+		});
+		menuBar_8.addItem(mntmColumn);
+		
+		MenuItem mntmBar = new MenuItem("Bar", false, new Command() {
+			public void execute() {
+				charttype2f = 2;
+				draw2fChart();
 			}
 		});
 		menuBar_8.addItem(mntmBar);
 		
-		MenuItem mntmScatter = new MenuItem("Scatter", false, (Command) null);
+		MenuItem mntmScatter = new MenuItem("Scatter", false, new Command() {
+			public void execute() {
+				charttype2f = 3;
+				draw2fChart();
+			}
+		});
 		menuBar_8.addItem(mntmScatter);
 		mbChart2Type.addItem(mntmChartType);
 		
@@ -230,16 +270,25 @@ public class MultiChartPanel extends Composite {
 	}
 	
 	public void setBaseData(String[][] data){
+		final String[][] datatable = data;
 		numerics = NumberUtils.createIntSeries(2, data[0].length-1, 1);
-		basedata = ChartDataTable.create(data, numerics);
-		chart1fdata = ChartDataTable.filteredTable(basedata, series, y, x, basedata.getValueString(series, x));
-		chart2fdata = ChartDataTable.dataIntoSeries(basedata, x, y, series, true);
-		populateChart1Yr();
+		Runnable onloadCallback = new Runnable() {
+			
+			@Override
+			public void run() {
+				basedata = ChartDataTable.create(datatable, numerics);
+				chart1fdata = ChartDataTable.filteredTable(basedata, series, y, x, basedata.getValueString(series, x));
+				chart2fdata = ChartDataTable.dataIntoSeries(basedata, x, y, series, true);
+				populateChart1Yr();
+				drawTable();
+				draw1fChart();
+				draw2fChart();
+				
+			}
+		};
+		VisualizationUtils.loadVisualizationApi(onloadCallback, CoreChart.PACKAGE);
 		if(vp1FactorChart.getWidgetCount()>0) vp1FactorChart.clear();
 		if(vp2FactorChart.getWidgetCount()>0) vp2FactorChart.clear();
-		drawTable();
-		draw1fChart();
-		draw2fChart();
 	}
 	
 	public void draw1fChart(){
@@ -257,7 +306,7 @@ public class MultiChartPanel extends Composite {
 	public void draw2fChart(){
 		switch (charttype2f) {
 		case 1:
-			
+			drawColumnChart();
 			break;
 
 		default:
@@ -281,7 +330,7 @@ public class MultiChartPanel extends Composite {
 	
 	public void drawLineChart(){
 		if (vp2FactorChart.getWidgetCount()>0) vp2FactorChart.clear();
-		Runnable onLoadCallback = new Runnable() {
+		Runnable onLoadCallback1 = new Runnable() {
 			
 			@Override
 			public void run() {
@@ -289,9 +338,39 @@ public class MultiChartPanel extends Composite {
 				vp2FactorChart.add(line);
 			}
 		};
-		VisualizationUtils.loadVisualizationApi(onLoadCallback, LineChart.PACKAGE);
+		
+		Runnable onLoadCallback2 = new Runnable() {
+			
+			@Override
+			public void run() {
+				ImageLineChart.Options imgline = ImageLineChart.Options.create();
+				int w = deckChartPager.getOffsetWidth();
+				int h = deckChartPager.getOffsetHeight();
+				imgline.setWidth(h);
+				imgline.setHeight(w);
+				ImageLineChart line = new ImageLineChart(chart2fdata, imgline);
+				vp2FactorChart.add(line);
+			}
+		};
+
+		if (interactive){	VisualizationUtils.loadVisualizationApi(onLoadCallback1, LineChart.PACKAGE);
+		} else {
+			VisualizationUtils.loadVisualizationApi(onLoadCallback2, ImageLineChart.PACKAGE);
+		}
 	}
 	
+	public void drawColumnChart(){
+		if (vp2FactorChart.getWidgetCount()>0) vp2FactorChart.clear();
+		Runnable onLoadCallback = new Runnable() {
+			
+			@Override
+			public void run() {
+				ColumnChart line = new ColumnChart(chart2fdata, createCoreChartOptions(deckChartPager.getOffsetWidth(), deckChartPager.getOffsetHeight()));
+				vp2FactorChart.add(line);
+			}
+		};
+		VisualizationUtils.loadVisualizationApi(onLoadCallback, ColumnChart.PACKAGE);
+	}
 	public void drawPieChart(){
 		if (vp1FactorChart.getWidgetCount()>0) vp1FactorChart.clear();
 		Runnable onLoadCallback = new Runnable() {

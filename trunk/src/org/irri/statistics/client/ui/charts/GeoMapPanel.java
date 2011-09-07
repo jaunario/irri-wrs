@@ -42,8 +42,8 @@ public class GeoMapPanel extends Composite{
 
     private Options createOptions(int w, int h) {
         Options options = Options.create();
-        options.setWidth(w);
-        options.setHeight(h);
+        options.setWidth(getParent().getOffsetWidth()-10);
+        options.setHeight(getParent().getOffsetHeight()-10);
         options.setShowLegend(true);
         options.setShowZoomOut(true);
         options.setDataMode(DataMode.REGIONS);
