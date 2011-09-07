@@ -57,10 +57,7 @@ public class WRS_manila implements EntryPoint {
 
         DockLayoutPanel dpContentWrapper = new DockLayoutPanel(Unit.PX);
         dpContentWrapper.setSize("100%", "100%");        	
-        WRSPager.add(dpContentWrapper);	
-        
-        WRSHome HomePage = new WRSHome();
-        WRSPager.add(HomePage);
+        WRSPager.add(dpContentWrapper);
         WRSPager.showWidget(0);
         
         // WRS Navigation
@@ -183,7 +180,7 @@ public class WRS_manila implements EntryPoint {
 			public void onSuccess(String[][] result) {
 				// TODO Auto-generated method stub
 				mcpResults.setBaseData(result);
-				lblStatusGoesHere.setText("Fetched " + result.length + "records.");
+				lblStatusGoesHere.setText("Fetched " + (result.length-1) + " records.");
 				//showdata();
 			}
 			

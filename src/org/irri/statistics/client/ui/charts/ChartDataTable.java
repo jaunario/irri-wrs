@@ -142,8 +142,9 @@ public class ChartDataTable{
 		
 		ArrayList<String> uniquev = new ArrayList<String>();
 		for (int i = 1; i < data.getNumberOfRows(); i++) {
-			if(!uniquev.contains(data.getValueString(i, col))) {
-				uniquev.add(data.getValueString(i, col));
+			String item = data.getValueString(i, col);
+			if(!uniquev.contains(item)) {
+				uniquev.add(item);
 			}			
 		}		
 		return uniquev;
