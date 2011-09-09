@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.visualization.client.AbstractDataTable;
+import com.google.gwt.visualization.client.LegendPosition;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.GeoMap;
 import com.google.gwt.visualization.client.visualizations.ImageLineChart;
@@ -346,8 +347,10 @@ public class MultiChartPanel extends Composite {
 				ImageLineChart.Options imgline = ImageLineChart.Options.create();
 				int w = deckChartPager.getOffsetWidth();
 				int h = deckChartPager.getOffsetHeight();
-				imgline.setWidth(h);
-				imgline.setHeight(w);
+				imgline.setWidth(w);
+				imgline.setHeight(h);
+				imgline.setLegend(LegendPosition.BOTTOM);
+				
 				ImageLineChart line = new ImageLineChart(chart2fdata, imgline);
 				vp2FactorChart.add(line);
 			}

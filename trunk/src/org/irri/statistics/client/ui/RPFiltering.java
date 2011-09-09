@@ -24,7 +24,7 @@ public class RPFiltering extends Composite {
 	 */
 	ListBox lbxExtent = new ListBox(false);
 	ListBox lbxRegion = new ListBox(true);
-	ListBox lbxVarGroup = new ListBox(true);
+	CheckListBox lbxVarGroup = new CheckListBox();
 	ListBox lbxVariable = new ListBox(true);
 	ListBox lbxYear = new ListBox(true);
 	Button btnSubmit = new Button("Get Data");
@@ -51,7 +51,12 @@ public class RPFiltering extends Composite {
         final AsyncCallback<String[][]> InitVarGroupBox = new AsyncCallback<String[][]>() {
             public void onSuccess(String[][] result) {
                 try{
-                	populateListBox(lbxVarGroup, result);
+                	for (int i = 1; i < result.length; i++) {
+						
+							lbxVarGroup.addItem(result[i][0], result[i][1]);
+
+                	}
+                	
                 }
                 catch(Exception e){
                     System.err.println(e);
@@ -168,7 +173,7 @@ public class RPFiltering extends Composite {
 		        			sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM svar_list v INNER JOIN subnat_avail s ON v.var_code=s.var_code WHERE s.iso3 in (" + selregion + ")";
 		        		} else {
 		        			sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code WHERE v.show_flag=1 AND s.iso3 in (" + selregion + ")";
-		        			selvargroups = getSelectedItems(lbxVarGroup, false);
+		        			selvargroups = lbxVarGroup.csSelectedNames(true);
 		        			if (!selvargroups.equals("")){
 			        			sql = sql + " AND v.group_code in (" + selvargroups + ")";
 			        		}
@@ -195,7 +200,7 @@ public class RPFiltering extends Composite {
 	        lbxVarGroup.addChangeHandler(varChangeHandler);
 	        verticalPanel_1.add(lbxVarGroup);
 	        
-	        lbxVarGroup.setVisibleItemCount(10);
+	        
 	        lbxVarGroup.setSize("280px", "190px");
 	        
 	        HorizontalPanel hpVarL2 = new HorizontalPanel();
@@ -367,5 +372,6 @@ public class RPFiltering extends Composite {
 			}
 			return sel;
 		}
+				
 
   	}
