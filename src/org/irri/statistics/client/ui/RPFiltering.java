@@ -266,7 +266,7 @@ public class RPFiltering extends Composite {
 	        	}
 	        });
 	        
-	        Button btnOptions = new Button("Options");
+	        Button btnOptions = new Button("Settings");
 	        btnOptions.addClickHandler(new ClickHandler() {
 	        	public void onClick(ClickEvent event) {
 	        		filteropts.center();
