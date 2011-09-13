@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -36,9 +37,9 @@ public class MultiChartPanel extends Composite {
 	ArrayList<String> variables;
 	ArrayList<String> years;
 	
-	private int series = 0;
-	private int x = 1;
-	private int y = 2;
+//	private int series = 0;
+//	private int x = 1;
+//	private int y = 2;
 	
 	public int[] numerics;
 
@@ -130,6 +131,9 @@ public class MultiChartPanel extends Composite {
 		MenuItem mntmNewChart = new MenuItem("New Chart", false, new Command() {
 			public void execute() {
 				ChartOptions newco = new ChartOptions();
+				populateListBox(newco.getCbbY(), variables);
+				populateListBox(newco.getCbbX(), regions);
+				populateListBox(newco.getCbbSeries(), years);
 			}
 		});
 		mbChartClass.addItem(mntmNewChart);
@@ -311,4 +315,9 @@ public class MultiChartPanel extends Composite {
 		}
 	}
 	
+	private void populateListBox(ListBox listbox, ArrayList<String> items){
+		for (int i = 0; i < items.size(); i++) {
+			listbox.addItem(items.get(i));
+		}
+	}
 }

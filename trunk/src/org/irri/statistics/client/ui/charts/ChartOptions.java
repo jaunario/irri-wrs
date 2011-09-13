@@ -8,7 +8,6 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -17,24 +16,29 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.HTML;
 
 public class ChartOptions extends DialogBox {
 	private Button btnOk;
 	AbstractDataTable ChartData;
-	private SimplePanel theChart = new SimplePanel();
 	private ListBox cbbChartType;
 	private TextBox txtbxChartTitle;
 	private ListBox cbbLPosition;
 	private ListBox cbbX;
 	private ListBox cbbY;
 	private ListBox cbbSeries;
+	private Image image;
+	private HTML htmlChartDesc;
+	private CheckBox chckbxInteractive;
 	/**
 	 * @wbp.parser.constructor
 	 */
 	public ChartOptions() {
-		setWidth("400px");
+		setWidth("556px");
 		setGlassEnabled(true);
-		setHTML("New Chart Options");
+		setHTML("Chart Options");
 		initDialog();
 		center();
 		show();
@@ -44,7 +48,7 @@ public class ChartOptions extends DialogBox {
 	public ChartOptions(AbstractDataTable basedata, int w, int h) {
 		setWidth("400px");
 		setGlassEnabled(true);
-		setHTML("New Chart Options");
+		setHTML("Chart Options");
 		initDialog();
 		center();
 		show();
@@ -52,12 +56,46 @@ public class ChartOptions extends DialogBox {
 	}
 
 	public void initDialog(){
-		VerticalPanel dockPanel = new VerticalPanel();
+		DockPanel dockPanel = new DockPanel();
 		setWidget(dockPanel);
-		dockPanel.setSize("378px", "214px");
+		dockPanel.setSize("564px", "254px");
+		
+		HorizontalPanel hpChartSubmit = new HorizontalPanel();
+		hpChartSubmit.setSpacing(5);
+		dockPanel.add(hpChartSubmit, DockPanel.SOUTH);
+		dockPanel.setCellHorizontalAlignment(hpChartSubmit, HasHorizontalAlignment.ALIGN_RIGHT);
+		
+		btnOk = new Button("Ok");
+		hpChartSubmit.add(btnOk);
+		hpChartSubmit.setCellHorizontalAlignment(btnOk, HasHorizontalAlignment.ALIGN_RIGHT);
+		
+		Button btnCancel = new Button("Cancel");
+		btnCancel.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				hide();
+			}
+		});
+		hpChartSubmit.add(btnCancel);
+		hpChartSubmit.setCellHorizontalAlignment(btnCancel, HasHorizontalAlignment.ALIGN_RIGHT);
+		
+		VerticalPanel verticalPanel = new VerticalPanel();
+		verticalPanel.setStyleName("notes");
+		verticalPanel.setSpacing(2);
+		verticalPanel.setBorderWidth(0);
+		dockPanel.add(verticalPanel, DockPanel.WEST);
+		verticalPanel.setSize("204px", "100%");
+		
+		image = new Image("images/pie.png");
+		verticalPanel.add(image);
+		image.setSize("188px", "112px");
+		
+		htmlChartDesc = new HTML("Shows percentage values as a slice of a pie", true);
+		verticalPanel.add(htmlChartDesc);
+		htmlChartDesc.setSize("178px", "47px");
 		
 		Grid gridChartComponents = new Grid(7, 2);
-		dockPanel.add(gridChartComponents);
+		gridChartComponents.setCellPadding(5);
+		dockPanel.add(gridChartComponents, DockPanel.CENTER);
 		gridChartComponents.setSize("100%", "100%");
 		
 		Label lblChartType = new Label("Chart Type");
@@ -69,10 +107,47 @@ public class ChartOptions extends DialogBox {
 				int selitem = cbbChartType.getSelectedIndex();
 				switch (selitem) {
 				case 1:
-					
+					image.setUrl("images/scatter.png");
+					htmlChartDesc.setHTML("Scatter Plot");
+					chckbxInteractive.setEnabled(false);
+					chckbxInteractive.setValue(false);
 					break;
 
+				case 2:
+					image.setUrl("images/line.png");
+					htmlChartDesc.setHTML("Line Chart");
+					chckbxInteractive.setEnabled(true);
+					chckbxInteractive.setValue(false);
+					break;
+				case 3:
+					image.setUrl("images/column.png");
+					htmlChartDesc.setHTML("Column Chart");
+					chckbxInteractive.setEnabled(false);
+					chckbxInteractive.setValue(false);
+					break;
+				case 4:
+					image.setUrl("images/bar.png");
+					htmlChartDesc.setHTML("Bar Chart");
+					chckbxInteractive.setEnabled(true);
+					chckbxInteractive.setValue(false);
+					break;
+				case 5:
+					image.setUrl("images/area.png");
+					htmlChartDesc.setHTML("Area Chart");
+					chckbxInteractive.setEnabled(true);
+					chckbxInteractive.setValue(false);
+					break;
+				case 6:
+					image.setUrl("images/geomap.png");
+					htmlChartDesc.setHTML("GeoMap Chart");
+					chckbxInteractive.setEnabled(false);
+					chckbxInteractive.setValue(false);
+					break;
 				default:
+					image.setUrl("images/pie.png");
+					htmlChartDesc.setHTML("Shows percentage values as a slice of a pie");
+					chckbxInteractive.setEnabled(true);
+					chckbxInteractive.setValue(false);
 					cbbSeries.setEnabled(false);
 					break;
 				}
@@ -88,7 +163,7 @@ public class ChartOptions extends DialogBox {
 		cbbChartType.addItem("Map");
 		cbbChartType.addItem("");
 		
-		CheckBox chckbxInteractive = new CheckBox("Interactive");
+		chckbxInteractive = new CheckBox("Interactive");
 		gridChartComponents.setWidget(1, 1, chckbxInteractive);
 		
 		Label lblTitle = new Label("Title");
@@ -128,24 +203,6 @@ public class ChartOptions extends DialogBox {
 		
 		cbbSeries = new ListBox();
 		gridChartComponents.setWidget(6, 1, cbbSeries);
-		
-		HorizontalPanel hpChartSubmit = new HorizontalPanel();
-		hpChartSubmit.setSpacing(5);
-		dockPanel.add(hpChartSubmit);
-		dockPanel.setCellHorizontalAlignment(hpChartSubmit, HasHorizontalAlignment.ALIGN_RIGHT);
-		
-		btnOk = new Button("Ok");
-		hpChartSubmit.add(btnOk);
-		hpChartSubmit.setCellHorizontalAlignment(btnOk, HasHorizontalAlignment.ALIGN_RIGHT);
-		
-		Button btnCancel = new Button("Cancel");
-		btnCancel.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				hide();
-			}
-		});
-		hpChartSubmit.add(btnCancel);
-		hpChartSubmit.setCellHorizontalAlignment(btnCancel, HasHorizontalAlignment.ALIGN_RIGHT);
 				
 	}
 	
@@ -173,5 +230,14 @@ public class ChartOptions extends DialogBox {
 	}
 	public ListBox getCbbSeries() {
 		return cbbSeries;
+	}
+	public Image getImage() {
+		return image;
+	}
+	public HTML getHtmlChartDesc() {
+		return htmlChartDesc;
+	}
+	public CheckBox getChckbxInteractive() {
+		return chckbxInteractive;
 	}
 }
