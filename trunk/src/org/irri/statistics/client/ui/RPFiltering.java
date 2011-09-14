@@ -50,13 +50,11 @@ public class RPFiltering extends Composite {
 		
         final AsyncCallback<String[][]> InitVarGroupBox = new AsyncCallback<String[][]>() {
             public void onSuccess(String[][] result) {
+            	lbxVarGroup.getVpListBox().clear();
                 try{
                 	for (int i = 1; i < result.length; i++) {
-						
 							lbxVarGroup.addItem(result[i][0], result[i][1]);
-
                 	}
-                	
                 }
                 catch(Exception e){
                     System.err.println(e);

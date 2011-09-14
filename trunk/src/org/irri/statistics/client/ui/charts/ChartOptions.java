@@ -19,6 +19,7 @@ import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.LegendPosition;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.ImagePieChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
 import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -61,6 +62,7 @@ public class ChartOptions extends DialogBox {
 	 * @wbp.parser.constructor
 	 */
 	public ChartOptions() {
+		setAnimationEnabled(true);
 		setWidth("556px");
 		setGlassEnabled(true);
 		setHTML("Chart Options");
@@ -145,7 +147,20 @@ public class ChartOptions extends DialogBox {
 						};
 						VisualizationUtils.loadVisualizationApi(onLoadCallback, PieChart.PACKAGE);
 					} else {
-						
+						Runnable onLoadCallback = new Runnable() {
+							
+							@Override
+							public void run() {
+								ImagePieChart.Options ipcOptions = ImagePieChart.Options.create();
+								ipcOptions.setTitle(txtbxChartTitle.getText());
+								ipcOptions.setWidth(width);
+								ipcOptions.setHeight(height);
+								ipcOptions.setLegend(getLegendPosition());
+								ImagePieChart pie = new ImagePieChart(ChartData, ipcOptions);
+								chart.add(pie);
+							}
+						};
+						VisualizationUtils.loadVisualizationApi(onLoadCallback, ImagePieChart.PACKAGE);
 					}
 					
 					break;
