@@ -1,8 +1,5 @@
 package org.irri.statistics.client.ui.charts;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 import org.irri.statistics.client.utils.NumberUtils;
 import org.irri.statistics.client.utils.RPCUtils;
 
@@ -11,7 +8,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -23,9 +19,10 @@ import com.google.gwt.visualization.client.visualizations.GeoMap;
 import com.google.gwt.visualization.client.visualizations.Table;
 import com.google.gwt.visualization.client.visualizations.GeoMap.DataMode;
 import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
-import com.google.gwt.visualization.client.visualizations.corechart.Options;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.DecoratedTabBar;
+//import com.google.gwt.event.dom.client.ClickEvent;
+//import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.ui.MenuItemSeparator;
@@ -33,18 +30,11 @@ import com.google.gwt.user.client.ui.MenuItemSeparator;
 public class MultiChartPanel extends Composite {
 	AbstractDataTable basedata;
 	
-	ArrayList<String> regions;
-	ArrayList<String> variables;
-	ArrayList<String> years;
-	
-//	private int series = 0;
-//	private int x = 1;
-//	private int y = 2;
-	
 	public int[] numerics;
 
 	private DeckPanel deckChartPager;
 	private VerticalPanel vpTablePage;
+	private DecoratedTabBar dtbChartPageSelector;
 	/**
 	 * @wbp.parser.constructor
 	 */
@@ -64,9 +54,9 @@ public class MultiChartPanel extends Composite {
 		//ChartsWrapper.setSize("100%", "100%");
 
 		
-		DecoratedTabBar decoratedTabBar = new DecoratedTabBar();
-		decoratedTabBar.addTab("Table");
-		decoratedTabBar.addSelectionHandler(new SelectionHandler<Integer>() {
+		dtbChartPageSelector = new DecoratedTabBar();
+		dtbChartPageSelector.addTab("Table");
+		dtbChartPageSelector.addSelectionHandler(new SelectionHandler<Integer>() {
 			public void onSelection(SelectionEvent<Integer> event) {
 				deckChartPager.showWidget(event.getSelectedItem());				
 			}
@@ -130,10 +120,32 @@ public class MultiChartPanel extends Composite {
 		
 		MenuItem mntmNewChart = new MenuItem("New Chart", false, new Command() {
 			public void execute() {
-				ChartOptions newco = new ChartOptions();
-				populateListBox(newco.getCbbY(), variables);
-				populateListBox(newco.getCbbX(), regions);
-				populateListBox(newco.getCbbSeries(), years);
+				ChartOptions newco = new ChartOptions(basedata, deckChartPager.getOffsetWidth(),deckChartPager.getOffsetHeight(), deckChartPager.getWidgetCount());
+				deckChartPager.add(newco.getChart());
+// TODO: Close chart
+//				HorizontalPanel charttab = new HorizontalPanel();
+//				charttab.setSpacing(2);				
+//				Label tablabel = new Label(("Chart" + (deckChartPager.getWidgetCount()-1)));
+//				charttab.add(tablabel);
+//				charttab.setCellVerticalAlignment(tablabel, HasVerticalAlignment.ALIGN_MIDDLE);
+//				Image closeimg = new Image("images/tab_close.png");
+//				closeimg.setSize("10px", "10px");
+//				PushButton closetab = new PushButton(closeimg);
+//				closetab.setSize("11px", "11px");
+//				charttab.add(closetab);
+//				closetab.addClickHandler(new ClickHandler() {
+//					
+//					@Override
+//					public void onClick(ClickEvent event) {
+//						// TODO Auto-generated method stub
+//						int thistab = deckChartPager.getWidgetCount()-1;
+//						deckChartPager.remove(thistab);
+//						dtbChartPageSelector.removeTab(thistab);
+//					}
+//				});
+//				
+				dtbChartPageSelector.addTab("Chart" + dtbChartPageSelector.getTabCount());
+				
 			}
 		});
 		mbChartClass.addItem(mntmNewChart);
@@ -142,10 +154,17 @@ public class MultiChartPanel extends Composite {
 		mbChartClass.addSeparator(separator_2);
 		
 		MenuItem mntmRemove = new MenuItem("Remove", false, (Command) null);
+		mntmRemove.setHTML("Remove All Charts");
 		mbChartClass.addItem(mntmRemove);
 		mbTableOptions.addItem(mntmCharts);
-		ChartsWrapper.add(decoratedTabBar, DockPanel.SOUTH);
-		decoratedTabBar.setWidth("100%");
+		ChartsWrapper.add(dtbChartPageSelector, DockPanel.SOUTH);
+		dtbChartPageSelector.setWidth("100%");
+		
+		VerticalPanel verticalPanel = new VerticalPanel();
+		ChartsWrapper.add(verticalPanel, DockPanel.EAST);
+		ChartsWrapper.setCellHeight(verticalPanel, "100%");
+		ChartsWrapper.setCellWidth(verticalPanel, "25%");
+		verticalPanel.setWidth("100%");
 		
 		deckChartPager = new DeckPanel();
 		ChartsWrapper.add(deckChartPager, DockPanel.CENTER);
@@ -157,7 +176,7 @@ public class MultiChartPanel extends Composite {
 		vpTablePage = new VerticalPanel();
 		deckChartPager.add(vpTablePage);
 		vpTablePage.setSize("100%", "100%");
-		decoratedTabBar.selectTab(0);		
+		dtbChartPageSelector.selectTab(0);		
 	}
 	
 	public DeckPanel getDeckPanel() {
@@ -172,9 +191,6 @@ public class MultiChartPanel extends Composite {
 			@Override
 			public void run() {
 				basedata = ChartDataTable.create(datatable, numerics);
-				getYears();
-				getRegions();
-				getVariables();
 				drawTable();
 			}
 		};
@@ -269,15 +285,6 @@ public class MultiChartPanel extends Composite {
 //		VisualizationUtils.loadVisualizationApi(onLoadCallback, GeoMap.PACKAGE);
 //	}
 	
-	public Options createCoreChartOptions(int w, int h){
-		Options options = Options.create();
-		options.setWidth(w-5);
-		options.setHeight(h-5);
-		options.set("is3D", "true");
-		return options;
-		
-	}
-	
 	public Table.Options setTableSize(int w, int h) {
     	Table.Options options = Table.Options.create();
     	options.setHeight((h-5)+"px");
@@ -298,26 +305,7 @@ public class MultiChartPanel extends Composite {
         return options;
 	}
 
-	private void getYears(){
-		years = ChartDataTable.getUniqueColumnVals(basedata, 1);
-		Collections.sort(years);
-	}
-	
-	private void getRegions(){
-		regions = ChartDataTable.getUniqueColumnVals(basedata, 0);
-		Collections.sort(regions);
-	}
-	
-	private void getVariables(){
-		variables = new ArrayList<String>();
-		for (int i = 0; i < basedata.getNumberOfColumns(); i++) {
-			variables.add(basedata.getColumnLabel(i));
-		}
-	}
-	
-	private void populateListBox(ListBox listbox, ArrayList<String> items){
-		for (int i = 0; i < items.size(); i++) {
-			listbox.addItem(items.get(i));
-		}
+	public DecoratedTabBar getDecoratedTabBar() {
+		return dtbChartPageSelector;
 	}
 }
