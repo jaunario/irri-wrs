@@ -19,7 +19,16 @@ import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.LegendPosition;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.GeoMap;
+import com.google.gwt.visualization.client.visualizations.GeoMap.DataMode;
+import com.google.gwt.visualization.client.visualizations.ImageAreaChart;
+import com.google.gwt.visualization.client.visualizations.ImageBarChart;
+import com.google.gwt.visualization.client.visualizations.ImageLineChart;
 import com.google.gwt.visualization.client.visualizations.ImagePieChart;
+import com.google.gwt.visualization.client.visualizations.corechart.AreaChart;
+import com.google.gwt.visualization.client.visualizations.corechart.BarChart;
+import com.google.gwt.visualization.client.visualizations.corechart.ColumnChart;
+import com.google.gwt.visualization.client.visualizations.corechart.LineChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
 import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -33,6 +42,7 @@ import com.google.gwt.user.client.ui.HTML;
 public class ChartOptions extends DialogBox {
 	private Button btnOk;
 	AbstractDataTable BaseData;
+	AbstractDataTable ChartData;
 	private ListBox cbbChartType;
 	private TextBox txtbxChartTitle;
 	private ListBox cbbLPosition;
@@ -43,7 +53,7 @@ public class ChartOptions extends DialogBox {
 	private HTML htmlChartDesc;
 	private CheckBox chckbxInteractive;
 	
-	private int itemid;
+	public int itemid;
 	private int width;
 	private int height;
 	
@@ -118,24 +128,127 @@ public class ChartOptions extends DialogBox {
 					
 					break;
 				case 2:
+					ChartData = ChartDataTable.dataIntoSeries(BaseData, cbbX.getSelectedIndex(), cbbY.getSelectedIndex()+2, cbbSeries.getSelectedIndex(),true);
+					if (chckbxInteractive.getValue()){
+						Runnable onLoadCallback = new Runnable() {
+							
+							@Override
+							public void run() {
+								LineChart line = new LineChart(ChartData, createCoreChartOptions(txtbxChartTitle.getText(), getLegendPosition(), width, height));
+								chart.add(line);
+							}
+						};
+						VisualizationUtils.loadVisualizationApi(onLoadCallback, LineChart.PACKAGE);
+					} else {
+						Runnable onLoadCallback = new Runnable() {
+							
+							@Override
+							public void run() {
+								ImageLineChart.Options ipcOptions = ImageLineChart.Options.create();
+								ipcOptions.setTitle(txtbxChartTitle.getText());
+								ipcOptions.setWidth(width);
+								ipcOptions.setHeight(height);
+								ipcOptions.setLegend(getLegendPosition());
+								ImageLineChart line = new ImageLineChart(ChartData, ipcOptions);
+								chart.add(line);
+							}
+						};
+						VisualizationUtils.loadVisualizationApi(onLoadCallback, ImageLineChart.PACKAGE);
+					}
 					
 					break;
 				case 3:
-					
+					ChartData = ChartDataTable.dataIntoSeries(BaseData, cbbX.getSelectedIndex(), cbbY.getSelectedIndex()+2, cbbSeries.getSelectedIndex(),true);
+					if (chckbxInteractive.getValue()){
+						Runnable onLoadCallback = new Runnable() {
+							
+							@Override
+							public void run() {
+								ColumnChart line = new ColumnChart(ChartData, createCoreChartOptions(txtbxChartTitle.getText(), getLegendPosition(), width, height));
+								chart.add(line);
+							}
+						};
+						VisualizationUtils.loadVisualizationApi(onLoadCallback, ColumnChart.PACKAGE);
+					} 
 					break;
 				case 4:
+					ChartData = ChartDataTable.dataIntoSeries(BaseData, cbbX.getSelectedIndex(), cbbY.getSelectedIndex()+2, cbbSeries.getSelectedIndex(),true);
+					if (chckbxInteractive.getValue()){
+						Runnable onLoadCallback = new Runnable() {
+							
+							@Override
+							public void run() {
+								BarChart line = new BarChart(ChartData, createCoreChartOptions(txtbxChartTitle.getText(), getLegendPosition(), width, height));
+								chart.add(line);
+							}
+						};
+						VisualizationUtils.loadVisualizationApi(onLoadCallback, BarChart.PACKAGE);
+					} else {
+						Runnable onLoadCallback = new Runnable() {
+							
+							@Override
+							public void run() {
+								ImageBarChart.Options ipcOptions = ImageBarChart.Options.create();
+								ipcOptions.setTitle(txtbxChartTitle.getText());
+								ipcOptions.setWidth(width);
+								ipcOptions.setHeight(height);
+								ipcOptions.setLegend(getLegendPosition());
+								ImageBarChart line = new ImageBarChart(ChartData, ipcOptions);
+								chart.add(line);
+							}
+						};
+						VisualizationUtils.loadVisualizationApi(onLoadCallback, ImageBarChart.PACKAGE);
+					}
 					
 					break;
 				case 5:
-					
+					ChartData = ChartDataTable.dataIntoSeries(BaseData, cbbX.getSelectedIndex(), cbbY.getSelectedIndex()+2, cbbSeries.getSelectedIndex(),true);
+					if (chckbxInteractive.getValue()){
+						Runnable onLoadCallback = new Runnable() {
+							
+							@Override
+							public void run() {
+								AreaChart area = new AreaChart(ChartData, createCoreChartOptions(txtbxChartTitle.getText(), getLegendPosition(), width, height));
+								chart.add(area);
+							}
+						};
+						VisualizationUtils.loadVisualizationApi(onLoadCallback, AreaChart.PACKAGE);
+					} else {
+						Runnable onLoadCallback = new Runnable() {
+							
+							@Override
+							public void run() {
+								ImageAreaChart.Options ipcOptions = ImageAreaChart.Options.create();
+								ipcOptions.setTitle(txtbxChartTitle.getText());
+								ipcOptions.setWidth(width);
+								ipcOptions.setHeight(height);
+								ipcOptions.setLegend(getLegendPosition());
+								ImageAreaChart area = new ImageAreaChart(ChartData, ipcOptions);
+								chart.add(area);
+							}
+						};
+						VisualizationUtils.loadVisualizationApi(onLoadCallback, ImageAreaChart.PACKAGE);
+					}
+
 					break;
 				case 6:
-					
+					ChartData = ChartDataTable.filteredTable(BaseData, 0, cbbY.getSelectedIndex()+2, 1, cbbSeries.getItemText(cbbSeries.getSelectedIndex()));
+					if (chckbxInteractive.getValue()){
+						Runnable onLoadCallback = new Runnable() {
+							
+							@Override
+							public void run() {
+								GeoMap pie = new GeoMap(ChartData, createMapOptions(width, height));
+								chart.add(pie);
+							}
+						};
+						VisualizationUtils.loadVisualizationApi(onLoadCallback, GeoMap.PACKAGE);
+					}
 					break;
 
 				default:
 							
-					final AbstractDataTable ChartData = ChartDataTable.filteredTable(BaseData, 0, cbbY.getSelectedIndex()+2, 1, cbbSeries.getItemText(cbbSeries.getSelectedIndex()));
+					ChartData = ChartDataTable.filteredTable(BaseData, 0, cbbY.getSelectedIndex()+2, 1, cbbSeries.getItemText(cbbSeries.getSelectedIndex()));
 					if (chckbxInteractive.getValue()){
 						Runnable onLoadCallback = new Runnable() {
 							
@@ -448,6 +561,18 @@ public class ChartOptions extends DialogBox {
 		return options;
 		
 	}
+	
+	public GeoMap.Options createMapOptions(int w, int h){
+		GeoMap.Options options = GeoMap.Options.create();
+		options.setWidth(w);
+        options.setHeight(h);
+        options.setShowLegend(true);
+        options.setShowZoomOut(true);
+        options.setDataMode(DataMode.REGIONS);
+        options.setColors(0xDDDDDD,0xCE0000,0xFF9E00,0xF7D708,0x9CCF31);
+        return options;
+	}
+
 	
 
 	public Label getLblChartType() {
