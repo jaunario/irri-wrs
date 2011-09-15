@@ -8,21 +8,24 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
-import com.google.gwt.visualization.client.visualizations.GeoMap;
 import com.google.gwt.visualization.client.visualizations.Table;
-import com.google.gwt.visualization.client.visualizations.GeoMap.DataMode;
 import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.DecoratedTabBar;
-//import com.google.gwt.event.dom.client.ClickEvent;
-//import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.ui.MenuItemSeparator;
@@ -120,32 +123,31 @@ public class MultiChartPanel extends Composite {
 		
 		MenuItem mntmNewChart = new MenuItem("New Chart", false, new Command() {
 			public void execute() {
-				ChartOptions newco = new ChartOptions(basedata, deckChartPager.getOffsetWidth(),deckChartPager.getOffsetHeight(), deckChartPager.getWidgetCount());
+				final ChartOptions newco = new ChartOptions(basedata, deckChartPager.getOffsetWidth(),deckChartPager.getOffsetHeight(), deckChartPager.getWidgetCount());
 				deckChartPager.add(newco.getChart());
-// TODO: Close chart
-//				HorizontalPanel charttab = new HorizontalPanel();
-//				charttab.setSpacing(2);				
-//				Label tablabel = new Label(("Chart" + (deckChartPager.getWidgetCount()-1)));
-//				charttab.add(tablabel);
-//				charttab.setCellVerticalAlignment(tablabel, HasVerticalAlignment.ALIGN_MIDDLE);
-//				Image closeimg = new Image("images/tab_close.png");
-//				closeimg.setSize("10px", "10px");
-//				PushButton closetab = new PushButton(closeimg);
-//				closetab.setSize("11px", "11px");
-//				charttab.add(closetab);
-//				closetab.addClickHandler(new ClickHandler() {
-//					
-//					@Override
-//					public void onClick(ClickEvent event) {
-//						// TODO Auto-generated method stub
-//						int thistab = deckChartPager.getWidgetCount()-1;
-//						deckChartPager.remove(thistab);
-//						dtbChartPageSelector.removeTab(thistab);
-//					}
-//				});
-//				
-				dtbChartPageSelector.addTab("Chart" + dtbChartPageSelector.getTabCount());
+				HorizontalPanel charttab = new HorizontalPanel();
+				charttab.setSpacing(2);				
+				final Label tablabel = new Label(("Chart " + newco.itemid));
+				charttab.add(tablabel);
+				charttab.setCellVerticalAlignment(tablabel, HasVerticalAlignment.ALIGN_MIDDLE);
+				Image closeimg = new Image("images/tab_close.png");
+				closeimg.setSize("5px", "5px");
+				PushButton closetab = new PushButton(closeimg);
+				closetab.setSize("10px", "10px");
+				charttab.add(closetab);
+				closetab.addClickHandler(new ClickHandler() {
+					
+					@Override
+					public void onClick(ClickEvent event) {
+						// TODO Auto-generated method stub
+						int tab = newco.itemid;
+						deckChartPager.remove(tab);
+						dtbChartPageSelector.removeTab(tab);						
+					}
+				});
 				
+				dtbChartPageSelector.addTab(charttab);
+				dtbChartPageSelector.selectTab(dtbChartPageSelector.getTabCount()-1);
 			}
 		});
 		mbChartClass.addItem(mntmNewChart);
@@ -153,7 +155,14 @@ public class MultiChartPanel extends Composite {
 		MenuItemSeparator separator_2 = new MenuItemSeparator();
 		mbChartClass.addSeparator(separator_2);
 		
-		MenuItem mntmRemove = new MenuItem("Remove", false, (Command) null);
+		MenuItem mntmRemove = new MenuItem("Remove", false, new Command() {
+			public void execute() {
+				while (deckChartPager.getWidgetCount()>1) {
+					dtbChartPageSelector.removeTab(deckChartPager.getWidgetCount()-1);
+					deckChartPager.remove(deckChartPager.getWidgetCount()-1);					
+				}
+			}
+		});
 		mntmRemove.setHTML("Remove All Charts");
 		mbChartClass.addItem(mntmRemove);
 		mbTableOptions.addItem(mntmCharts);
@@ -293,18 +302,6 @@ public class MultiChartPanel extends Composite {
     	return options;
     }
     
-	public GeoMap.Options createMapOptions(int w, int h){
-		GeoMap.Options options = GeoMap.Options.create();
-		options.setWidth(w-5);
-        options.setHeight(h-5);
-        options.setShowLegend(true);
-        options.setShowZoomOut(true);
-        options.setShowZoomOut(true);
-        options.setDataMode(DataMode.REGIONS);
-        options.setColors(0xDDDDDD,0xCE0000,0xFF9E00,0xF7D708,0x9CCF31);        
-        return options;
-	}
-
 	public DecoratedTabBar getDecoratedTabBar() {
 		return dtbChartPageSelector;
 	}
