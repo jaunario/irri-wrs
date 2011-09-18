@@ -20,6 +20,7 @@ public class CheckListBox extends Composite implements HasChangeHandlers {
 		vpListBox = new VerticalPanel();
 		scroller.setWidget(vpListBox);
 		vpListBox.setSize("100%", "100%");
+		setStyleName("wrs-checklistbox");
 	}
 	
 	public void addItem(String item, String val){

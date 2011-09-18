@@ -119,6 +119,28 @@ public class ChartDataTable{
 		}		
 		return seriesdata;
 	}
+	
+	public static AbstractDataTable numericXYSeries(AbstractDataTable data, int x, int y, int series){
+		DataTable seriesdata = DataTable.create();
+		seriesdata.addColumn(ColumnType.NUMBER,data.getColumnLabel(x));
+		seriesdata.addColumn(ColumnType.NUMBER,data.getColumnLabel(y));
+		seriesdata.addColumn(ColumnType.NUMBER,data.getColumnLabel(series));
+		seriesdata.addRows(data.getNumberOfRows());
+		for (int i = 0; i < data.getNumberOfRows(); i++) {		
+			if(!data.isValueNull(i, x)){
+				seriesdata.setValue(i, 0, data.getValueDouble(i,x));
+			}
+			if(!data.isValueNull(i, y)) {
+				seriesdata.setValue(i, 1, data.getValueDouble(i,y));
+			}
+			if(!data.isValueNull(i, y)) {
+				seriesdata.setValue(i, 2, data.getValueDouble(i,series));
+			}
+
+		}		
+		return seriesdata;
+	}
+
 	public static String csvData(AbstractDataTable data){
 		String csv = "";
 		for (int i = 0; i < data.getNumberOfColumns(); i++) {
