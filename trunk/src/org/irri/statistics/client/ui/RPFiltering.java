@@ -118,19 +118,20 @@ public class RPFiltering extends Composite {
 	        		lbxYear.clear();
 	        		lbxVariable.clear();
 	        		int selected = lbxExtent.getSelectedIndex();
+        			rsql = "SELECT c.NAME_ENGLISH, r.iso3 FROM available r INNER JOIN countries c ON c.iso3=r.iso3 WHERE r.ci="+ selected +" GROUP BY 1 ASC";
+        			vgsql = "SELECT g.group_name, r.group_code FROM available r INNER JOIN wrs_groups g ON g.group_code=r.group_code WHERE r.ci="+ selected +" GROUP BY 1 ASC";
 	        		switch (selected) {
 					case 0:
 	        			srctable = "reg_data";		            	
-		            	rsql =  "SELECT c.name_english, r.iso3 FROM "+ srctable +" r INNER JOIN countries c ON c.iso3=r.iso3 WHERE c.ci=0 GROUP BY 1 ASC";
-		            	vgsql =  "SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code";
+		            	//rsql =  "SELECT c.name_english, r.iso3 FROM "+ srctable +" r INNER JOIN countries c ON c.iso3=r.iso3 WHERE c.ci=0 GROUP BY 1 ASC";
+		            	//vgsql =  "SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code ORDER BY 1";
 						break;
 
 					case 1:
 		            	srctable = "front_data";
-		            	rsql =  "SELECT c.name_english, r.iso3 FROM "+ srctable +" r INNER JOIN countries c ON c.iso3=r.iso3 WHERE c.ci=1 GROUP BY 1 ASC";
-		            	vgsql =  "SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code";		            
-		            	
-		            	break;
+		            	//rsql =  "SELECT c.name_english, r.iso3 FROM "+ srctable +" r INNER JOIN countries c ON c.iso3=r.iso3 WHERE c.ci=1 GROUP BY 1 ASC";
+		            	//vgsql =  "SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code ORDER BY 1";		            
+						break;
 					
 					case 2:
 						srctable = "pays";
@@ -155,14 +156,15 @@ public class RPFiltering extends Composite {
 	        hpVarL1.setSpacing(5);
 	        vpWrapper.add(hpVarL1);
 	        
-	        VerticalPanel verticalPanel = new VerticalPanel();
-	        hpVarL1.add(verticalPanel);
+	        VerticalPanel vpRegion = new VerticalPanel();
+	        hpVarL1.add(vpRegion);
 	        
 	        ChangeHandler varChangeHandler = new ChangeHandler() {
 	        	public void onChange(ChangeEvent event) {
 	        		String selregion = getSelectedItems(lbxRegion, false);
 	        		String selvargroups = "";
 	        		String sql = "";
+	        		String vgsql = "SELECT g.group_name, r.group_code FROM available r INNER JOIN wrs_groups g ON g.group_code=r.group_code WHERE r.ci="+ lbxExtent.getSelectedIndex();
 	        		
 	        		lbxYear.clear();
 	        		btnSubmit.setEnabled(false);
@@ -170,46 +172,50 @@ public class RPFiltering extends Composite {
 	        			if (lbxExtent.getSelectedIndex()==2){
 		        			sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM svar_list v INNER JOIN subnat_avail s ON v.var_code=s.var_code WHERE s.iso3 in (" + selregion + ")";
 		        		} else {
-		        			sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code WHERE v.show_flag=1 AND s.iso3 in (" + selregion + ")";
+		        			//sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code WHERE v.show_flag=1 AND s.iso3 in (" + selregion + ")";
+		        			sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM variables v INNER JOIN available s ON v.var_code=s.var_code WHERE s.ci="+ lbxExtent.getSelectedIndex()+ " AND s.iso3 in (" + selregion + ")";
 		        			selvargroups = lbxVarGroup.csSelectedNames(true);
+		        			
 		        			if (!selvargroups.equals("")){
-			        			sql = sql + " AND v.group_code in (" + selvargroups + ")";
+			        			sql = sql + " AND v.group_code in (" + selvargroups + ")";			        			
 			        		}
+		        			
 		        		}
+	        			
 	        			sql = sql +  " GROUP BY s.var_code ORDER BY v.var_name";
 	        			RPCUtils.getService("mysqlservice").RunSELECT(sql,InitVarBox);
 	        		}
+        			vgsql = vgsql + " GROUP BY 1 ASC";
+		            RPCUtils.getService("mysqlservice").RunSELECT(vgsql,InitVarGroupBox);
 	        	}
 	        };
 
 	        Label lblRegion = new Label("Regions");
-	        verticalPanel.add(lblRegion);
+	        vpRegion.add(lblRegion);
 	        lbxRegion.addChangeHandler(varChangeHandler);
-	        verticalPanel.add(lbxRegion);
+	        vpRegion.add(lbxRegion);
 	        
 	        lbxRegion.setVisibleItemCount(10);
 	        lbxRegion.setSize("292px", "190px");
 	        
-	        VerticalPanel verticalPanel_1 = new VerticalPanel();
-	        hpVarL1.add(verticalPanel_1);
+	        VerticalPanel vpVarGroup = new VerticalPanel();
+	        hpVarL1.add(vpVarGroup);
 	        
 	        Label lblVarGroup = new Label("Variable Groups");
-	        verticalPanel_1.add(lblVarGroup);
+	        vpVarGroup.add(lblVarGroup);
 	        lbxVarGroup.addChangeHandler(varChangeHandler);
-	        verticalPanel_1.add(lbxVarGroup);
-	        
-	        
-	        lbxVarGroup.setSize("280px", "190px");
+	        vpVarGroup.add(lbxVarGroup);
+	        lbxVarGroup.setSize("280px", "188px");
 	        
 	        HorizontalPanel hpVarL2 = new HorizontalPanel();
 	        hpVarL2.setSpacing(5);
 	        vpWrapper.add(hpVarL2);
 	        
-	        VerticalPanel verticalPanel_2 = new VerticalPanel();
-	        hpVarL2.add(verticalPanel_2);
+	        VerticalPanel vpVariable = new VerticalPanel();
+	        hpVarL2.add(vpVariable);
 	        
 	        Label lblVariables = new Label("Variables");
-	        verticalPanel_2.add(lblVariables);
+	        vpVariable.add(lblVariables);
 	        lbxVariable.addChangeHandler(new ChangeHandler() {
 	        	public void onChange(ChangeEvent event) {
 	        		String selregion = getSelectedItems(lbxRegion, false);
@@ -231,21 +237,21 @@ public class RPFiltering extends Composite {
 	        	}
 	        });
 	        
-	        verticalPanel_2.add(lbxVariable);
+	        vpVariable.add(lbxVariable);
 	        lbxVariable.setSize("490px", "270px");
 	        lbxVariable.setVisibleItemCount(15);
 	        
-	        VerticalPanel verticalPanel_3 = new VerticalPanel();
-	        hpVarL2.add(verticalPanel_3);
+	        VerticalPanel vpYears = new VerticalPanel();
+	        hpVarL2.add(vpYears);
 	        
 	        Label lblYears = new Label("Years");
-	        verticalPanel_3.add(lblYears);
+	        vpYears.add(lblYears);
 	        lbxYear.addChangeHandler(new ChangeHandler() {
 	        	public void onChange(ChangeEvent event) {
 	        		btnSubmit.setEnabled(true);
 	        	}
 	        });
-	        verticalPanel_3.add(lbxYear);
+	        vpYears.add(lbxYear);
 	        lbxYear.setSize("84px", "270px");
 	        lbxYear.setVisibleItemCount(15);
 	        

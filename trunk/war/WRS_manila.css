@@ -157,3 +157,8 @@ body {
 	border-style: solid;
 	border-color: #aaa;
 }
+.wrs-checklistbox {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #aaa;
+}

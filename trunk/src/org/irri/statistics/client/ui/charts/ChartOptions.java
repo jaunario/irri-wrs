@@ -31,6 +31,7 @@ import com.google.gwt.visualization.client.visualizations.corechart.ColumnChart;
 import com.google.gwt.visualization.client.visualizations.corechart.LineChart;
 import com.google.gwt.visualization.client.visualizations.corechart.Options;
 import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
+import com.google.gwt.visualization.client.visualizations.corechart.ScatterChart;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -68,27 +69,11 @@ public class ChartOptions extends DialogBox {
 	private Label lblY;
 	private Label lblX;
 	
-	/**
-	 * @wbp.parser.constructor
-	 */
-	public ChartOptions() {
-		setAnimationEnabled(true);
-		setWidth("556px");
-		setGlassEnabled(true);
-		setHTML("Chart Options");
-		initDialog();
-		center();
-		show();
-		itemid = 0;
-
-	}
-	
 	public ChartOptions(AbstractDataTable basedata, int w, int h,int index) {
 		width = w;
 		height = h;
 		itemid = index;
 		BaseData = basedata;
-		setWidth("400px");
 		setGlassEnabled(true);
 		setHTML("Chart Options");
 		initDialog();
@@ -111,7 +96,7 @@ public class ChartOptions extends DialogBox {
 	public void initDialog(){
 		DockPanel dockPanel = new DockPanel();
 		setWidget(dockPanel);
-		dockPanel.setSize("564px", "254px");
+		dockPanel.setSize("510px", "310px");
 		
 		chart = new SimplePanel();
 		HorizontalPanel hpChartSubmit = new HorizontalPanel();
@@ -125,7 +110,18 @@ public class ChartOptions extends DialogBox {
 				int selchart = cbbChartType.getSelectedIndex();
 				switch (selchart) {
 				case 1:
-					
+					ChartData = ChartDataTable.numericXYSeries(BaseData, cbbX.getSelectedIndex()+2, cbbY.getSelectedIndex()+2, cbbSeries.getSelectedIndex()+2);
+					if (chckbxInteractive.getValue()){
+						Runnable onLoadCallback = new Runnable() {
+							
+							@Override
+							public void run() {
+								ScatterChart scatter = new ScatterChart(ChartData, createCoreChartOptions(txtbxChartTitle.getText(), getLegendPosition(), width, height));
+								chart.add(scatter);
+							}
+						};
+						VisualizationUtils.loadVisualizationApi(onLoadCallback, ScatterChart.PACKAGE);
+					}
 					break;
 				case 2:
 					ChartData = ChartDataTable.dataIntoSeries(BaseData, cbbX.getSelectedIndex(), cbbY.getSelectedIndex()+2, cbbSeries.getSelectedIndex(),true);
@@ -178,8 +174,8 @@ public class ChartOptions extends DialogBox {
 							
 							@Override
 							public void run() {
-								BarChart line = new BarChart(ChartData, createCoreChartOptions(txtbxChartTitle.getText(), getLegendPosition(), width, height));
-								chart.add(line);
+								BarChart bar = new BarChart(ChartData, createCoreChartOptions(txtbxChartTitle.getText(), getLegendPosition(), width, height));
+								chart.add(bar);
 							}
 						};
 						VisualizationUtils.loadVisualizationApi(onLoadCallback, BarChart.PACKAGE);
@@ -329,10 +325,9 @@ public class ChartOptions extends DialogBox {
 					lblX.setText("X");
 					populateListBox(cbbX, variables);
 					cbbX.setEnabled(true);
-					lblSeries.setText("Series");
-					cbbSeries.clear();
-					cbbSeries.addItem("region");
-					cbbSeries.setEnabled(false);
+					lblSeries.setText("Anoher Variable");
+					populateListBox(cbbSeries, variables);
+					cbbSeries.setEnabled(true);
 					break;
 
 				case 2:

@@ -142,7 +142,8 @@ public class MultiChartPanel extends Composite {
 						// TODO Auto-generated method stub
 						int tab = newco.itemid;
 						deckChartPager.remove(tab);
-						dtbChartPageSelector.removeTab(tab);						
+						dtbChartPageSelector.removeTab(tab);
+						dtbChartPageSelector.selectTab(tab-1);
 					}
 				});
 				
