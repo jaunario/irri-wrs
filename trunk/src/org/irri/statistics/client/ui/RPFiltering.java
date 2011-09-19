@@ -23,10 +23,10 @@ public class RPFiltering extends Composite {
 	 * Author : Jorrel Khalil S. Aunario
 	 */
 	ListBox lbxExtent = new ListBox(false);
-	ListBox lbxRegion = new ListBox(true);
+	public ListBox lbxRegion = new ListBox(true);
 	CheckListBox lbxVarGroup = new CheckListBox();
-	ListBox lbxVariable = new ListBox(true);
-	ListBox lbxYear = new ListBox(true);
+	public ListBox lbxVariable = new ListBox(true);
+	public ListBox lbxYear = new ListBox(true);
 	Button btnSubmit = new Button("Get Data");
 	public QueryOptions filteropts = new QueryOptions();	
 		String selectedCountries = "";    
@@ -86,7 +86,7 @@ public class RPFiltering extends Composite {
             	populateListBox(lbxYear, out);
             	lbxYear.clear();
             	for (int i = 1; i < out.length; i++) {
-					lbxYear.addItem(out[i][0]);
+					lbxYear.addItem(out[i][0], "");
 				}
             }
 
@@ -159,7 +159,9 @@ public class RPFiltering extends Composite {
 	        VerticalPanel vpRegion = new VerticalPanel();
 	        hpVarL1.add(vpRegion);
 	        
-	        ChangeHandler varChangeHandler = new ChangeHandler() {
+	        Label lblRegion = new Label("Regions");
+	        vpRegion.add(lblRegion);
+	        lbxRegion.addChangeHandler( new ChangeHandler() {
 	        	public void onChange(ChangeEvent event) {
 	        		String selregion = getSelectedItems(lbxRegion, false);
 	        		String selvargroups = "";
@@ -188,25 +190,49 @@ public class RPFiltering extends Composite {
         			vgsql = vgsql + " GROUP BY 1 ASC";
 		            RPCUtils.getService("mysqlservice").RunSELECT(vgsql,InitVarGroupBox);
 	        	}
-	        };
-
-	        Label lblRegion = new Label("Regions");
-	        vpRegion.add(lblRegion);
-	        lbxRegion.addChangeHandler(varChangeHandler);
+	        });
 	        vpRegion.add(lbxRegion);
 	        
 	        lbxRegion.setVisibleItemCount(10);
-	        lbxRegion.setSize("292px", "190px");
+	        lbxRegion.setSize("292px", "215px");
 	        
 	        VerticalPanel vpVarGroup = new VerticalPanel();
-	        hpVarL1.add(vpVarGroup);
+	        hpVarL1.add(vpVarGroup);	        
 	        
 	        Label lblVarGroup = new Label("Variable Groups");
 	        vpVarGroup.add(lblVarGroup);
-	        lbxVarGroup.addChangeHandler(varChangeHandler);
+	        lbxVarGroup.addChangeHandler( new ChangeHandler() {
+	        	public void onChange(ChangeEvent event) {
+	        		String selregion = getSelectedItems(lbxRegion, false);
+	        		String selvargroups = "";
+	        		String sql = "";
+	        		
+	        		lbxYear.clear();
+	        		btnSubmit.setEnabled(false);
+	        		if (!selregion.equals("")){
+	        			if (lbxExtent.getSelectedIndex()==2){
+		        			sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM svar_list v INNER JOIN subnat_avail s ON v.var_code=s.var_code WHERE s.iso3 in (" + selregion + ")";
+		        		} else {
+		        			//sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code WHERE v.show_flag=1 AND s.iso3 in (" + selregion + ")";
+		        			sql = "SELECT CONCAT(v.var_name,' (', IF(v.unit IS NULL OR v.unit='','no unit',v.unit),')'), s.var_code FROM variables v INNER JOIN available s ON v.var_code=s.var_code WHERE s.ci="+ lbxExtent.getSelectedIndex()+ " AND s.iso3 in (" + selregion + ")";
+		        			selvargroups = lbxVarGroup.csSelectedNames(true);
+		        			
+		        			if (!selvargroups.equals("")){
+			        			sql = sql + " AND v.group_code in (" + selvargroups + ")";			        			
+			        		}
+		        			
+		        		}
+	        			
+	        			sql = sql +  " GROUP BY s.var_code ORDER BY v.var_name";
+	        			RPCUtils.getService("mysqlservice").RunSELECT(sql,InitVarBox);
+	        		}
+	        	}
+	        });
 	        vpVarGroup.add(lbxVarGroup);
 	        lbxVarGroup.setSize("280px", "188px");
 	        
+	        vpVarGroup.add(lbxVarGroup.getHpControls());
+	        vpVarGroup.setCellHorizontalAlignment(vpVarGroup.getWidget(2), HasHorizontalAlignment.ALIGN_RIGHT);
 	        HorizontalPanel hpVarL2 = new HorizontalPanel();
 	        hpVarL2.setSpacing(5);
 	        vpWrapper.add(hpVarL2);
@@ -297,8 +323,8 @@ public class RPFiltering extends Composite {
 		public void initListBoxes(){
 			lbxYear.clear();
 			lbxVariable.clear();
-			RPCUtils.getService("mysqlservice").RunSELECT("SELECT c.name_english, r.iso3 FROM "+ srctable +" r INNER JOIN countries c ON c.iso3=r.iso3 WHERE c.ci=0 GROUP BY 1 ASC",InitRegionBox);
-			RPCUtils.getService("mysqlservice").RunSELECT("SELECT g.group_name, x.group_code FROM (SELECT v.group_code FROM variables v INNER JOIN " + srctable + " s ON v.var_code=s.var_code GROUP BY 1) x, wrs_groups g WHERE x.group_code=g.group_code",InitVarGroupBox);			
+			RPCUtils.getService("mysqlservice").RunSELECT("SELECT c.NAME_ENGLISH, r.iso3 FROM available r INNER JOIN countries c ON c.iso3=r.iso3 WHERE r.ci=0 GROUP BY 1 ASC",InitRegionBox);
+			RPCUtils.getService("mysqlservice").RunSELECT("SELECT g.group_name, r.group_code FROM available r INNER JOIN wrs_groups g ON g.group_code=r.group_code WHERE r.ci=0 GROUP BY 1 ASC",InitVarGroupBox);			
 		}
 		
 		public String getSelectedItems(ListBox lbx, boolean noquote){
@@ -306,6 +332,17 @@ public class RPFiltering extends Composite {
 			for (int i = 0; i < lbx.getItemCount(); i++) {
 				if (lbx.isItemSelected(i)) {
 					if (noquote){ selitems = selitems + lbx.getValue(i) + ","; } else selitems = selitems + "'" + lbx.getValue(i) + "',"; 
+				} 
+			}			
+			if (selitems.length()>0) selitems = selitems.substring(0, selitems.length()-1);
+			return(selitems);
+		}
+		
+		public String getSelectedLabels(ListBox lbx){
+			String selitems = "";
+			for (int i = 0; i < lbx.getItemCount(); i++) {
+				if (lbx.isItemSelected(i)) {
+					selitems = selitems + lbx.getItemText(i) + ",";  
 				} 
 			}			
 			if (selitems.length()>0) selitems = selitems.substring(0, selitems.length()-1);
@@ -335,7 +372,7 @@ public class RPFiltering extends Composite {
 		
 		public String sqlFromItems(){
 			String regfilter = getSelectedItems(lbxRegion, false);
-			String yrfilter = getSelectedItems(lbxYear, true);
+			String yrfilter = getSelectedLabels(lbxYear);
 			String[] varcols = getVarColumns();
 			
 			String sql = "";
@@ -376,6 +413,35 @@ public class RPFiltering extends Composite {
 			}
 			return sel;
 		}
-				
+		
+		public String varDefinition(ListBox lbx, String delim){
+			String vdcsv = "";
+			for (int i = 0; i < lbx.getItemCount(); i++) {
+				if (lbx.isItemSelected(i) && lbx.getValue(i).isEmpty() ){
+					vdcsv += lbx.getItemText(i);					
+				} else if (lbx.isItemSelected(i) && !lbx.getValue(i).isEmpty()){
+					vdcsv += lbx.getValue(i) + "-" + lbx.getItemText(i);
+				}
+				if(i+1<lbx.getItemCount() && lbx.isItemSelected(i)) vdcsv += delim;
+			}
+			return vdcsv;
+		}
+		
+		public String varDefinitionHTMLTable(ListBox lbx){
+			String vdcsv = "<table>";
+			
+			for (int i = 0; i < lbx.getItemCount(); i++) {
+				vdcsv += "<tr>";
+				if (lbx.isItemSelected(i) && lbx.getValue(i).isEmpty() ){
+					vdcsv += "<td>" +lbx.getItemText(i) + "</td>";					
+				} else if (lbx.isItemSelected(i) && !lbx.getValue(i).isEmpty()){
+					vdcsv += "<td><b>" +lbx.getValue(i) + "</b></td><td>" + lbx.getItemText(i) + "</td>";
+				}				
+				vdcsv += "</tr>";
+			}
+			vdcsv += "</table>";
+			return vdcsv;
+		}
+
 
   	}

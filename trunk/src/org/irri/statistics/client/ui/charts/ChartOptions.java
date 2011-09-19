@@ -227,21 +227,20 @@ public class ChartOptions extends DialogBox {
 					}
 
 					break;
-				case 6:
-					ChartData = ChartDataTable.filteredTable(BaseData, 0, cbbY.getSelectedIndex()+2, 1, cbbSeries.getItemText(cbbSeries.getSelectedIndex()));
-					if (chckbxInteractive.getValue()){
-						Runnable onLoadCallback = new Runnable() {
-							
-							@Override
-							public void run() {
-								GeoMap pie = new GeoMap(ChartData, createMapOptions(width, height));
-								chart.add(pie);
-							}
-						};
-						VisualizationUtils.loadVisualizationApi(onLoadCallback, GeoMap.PACKAGE);
-					}
-					break;
-
+//				case 6:
+//					ChartData = ChartDataTable.filteredTable(BaseData, 0, cbbY.getSelectedIndex()+2, 1, cbbSeries.getItemText(cbbSeries.getSelectedIndex()));
+//					if (chckbxInteractive.getValue()){
+//						Runnable onLoadCallback = new Runnable() {
+//							
+//							@Override
+//							public void run() {
+//								GeoMap pie = new GeoMap(ChartData, createMapOptions(width, height));
+//								chart.add(pie);
+//							}
+//						};
+//						VisualizationUtils.loadVisualizationApi(onLoadCallback, GeoMap.PACKAGE);
+//					}
+//					break;
 				default:
 							
 					ChartData = ChartDataTable.filteredTable(BaseData, 0, cbbY.getSelectedIndex()+2, 1, cbbSeries.getItemText(cbbSeries.getSelectedIndex()));
@@ -358,19 +357,19 @@ public class ChartOptions extends DialogBox {
 					chckbxInteractive.setValue(true);
 					commonChartOptions();
 					break;
-				case 6:
-					image.setUrl("images/geomap.png");
-					htmlChartDesc.setHTML("GeoMap Chart");
-					chckbxInteractive.setEnabled(false);
-					chckbxInteractive.setValue(true);
-					lblSeries.setText("year");
-					populateListBox(cbbSeries, years);
-					cbbSeries.setEnabled(true);
-					lblX.setText("Parts");
-					cbbX.clear();
-					cbbX.addItem("region");
-					cbbX.setEnabled(false);
-					break;
+//				case 6:
+//					image.setUrl("images/geomap.png");
+//					htmlChartDesc.setHTML("GeoMap Chart");
+//					chckbxInteractive.setEnabled(false);
+//					chckbxInteractive.setValue(true);
+//					lblSeries.setText("year");
+//					populateListBox(cbbSeries, years);
+//					cbbSeries.setEnabled(true);
+//					lblX.setText("Parts");
+//					cbbX.clear();
+//					cbbX.addItem("region");
+//					cbbX.setEnabled(false);
+//					break;
 				default:
 					image.setUrl("images/pie.png");
 					htmlChartDesc.setHTML("Shows percentage values as a slice of a pie");
@@ -394,7 +393,7 @@ public class ChartOptions extends DialogBox {
 		cbbChartType.addItem("Column Chart");
 		cbbChartType.addItem("Bar Chart");
 		cbbChartType.addItem("Area Chart");
-		cbbChartType.addItem("Map");
+//		cbbChartType.addItem("Map");
 		cbbChartType.addItem("");
 		
 		chckbxInteractive = new CheckBox("Interactive");
