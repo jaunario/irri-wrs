@@ -26,8 +26,8 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.ToggleButton;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Frame;
 
 
 /**
@@ -45,6 +45,10 @@ public class WRS_manila implements EntryPoint {
     
     	private ToggleButton tglbtnViewResults;
     	private ToggleButton tglbtnSelection;
+    	private Frame frameVisualize;
+    	private ToggleButton tglbtnMapIt;
+    	private ToggleButton tglbtnTrendIt;
+    	private ToggleButton tglbtn3D;
     /** 
      * The entry point method, called automatically by loading a module
      * that declares an implementing class as an entry-point
@@ -102,18 +106,48 @@ public class WRS_manila implements EntryPoint {
         // WRS Visualization Apps                
         VerticalPanel vpVisualize = new VerticalPanel();
         simplePanel.setWidget(vpVisualize);
+        vpVisualize.setWidth("100%");
         
-        Hyperlink hplnkMapIt = new Hyperlink("Map It!", false, "newHistoryToken");
-        hplnkMapIt.setSize("185", "25");
-        vpVisualize.add(hplnkMapIt);
+        tglbtnMapIt = new ToggleButton("Map It");
+        tglbtnMapIt.addClickHandler(new ClickHandler() {
+        	public void onClick(ClickEvent event) {
+            		//frameVisualize.setUrl("http://geo.irri.org/vis/wrsMap_main.html");
+        			frameVisualize.setUrl("http://50.19.190.186/vis/wrsMap_main.html");
+            		ContentPanel.showWidget(2);
+            		tglbtn3D.setDown(false);
+            		tglbtnTrendIt.setDown(false);
+        	}
+        });
         
-        Hyperlink hplnkTrendIt = new Hyperlink("Trend It!", false, "newHistoryToken");
-        hplnkTrendIt.setSize("185", "25");
-        vpVisualize.add(hplnkTrendIt);
+        tglbtnMapIt.setDown(true);
+        tglbtnMapIt.setSize("95%", "25");
+        vpVisualize.add(tglbtnMapIt);
         
-        Hyperlink hplnk3D = new Hyperlink("3D", false, "newHistoryToken");
-        hplnk3D.setSize("185", "25");
-        vpVisualize.add(hplnk3D);
+        tglbtnTrendIt = new ToggleButton("Trend It");
+        tglbtnTrendIt.addClickHandler(new ClickHandler() {
+        	public void onClick(ClickEvent event) {
+            		//frameVisualize.setUrl("http://geo.irri.org/vis/wrs_Motion.php");
+        			frameVisualize.setUrl("http://50.19.190.186/vis/wrs_Motion.php");
+            		ContentPanel.showWidget(2);
+            		tglbtn3D.setDown(false);
+            		tglbtnMapIt.setDown(false);
+        	}
+        });
+        tglbtnTrendIt.setSize("95%", "25");
+        vpVisualize.add(tglbtnTrendIt);
+        
+        tglbtn3D = new ToggleButton("3D Map");
+        tglbtn3D.addClickHandler(new ClickHandler() {
+        	public void onClick(ClickEvent event) {
+            		//frameVisualize.setUrl("http://geo.irri.org/vis/wrs_3D.php");
+            		frameVisualize.setUrl("http://50.19.190.186/vis/wrs_3D.php");
+            		ContentPanel.showWidget(2);
+            		tglbtnTrendIt.setDown(false);
+            		tglbtnMapIt.setDown(false);
+        	}
+        });
+        tglbtn3D.setSize("95%", "25");
+        vpVisualize.add(tglbtn3D);
         dpContentWrapper.addWest(stkpWRSAppSelector, 250.0);
                                 
         // Put EventHandlers here
@@ -160,15 +194,18 @@ public class WRS_manila implements EntryPoint {
                     tglbtnViewResults.setEnabled(true);
                     tglbtnViewResults.setDown(true);
                     tglbtnSelection.setDown(false);
+                    selectionSummary();
                     getQueryResult(sql);                    
                 } else lblStatusGoesHere.setText("Please select a year.");
             }
         });
         mcpResults = new MultiChartPanel();
         mcpResults.setSize("100%", "100%");        
-        //hpResultTable = new HorizontalPanel();
         ContentPanel.add(mcpResults);
-        //hpResultTable.setSize("600px", "480px");
+        
+        frameVisualize = new Frame("http://geo.irri.org/vis/wrs_Motion.php");
+        ContentPanel.add(frameVisualize);
+        frameVisualize.setSize("100%", "100%");
                               
     }
     
@@ -195,22 +232,12 @@ public class WRS_manila implements EntryPoint {
 	
 	public void showdata(){
 		
-		//myresult.populateResultTable(resultmatrix);		
-	    //DBLineChart linechart = new DBLineChart(resultmatrix, "Top Producers", 250, 250);
-		//final int[] numcols = NumberUtils.createIntSeries(1, filterPanel.selectedItemsCount()+1, 1);
-	    //DBLineChart linechart2 = new DBLineChart(ChartDataTable.regroup(resultmatrix, 2), DBLineChart.createOptions());
-	    //lblStatusGoesHere.setText("Parsing results.");
-	    //if (cptnpnlResultCharts.getContentWidget()!=null) cptnpnlResultCharts.clear();
-	    //cptnpnlResultCharts.add(linechart2);
 	    GWT.runAsync(new RunAsyncCallback() {
-			
 			@Override
 			public void onSuccess() {
 				mcpResults.setBaseData(resultmatrix);
-				//TablePanel viztab = new TablePanel(resultmatrix, numcols, "50em", "35em");
 				lblStatusGoesHere.setText("Done.");
 			}
-			
 			@Override
 			public void onFailure(Throwable reason) {
 				// TODO Auto-generated method stub
@@ -234,7 +261,6 @@ public class WRS_manila implements EntryPoint {
         rootLayoutPanel.add(MainWrapper);
         rootLayoutPanel.setWidgetLeftRight(MainWrapper, 90.0, Unit.PX, 90.0, Unit.PX);
         
-
         // Create IRRI Banner 
         VerticalPanel vpIRRIBanner = new VerticalPanel();
         vpIRRIBanner.setStyleName("banner");
@@ -284,7 +310,6 @@ public class WRS_manila implements EntryPoint {
         htmlFarmHouseholdSurvey.setStyleName("gwt-HTML-Link");
         htmlFarmHouseholdSurvey.setSize("105px", "15px");
         hpGlobalNavigation.add(htmlFarmHouseholdSurvey);
-        
         // End of AppBanner
 
         // Create Status Panel
@@ -306,7 +331,19 @@ public class WRS_manila implements EntryPoint {
 	    hpStatusPanel.add(pbQueryStatus);
 	    hpStatusPanel.setCellVerticalAlignment(pbQueryStatus, HasVerticalAlignment.ALIGN_MIDDLE);
 	    // End of Status Panel
-	    
-        
+	}
+	
+	public void selectionSummary(){
+		String vars = filterPanel.varDefinition(filterPanel.lbxVariable, "@");
+		String regs = filterPanel.varDefinition(filterPanel.lbxRegion, "@" );
+		String yrs = filterPanel.varDefinition(filterPanel.lbxYear,",");
+		mcpResults.setSelSummary(regs + "_" + vars + "_" + yrs );
+		mcpResults.getHtmlSelected().setHTML("<h3>Regions/Countries/Provinces</h3>" +
+				filterPanel.varDefinitionHTMLTable(filterPanel.lbxRegion) +
+				"<h3>Variables</h3>" +
+				filterPanel.varDefinitionHTMLTable(filterPanel.lbxVariable) +
+				"<h3>Year</h3>" +
+				filterPanel.varDefinitionHTMLTable(filterPanel.lbxYear)
+		);
 	}
 }

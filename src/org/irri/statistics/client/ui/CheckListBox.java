@@ -8,19 +8,60 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
 
 public class CheckListBox extends Composite implements HasChangeHandlers {
 	private VerticalPanel vpListBox;
+	private HorizontalPanel hpControls;
 
 	public CheckListBox() {
+		
 		
 		ScrollPanel scroller = new ScrollPanel();
 		initWidget(scroller);
 		
 		vpListBox = new VerticalPanel();
 		scroller.setWidget(vpListBox);
-		vpListBox.setSize("100%", "100%");
+		vpListBox.setSize("100%", "80%");
 		setStyleName("wrs-checklistbox");
+		
+		hpControls = new HorizontalPanel();
+		hpControls.setSpacing(1);
+		
+		Button btnCheckAll = new Button("Check All");
+		btnCheckAll.setStyleName("wrs-checklistbox-button");
+		btnCheckAll.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if (vpListBox.getWidgetCount()>0){
+					for (int i = 0; i < vpListBox.getWidgetCount(); i++) {
+						CheckBox thiscb = (CheckBox) vpListBox.getWidget(i);
+						thiscb.setValue(true);
+						if (i+1==vpListBox.getWidgetCount()) thiscb.setValue(true, true);
+					}
+				}
+				
+			}
+		});
+		hpControls.add(btnCheckAll);
+		
+		Button btnUncheckAll = new Button("Uncheck All");
+		btnUncheckAll.setStyleName("wrs-checklistbox-button");
+		btnUncheckAll.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if (vpListBox.getWidgetCount()>0){
+					for (int i = 0; i < vpListBox.getWidgetCount(); i++) {
+						CheckBox thiscb = (CheckBox) vpListBox.getWidget(i);
+						thiscb.setValue(false);
+						if (i+1==vpListBox.getWidgetCount()) thiscb.setValue(false, true);
+					}
+				}
+			}
+		});
+		hpControls.add(btnUncheckAll);
+		hpControls.setCellHeight(btnUncheckAll, "10%");		
 	}
 	
 	public void addItem(String item, String val){
@@ -64,5 +105,8 @@ public class CheckListBox extends Composite implements HasChangeHandlers {
 			}
 		}		
 		return selitems.substring(0, selitems.length()-1);
+	}
+	public HorizontalPanel getHpControls() {
+		return hpControls;
 	}
 }
