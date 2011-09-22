@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -427,20 +428,22 @@ public class RPFiltering extends Composite {
 			return vdcsv;
 		}
 		
-		public String varDefinitionHTMLTable(ListBox lbx){
-			String vdcsv = "<table>";
-			
+		public Grid varDefinitionGrid(ListBox lbx){
+			Grid grid = new Grid();
+			int counter = 0;
 			for (int i = 0; i < lbx.getItemCount(); i++) {
-				vdcsv += "<tr>";
-				if (lbx.isItemSelected(i) && lbx.getValue(i).isEmpty() ){
-					vdcsv += "<td>" +lbx.getItemText(i) + "</td>";					
-				} else if (lbx.isItemSelected(i) && !lbx.getValue(i).isEmpty()){
-					vdcsv += "<td><b>" +lbx.getValue(i) + "</b></td><td>" + lbx.getItemText(i) + "</td>";
+				if (lbx.isItemSelected(i) && !lbx.getValue(i).isEmpty()){
+					Label code = new Label(lbx.getValue(i));
+					code.setStyleName("code");
+					Label fullvalue = new Label(lbx.getItemText(i));
+					fullvalue.setStyleName("fullvalue");
+					grid.resize(counter+1, 2);
+					grid.setWidget(counter, 0, code);
+					grid.setWidget(counter, 1, fullvalue);
+					counter++;					
 				}				
-				vdcsv += "</tr>";
 			}
-			vdcsv += "</table>";
-			return vdcsv;
+			return grid;
 		}
 
 

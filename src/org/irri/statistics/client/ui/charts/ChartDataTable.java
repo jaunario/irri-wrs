@@ -163,7 +163,7 @@ public class ChartDataTable{
 	public static ArrayList<String> getUniqueColumnVals(AbstractDataTable data, int col){
 		
 		ArrayList<String> uniquev = new ArrayList<String>();
-		for (int i = 1; i < data.getNumberOfRows(); i++) {
+		for (int i = 0; i < data.getNumberOfRows(); i++) {
 			String item = data.getValueString(i, col);
 			if(!uniquev.contains(item)) {
 				uniquev.add(item);

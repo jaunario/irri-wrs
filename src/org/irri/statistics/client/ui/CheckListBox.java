@@ -38,8 +38,7 @@ public class CheckListBox extends Composite implements HasChangeHandlers {
 				if (vpListBox.getWidgetCount()>0){
 					for (int i = 0; i < vpListBox.getWidgetCount(); i++) {
 						CheckBox thiscb = (CheckBox) vpListBox.getWidget(i);
-						thiscb.setValue(true);
-						if (i+1==vpListBox.getWidgetCount()) thiscb.setValue(true, true);
+						thiscb.setValue(true,true);
 					}
 				}
 				
@@ -54,8 +53,7 @@ public class CheckListBox extends Composite implements HasChangeHandlers {
 				if (vpListBox.getWidgetCount()>0){
 					for (int i = 0; i < vpListBox.getWidgetCount(); i++) {
 						CheckBox thiscb = (CheckBox) vpListBox.getWidget(i);
-						thiscb.setValue(false);
-						if (i+1==vpListBox.getWidgetCount()) thiscb.setValue(false, true);
+						thiscb.setValue(false,true);
 					}
 				}
 			}

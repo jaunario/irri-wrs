@@ -6,6 +6,7 @@ import java.util.Collections;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -40,7 +41,7 @@ import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.HTML;
 
-public class ChartOptions extends DialogBox {
+public class WRSChart extends Composite {
 	private Button btnOk;
 	AbstractDataTable BaseData;
 	AbstractDataTable ChartData;
@@ -69,18 +70,22 @@ public class ChartOptions extends DialogBox {
 	private Label lblY;
 	private Label lblX;
 	
-	public ChartOptions(AbstractDataTable basedata, int w, int h,int index) {
+	private DialogBox chartoptions;
+	
+	public WRSChart(AbstractDataTable basedata, int w, int h,int index) {
 		width = w;
 		height = h;
 		itemid = index;
 		BaseData = basedata;
-		setGlassEnabled(true);
-		setHTML("Chart Options");
-		initDialog();
+		
+		chart = new SimplePanel();
+		initWidget(chart);
+
 		getYears(basedata);
 		getRegions(basedata);
 		getVariables(basedata);
 		getCategorizeColumns(basedata);
+		initDialog();
 		lblSeries.setText("year");
 		populateListBox(cbbSeries, years);		
 		populateListBox(cbbY, variables);
@@ -88,17 +93,18 @@ public class ChartOptions extends DialogBox {
 		cbbX.clear();
 		cbbX.addItem("region");
 		cbbX.setEnabled(false);
-		center();
-		show();
 
 	}
 
 	public void initDialog(){
-		DockPanel dockPanel = new DockPanel();
-		setWidget(dockPanel);
-		dockPanel.setSize("510px", "310px");
+		chartoptions = new DialogBox();
+		chartoptions.setGlassEnabled(true);
+		chartoptions.setHTML("Chart Options");
 		
-		chart = new SimplePanel();
+		DockPanel dockPanel = new DockPanel();
+		chartoptions.setWidget(dockPanel);
+		dockPanel.setSize("510px", "310px");
+				
 		HorizontalPanel hpChartSubmit = new HorizontalPanel();
 		hpChartSubmit.setSpacing(5);
 		dockPanel.add(hpChartSubmit, DockPanel.SOUTH);
@@ -117,7 +123,7 @@ public class ChartOptions extends DialogBox {
 							@Override
 							public void run() {
 								ScatterChart scatter = new ScatterChart(ChartData, createCoreChartOptions(txtbxChartTitle.getText(), getLegendPosition(), width, height));
-								chart.add(scatter);
+								chart.setWidget(scatter);
 							}
 						};
 						VisualizationUtils.loadVisualizationApi(onLoadCallback, ScatterChart.PACKAGE);
@@ -131,7 +137,7 @@ public class ChartOptions extends DialogBox {
 							@Override
 							public void run() {
 								LineChart line = new LineChart(ChartData, createCoreChartOptions(txtbxChartTitle.getText(), getLegendPosition(), width, height));
-								chart.add(line);
+								chart.setWidget(line);
 							}
 						};
 						VisualizationUtils.loadVisualizationApi(onLoadCallback, LineChart.PACKAGE);
@@ -146,7 +152,7 @@ public class ChartOptions extends DialogBox {
 								ipcOptions.setHeight(height);
 								ipcOptions.setLegend(getLegendPosition());
 								ImageLineChart line = new ImageLineChart(ChartData, ipcOptions);
-								chart.add(line);
+								chart.setWidget(line);
 							}
 						};
 						VisualizationUtils.loadVisualizationApi(onLoadCallback, ImageLineChart.PACKAGE);
@@ -161,7 +167,7 @@ public class ChartOptions extends DialogBox {
 							@Override
 							public void run() {
 								ColumnChart line = new ColumnChart(ChartData, createCoreChartOptions(txtbxChartTitle.getText(), getLegendPosition(), width, height));
-								chart.add(line);
+								chart.setWidget(line);
 							}
 						};
 						VisualizationUtils.loadVisualizationApi(onLoadCallback, ColumnChart.PACKAGE);
@@ -175,7 +181,7 @@ public class ChartOptions extends DialogBox {
 							@Override
 							public void run() {
 								BarChart bar = new BarChart(ChartData, createCoreChartOptions(txtbxChartTitle.getText(), getLegendPosition(), width, height));
-								chart.add(bar);
+								chart.setWidget(bar);
 							}
 						};
 						VisualizationUtils.loadVisualizationApi(onLoadCallback, BarChart.PACKAGE);
@@ -190,7 +196,7 @@ public class ChartOptions extends DialogBox {
 								ipcOptions.setHeight(height);
 								ipcOptions.setLegend(getLegendPosition());
 								ImageBarChart line = new ImageBarChart(ChartData, ipcOptions);
-								chart.add(line);
+								chart.setWidget(line);
 							}
 						};
 						VisualizationUtils.loadVisualizationApi(onLoadCallback, ImageBarChart.PACKAGE);
@@ -205,7 +211,7 @@ public class ChartOptions extends DialogBox {
 							@Override
 							public void run() {
 								AreaChart area = new AreaChart(ChartData, createCoreChartOptions(txtbxChartTitle.getText(), getLegendPosition(), width, height));
-								chart.add(area);
+								chart.setWidget(area);
 							}
 						};
 						VisualizationUtils.loadVisualizationApi(onLoadCallback, AreaChart.PACKAGE);
@@ -220,27 +226,13 @@ public class ChartOptions extends DialogBox {
 								ipcOptions.setHeight(height);
 								ipcOptions.setLegend(getLegendPosition());
 								ImageAreaChart area = new ImageAreaChart(ChartData, ipcOptions);
-								chart.add(area);
+								chart.setWidget(area);
 							}
 						};
 						VisualizationUtils.loadVisualizationApi(onLoadCallback, ImageAreaChart.PACKAGE);
 					}
 
 					break;
-//				case 6:
-//					ChartData = ChartDataTable.filteredTable(BaseData, 0, cbbY.getSelectedIndex()+2, 1, cbbSeries.getItemText(cbbSeries.getSelectedIndex()));
-//					if (chckbxInteractive.getValue()){
-//						Runnable onLoadCallback = new Runnable() {
-//							
-//							@Override
-//							public void run() {
-//								GeoMap pie = new GeoMap(ChartData, createMapOptions(width, height));
-//								chart.add(pie);
-//							}
-//						};
-//						VisualizationUtils.loadVisualizationApi(onLoadCallback, GeoMap.PACKAGE);
-//					}
-//					break;
 				default:
 							
 					ChartData = ChartDataTable.filteredTable(BaseData, 0, cbbY.getSelectedIndex()+2, 1, cbbSeries.getItemText(cbbSeries.getSelectedIndex()));
@@ -250,7 +242,7 @@ public class ChartOptions extends DialogBox {
 							@Override
 							public void run() {
 								PieChart pie = new PieChart(ChartData, createCoreChartOptions(txtbxChartTitle.getText(), getLegendPosition(), width, height));
-								chart.add(pie);
+								chart.setWidget(pie);
 							}
 						};
 						VisualizationUtils.loadVisualizationApi(onLoadCallback, PieChart.PACKAGE);
@@ -265,7 +257,7 @@ public class ChartOptions extends DialogBox {
 								ipcOptions.setHeight(height);
 								ipcOptions.setLegend(getLegendPosition());
 								ImagePieChart pie = new ImagePieChart(ChartData, ipcOptions);
-								chart.add(pie);
+								chart.setWidget(pie);
 							}
 						};
 						VisualizationUtils.loadVisualizationApi(onLoadCallback, ImagePieChart.PACKAGE);
@@ -273,7 +265,7 @@ public class ChartOptions extends DialogBox {
 					
 					break;
 				}
-				hide();
+				chartoptions.hide();
 			}
 		});
 		hpChartSubmit.add(btnOk);
@@ -282,7 +274,7 @@ public class ChartOptions extends DialogBox {
 		Button btnCancel = new Button("Cancel");
 		btnCancel.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				hide();
+				chartoptions.hide();
 			}
 		});
 		hpChartSubmit.add(btnCancel);
@@ -357,19 +349,6 @@ public class ChartOptions extends DialogBox {
 					chckbxInteractive.setValue(true);
 					commonChartOptions();
 					break;
-//				case 6:
-//					image.setUrl("images/geomap.png");
-//					htmlChartDesc.setHTML("GeoMap Chart");
-//					chckbxInteractive.setEnabled(false);
-//					chckbxInteractive.setValue(true);
-//					lblSeries.setText("year");
-//					populateListBox(cbbSeries, years);
-//					cbbSeries.setEnabled(true);
-//					lblX.setText("Parts");
-//					cbbX.clear();
-//					cbbX.addItem("region");
-//					cbbX.setEnabled(false);
-//					break;
 				default:
 					image.setUrl("images/pie.png");
 					htmlChartDesc.setHTML("Shows percentage values as a slice of a pie");
@@ -437,6 +416,10 @@ public class ChartOptions extends DialogBox {
 		
 		cbbSeries = new ListBox();
 		gridChartComponents.setWidget(6, 1, cbbSeries);
+		
+		chartoptions.center();
+		chartoptions.show();
+		
 	}
 	
 	private void commonChartOptions(){
@@ -473,37 +456,6 @@ public class ChartOptions extends DialogBox {
 	}
 	public void setOkButtonClickHandler(ClickHandler handler){
 		btnOk.addClickHandler(handler);
-	}
-	
-	public Button getBtnOk() {
-		return btnOk;
-	}
-	public ListBox getCbbChartType() {
-		return cbbChartType;
-	}
-	public TextBox getTxtbxChartTitle() {
-		return txtbxChartTitle;
-	}
-	public ListBox getCbbLPosition() {
-		return cbbLPosition;
-	}
-	public ListBox getCbbX() {
-		return cbbX;
-	}
-	public ListBox getCbbY() {
-		return cbbY;
-	}
-	public ListBox getCbbSeries() {
-		return cbbSeries;
-	}
-	public Image getImage() {
-		return image;
-	}
-	public HTML getHtmlChartDesc() {
-		return htmlChartDesc;
-	}
-	public CheckBox getChckbxInteractive() {
-		return chckbxInteractive;
 	}
 	
 	public int getItemID(){
@@ -580,5 +532,11 @@ public class ChartOptions extends DialogBox {
 	}
 	public Label getLblX() {
 		return lblX;
+	}
+	
+	public void resize(int w, int h){
+		width = w;
+		height =h;
+		btnOk.click();
 	}
 }

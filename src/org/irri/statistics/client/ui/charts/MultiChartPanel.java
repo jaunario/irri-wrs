@@ -29,7 +29,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.ui.MenuItemSeparator;
-import com.google.gwt.user.client.ui.ScrollPanel;
 
 public class MultiChartPanel extends Composite {
 	AbstractDataTable basedata;
@@ -39,8 +38,7 @@ public class MultiChartPanel extends Composite {
 	private DeckPanel deckChartPager;
 	private VerticalPanel vpTablePage;
 	private DecoratedTabBar dtbChartPageSelector;
-	private HTML htmlSelected;
-	private ScrollPanel scrollSelection;
+	private VerticalPanel vpSelectionSummary;
 	/**
 	 * @wbp.parser.constructor
 	 */
@@ -77,8 +75,12 @@ public class MultiChartPanel extends Composite {
 		MenuItem mntmRedraw = new MenuItem("Refit to Panel", false, new Command() {
 			public void execute() {
 				drawTable();
-				scrollSelection.setHeight(deckChartPager.getOffsetHeight()+"px");
-				scrollSelection.setWidth(deckChartPager.getOffsetWidth()*0.35+"px");
+				if (deckChartPager.getWidgetCount()>1){
+					for (int i = 1; i < deckChartPager.getWidgetCount(); i++) {
+						WRSChart thischart = (WRSChart) deckChartPager.getWidget(i);
+						thischart.resize(deckChartPager.getOffsetWidth(), deckChartPager.getOffsetHeight());
+					}
+				}
 			}
 		});
 		mntmRedraw.setTitle("Click here refit charts/table into the panel when you resize the browser");
@@ -128,8 +130,8 @@ public class MultiChartPanel extends Composite {
 		
 		MenuItem mntmNewChart = new MenuItem("New Chart", false, new Command() {
 			public void execute() {
-				final ChartOptions newco = new ChartOptions(basedata, deckChartPager.getOffsetWidth(),deckChartPager.getOffsetHeight(), deckChartPager.getWidgetCount());
-				deckChartPager.add(newco.getChart());
+				final WRSChart newco = new WRSChart(basedata, deckChartPager.getOffsetWidth(),deckChartPager.getOffsetHeight(), deckChartPager.getWidgetCount());
+				deckChartPager.add(newco);
 				HorizontalPanel charttab = new HorizontalPanel();
 				charttab.setSpacing(2);				
 				final Label tablabel = new Label(("Chart " + newco.itemid));
@@ -146,7 +148,7 @@ public class MultiChartPanel extends Composite {
 					@Override
 					public void onClick(ClickEvent event) {
 						// TODO Auto-generated method stub
-						int tab = newco.itemid;
+						int tab = deckChartPager.getWidgetIndex(newco);
 						deckChartPager.remove(tab);
 						dtbChartPageSelector.removeTab(tab);
 						dtbChartPageSelector.selectTab(tab-1);
@@ -162,15 +164,15 @@ public class MultiChartPanel extends Composite {
 		MenuItemSeparator separator_2 = new MenuItemSeparator();
 		mbChartClass.addSeparator(separator_2);
 		
-		MenuItem mntmRemove = new MenuItem("Remove", false, new Command() {
+		MenuItem mntmRemove = new MenuItem("Remove All Charts", false, new Command() {
 			public void execute() {
 				while (deckChartPager.getWidgetCount()>1) {
 					dtbChartPageSelector.removeTab(deckChartPager.getWidgetCount()-1);
 					deckChartPager.remove(deckChartPager.getWidgetCount()-1);					
 				}
+				dtbChartPageSelector.selectTab(0);
 			}
 		});
-		mntmRemove.setHTML("Remove All Charts");
 		mbChartClass.addItem(mntmRemove);
 		mbTableOptions.addItem(mntmCharts);
 		ChartsWrapper.add(dtbChartPageSelector, DockPanel.SOUTH);
@@ -186,18 +188,15 @@ public class MultiChartPanel extends Composite {
 		vpTablePage = new VerticalPanel();
 		deckChartPager.add(vpTablePage);
 		vpTablePage.setSize("100%", "100%");
-		dtbChartPageSelector.selectTab(0);		
-
-		scrollSelection = new ScrollPanel();
-		ChartsWrapper.add(scrollSelection, DockPanel.EAST);
+		dtbChartPageSelector.selectTab(0);
 		
-		VerticalPanel vpSelectionSummary = new VerticalPanel();
-		scrollSelection.setWidget(vpSelectionSummary);
+		vpSelectionSummary = new VerticalPanel();
+		vpSelectionSummary.setSpacing(1);
 		vpSelectionSummary.setStyleName("selection-panel");
+		ChartsWrapper.add(vpSelectionSummary, DockPanel.EAST);
+		ChartsWrapper.setCellHeight(vpSelectionSummary, "100%");
+		ChartsWrapper.setCellWidth(vpSelectionSummary, "35%");
 		vpSelectionSummary.setSize("100%", "100%");
-		
-		htmlSelected = new HTML("New HTML", true);
-		vpSelectionSummary.add(htmlSelected);
 	}
 	
 	public DeckPanel getDeckPanel() {
@@ -267,7 +266,7 @@ public class MultiChartPanel extends Composite {
 			}
 		}
 	}
-	public HTML getHtmlSelected() {
-		return htmlSelected;
+	public VerticalPanel getVpSelectionSummary() {
+		return vpSelectionSummary;
 	}
 }
