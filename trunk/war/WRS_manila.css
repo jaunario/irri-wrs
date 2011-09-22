@@ -170,5 +170,14 @@ body {
 	border-style: solid;
 	border-width: 1px;
 	border-color: #aaa;
-	padding: 5px;
+}
+.code {
+	font-weight: bold;
+	font-size: 12px;
+	font-family: Calibri, Verdana, Arial;
+}
+.fullvalue {
+	font-style:normal;
+	font-size: 12px;
+	font-family: Calibri, Verdana, Arial;
 }

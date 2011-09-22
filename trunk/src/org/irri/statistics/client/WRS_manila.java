@@ -112,7 +112,10 @@ public class WRS_manila implements EntryPoint {
         tglbtnMapIt.addClickHandler(new ClickHandler() {
         	public void onClick(ClickEvent event) {
             		//frameVisualize.setUrl("http://geo.irri.org/vis/wrsMap_main.html");
-        			frameVisualize.setUrl("http://50.19.190.186/vis/wrsMap_main.html");
+        			String url = frameVisualize.getUrl();
+        			if(!url.equalsIgnoreCase("http://50.19.190.186/vis/wrsMap_main.html")){
+        				frameVisualize.setUrl("http://50.19.190.186/vis/wrsMap_main.html");
+        			}        			
             		ContentPanel.showWidget(2);
             		tglbtn3D.setDown(false);
             		tglbtnTrendIt.setDown(false);
@@ -127,10 +130,13 @@ public class WRS_manila implements EntryPoint {
         tglbtnTrendIt.addClickHandler(new ClickHandler() {
         	public void onClick(ClickEvent event) {
             		//frameVisualize.setUrl("http://geo.irri.org/vis/wrs_Motion.php");
-        			frameVisualize.setUrl("http://50.19.190.186/vis/wrs_Motion.php");
-            		ContentPanel.showWidget(2);
-            		tglbtn3D.setDown(false);
-            		tglbtnMapIt.setDown(false);
+        		String url = frameVisualize.getUrl();
+    			if(!url.equalsIgnoreCase("http://50.19.190.186/vis/wrs_Motion.php")){
+    				frameVisualize.setUrl("http://50.19.190.186/vis/wrs_Motion.php");
+    			}        			
+        		ContentPanel.showWidget(2);
+            	tglbtn3D.setDown(false);
+            	tglbtnMapIt.setDown(false);
         	}
         });
         tglbtnTrendIt.setSize("95%", "25");
@@ -338,12 +344,11 @@ public class WRS_manila implements EntryPoint {
 		String regs = filterPanel.varDefinition(filterPanel.lbxRegion, "@" );
 		String yrs = filterPanel.varDefinition(filterPanel.lbxYear,",");
 		mcpResults.setSelSummary(regs + "_" + vars + "_" + yrs );
-		mcpResults.getHtmlSelected().setHTML("<h3>Regions/Countries/Provinces</h3>" +
-				filterPanel.varDefinitionHTMLTable(filterPanel.lbxRegion) +
-				"<h3>Variables</h3>" +
-				filterPanel.varDefinitionHTMLTable(filterPanel.lbxVariable) +
-				"<h3>Year</h3>" +
-				filterPanel.varDefinitionHTMLTable(filterPanel.lbxYear)
-		);
+		if (mcpResults.getVpSelectionSummary().getWidgetCount()>0) mcpResults.getVpSelectionSummary().clear();
+		mcpResults.getVpSelectionSummary().add(new HTML("<h3>Regions/Countries/Provinces</h3>"));
+		mcpResults.getVpSelectionSummary().add(filterPanel.varDefinitionGrid(filterPanel.lbxRegion));
+		mcpResults.getVpSelectionSummary().add(new HTML("<h3>Variables</h3>"));
+		mcpResults.getVpSelectionSummary().add(filterPanel.varDefinitionGrid(filterPanel.lbxVariable));
+		mcpResults.getVpSelectionSummary().add(new HTML("<h3>Years</h3><p>" + filterPanel.varDefinition(filterPanel.lbxYear, ", ")+"</p>"));
 	}
 }
