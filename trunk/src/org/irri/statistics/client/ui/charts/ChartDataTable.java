@@ -133,7 +133,7 @@ public class ChartDataTable{
 			if(!data.isValueNull(i, y)) {
 				seriesdata.setValue(i, 1, data.getValueDouble(i,y));
 			}
-			if(!data.isValueNull(i, y)) {
+			if(!data.isValueNull(i, series)) {
 				seriesdata.setValue(i, 2, data.getValueDouble(i,series));
 			}
 

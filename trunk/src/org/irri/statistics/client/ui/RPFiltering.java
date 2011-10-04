@@ -380,14 +380,14 @@ public class RPFiltering extends Composite {
 			if (!regfilter.equals("") && !yrfilter.equals("") && !varcols[0].equals("") && !varcols[1].equals("")){
 				if (lbxExtent.getSelectedIndex()==2){
 					sql = "SELECT CONCAT(c.name_english,'-',l.geo_name) AS 'region', s.yr AS 'year'," + varcols[0] +
-					" FROM locales l NATURAL JOIN " + srctable + " s, countries c" +
+					" FROM " + srctable + " s NATURAL JOIN locales l NATURAL JOIN countries c " +
 		            " WHERE c.iso3 in ("+regfilter+") AND yr IN (" +yrfilter +") AND variety='All' AND ecosystem='All' AND season='All' AND ("+ varcols[1] + ")" + 
 		            " GROUP BY 1 ASC, s.yr ASC" ;
 				} else {
 					sql = "SELECT c.NAME_ENGLISH AS 'region', s.yr AS 'year', " + varcols[0] +
 					" FROM " + srctable + " s INNER JOIN countries c ON s.iso3 = c.ISO3 " +
 		            " WHERE c.iso3=s.iso3 AND c.iso3 in ("+regfilter+") AND yr IN (" +yrfilter +") " +
-		            " GROUP BY s.iso3 ASC, s.yr HAVING " + varcols[1] ;
+		            " GROUP BY  s.yr ASC, s.iso3 ASC HAVING " + varcols[1] ;
 				}
 			}
 			if (filteropts.getChckbxLimitRecords().getValue()) sql = sql + " LIMIT " + filteropts.getIbRecLimit().getText();
