@@ -15,7 +15,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -25,9 +24,10 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.ToggleButton;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.Command;
 
 
 /**
@@ -42,13 +42,8 @@ public class WRS_manila implements EntryPoint {
     		private MultiChartPanel mcpResults;
     		
     	private String[][] resultmatrix;	
-    
-    	private ToggleButton tglbtnViewResults;
-    	private ToggleButton tglbtnSelection;
     	private Frame frameVisualize;
-    	private ToggleButton tglbtnMapIt;
-    	private ToggleButton tglbtnTrendIt;
-    	private ToggleButton tglbtn3D;
+    	private MenuItem mntmResults;
     /** 
      * The entry point method, called automatically by loading a module
      * that declares an implementing class as an entry-point
@@ -64,20 +59,8 @@ public class WRS_manila implements EntryPoint {
         WRSPager.add(dpContentWrapper);
         WRSPager.showWidget(0);
         
-        // WRS Navigation
-        StackLayoutPanel stkpWRSAppSelector = new StackLayoutPanel(Unit.EM);
-        stkpWRSAppSelector.setSize("100%", "100%");
-        
-        SimplePanel simplePanel_1 = new SimplePanel();
-        stkpWRSAppSelector.add(simplePanel_1, new HTML("Query"), 2.0);
-        
         VerticalPanel vpOnlineQuery = new VerticalPanel();
-        simplePanel_1.setWidget(vpOnlineQuery);
-        
-        tglbtnSelection = new ToggleButton("SELECT");
-        tglbtnSelection.setDown(true);
-        tglbtnSelection.setSize("95%", "25");
-        vpOnlineQuery.add(tglbtnSelection);
+        dpContentWrapper.addWest(vpOnlineQuery, 250.0);
         
         DisclosurePanel dclpHowToUse = new DisclosurePanel("How to use this facility");
         dclpHowToUse.setOpen(true);
@@ -88,6 +71,7 @@ public class WRS_manila implements EntryPoint {
         dclpHowToUse.setContent(htmlhowToUse);
         
         DisclosurePanel dcplHints = new DisclosurePanel("Hint");
+        dcplHints.setOpen(true);
         dcplHints.setAnimationEnabled(true);
         vpOnlineQuery.add(dcplHints);
         
@@ -95,84 +79,7 @@ public class WRS_manila implements EntryPoint {
         html.setSize("90%", "100%");
         dcplHints.setContent(html);
         
-        tglbtnViewResults = new ToggleButton("RESULTS");
-        tglbtnViewResults.setEnabled(false);
-        tglbtnViewResults.setSize("95%", "25px");
-        vpOnlineQuery.add(tglbtnViewResults);
-        
-        SimplePanel simplePanel = new SimplePanel();
-        stkpWRSAppSelector.add(simplePanel, new HTML("Visualize"), 2.0);
-        
-        // WRS Visualization Apps                
-        VerticalPanel vpVisualize = new VerticalPanel();
-        simplePanel.setWidget(vpVisualize);
-        vpVisualize.setWidth("100%");
-        
-        tglbtnMapIt = new ToggleButton("Map It");
-        tglbtnMapIt.addClickHandler(new ClickHandler() {
-        	public void onClick(ClickEvent event) {
-            		//frameVisualize.setUrl("http://geo.irri.org/vis/wrsMap_main.html");
-        			String url = frameVisualize.getUrl();
-        			if(!url.equalsIgnoreCase("http://50.19.190.186/vis/wrsMap_main.html")){
-        				frameVisualize.setUrl("http://50.19.190.186/vis/wrsMap_main.html");
-        			}        			
-            		ContentPanel.showWidget(2);
-            		tglbtn3D.setDown(false);
-            		tglbtnTrendIt.setDown(false);
-        	}
-        });
-        
-        tglbtnMapIt.setDown(true);
-        tglbtnMapIt.setSize("95%", "25");
-        vpVisualize.add(tglbtnMapIt);
-        
-        tglbtnTrendIt = new ToggleButton("Trend It");
-        tglbtnTrendIt.addClickHandler(new ClickHandler() {
-        	public void onClick(ClickEvent event) {
-            		//frameVisualize.setUrl("http://geo.irri.org/vis/wrs_Motion.php");
-        		String url = frameVisualize.getUrl();
-    			if(!url.equalsIgnoreCase("http://50.19.190.186/vis/wrs_Motion.php")){
-    				frameVisualize.setUrl("http://50.19.190.186/vis/wrs_Motion.php");
-    			}        			
-        		ContentPanel.showWidget(2);
-            	tglbtn3D.setDown(false);
-            	tglbtnMapIt.setDown(false);
-        	}
-        });
-        tglbtnTrendIt.setSize("95%", "25");
-        vpVisualize.add(tglbtnTrendIt);
-        
-        tglbtn3D = new ToggleButton("3D Map");
-        tglbtn3D.addClickHandler(new ClickHandler() {
-        	public void onClick(ClickEvent event) {
-            		//frameVisualize.setUrl("http://geo.irri.org/vis/wrs_3D.php");
-            		frameVisualize.setUrl("http://50.19.190.186/vis/wrs_3D.php");
-            		ContentPanel.showWidget(2);
-            		tglbtnTrendIt.setDown(false);
-            		tglbtnMapIt.setDown(false);
-        	}
-        });
-        tglbtn3D.setSize("95%", "25");
-        vpVisualize.add(tglbtn3D);
-        dpContentWrapper.addWest(stkpWRSAppSelector, 250.0);
-                                
-        // Put EventHandlers here
-        
-        tglbtnSelection.addClickHandler(new ClickHandler() {
-        	public void onClick(ClickEvent event) {
-            	if (ContentPanel.getVisibleWidget()!=0) ContentPanel.showWidget(0);
-                tglbtnSelection.setDown(true);
-                tglbtnViewResults.setDown(false);
-            }
-        });
-        
-        tglbtnViewResults.addClickHandler(new ClickHandler() {
-        	public void onClick(ClickEvent event) {
-        		if (ContentPanel.getVisibleWidget()!=1) ContentPanel.showWidget(1);
-        		tglbtnSelection.setDown(false);
-        		tglbtnViewResults.setDown(true);
-        	}
-        });
+        // WRS Navigation
         
         ContentPanel = new DeckPanel();
         dpContentWrapper.add(ContentPanel);
@@ -197,9 +104,7 @@ public class WRS_manila implements EntryPoint {
         		final String sql = filterPanel.sqlFromItems();
                 if (!sql.equalsIgnoreCase("")) {					
                 	ContentPanel.showWidget(1);
-                    tglbtnViewResults.setEnabled(true);
-                    tglbtnViewResults.setDown(true);
-                    tglbtnSelection.setDown(false);
+                    mntmResults.setEnabled(true);
                     selectionSummary();
                     getQueryResult(sql);                    
                 } else lblStatusGoesHere.setText("Please select a year.");
@@ -267,11 +172,15 @@ public class WRS_manila implements EntryPoint {
         rootLayoutPanel.add(MainWrapper);
         rootLayoutPanel.setWidgetLeftRight(MainWrapper, 90.0, Unit.PX, 90.0, Unit.PX);
         
+        HorizontalPanel horizontalPanel = new HorizontalPanel();
+        horizontalPanel.setStyleName("banner");
+        MainWrapper.addNorth(horizontalPanel, 80.0);
+        horizontalPanel.setSize("100%", "100%");
+        
         // Create IRRI Banner 
         VerticalPanel vpIRRIBanner = new VerticalPanel();
-        vpIRRIBanner.setStyleName("banner");
-    	MainWrapper.addNorth(vpIRRIBanner, 80.0);
-    	vpIRRIBanner.setSize("100%", "100%");
+        horizontalPanel.add(vpIRRIBanner);
+        vpIRRIBanner.setSize("100%", "100%");
         
         Label lblIrri = new Label("IRRI");
         lblIrri.setSize("100%", "54px");
@@ -281,6 +190,41 @@ public class WRS_manila implements EntryPoint {
         Label lblIRRIFull = new Label("International Rice Research Institute");
         lblIRRIFull.setStyleName("gwt-Label-fullname");
         vpIRRIBanner.add(lblIRRIFull);
+        
+        VerticalPanel vpExternal = new VerticalPanel();
+        vpExternal.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        horizontalPanel.add(vpExternal);
+        horizontalPanel.setCellVerticalAlignment(vpExternal, HasVerticalAlignment.ALIGN_BOTTOM);
+        vpExternal.setSize("100%", "100%");
+        
+        HorizontalPanel hpGlobalNavigation = new HorizontalPanel();
+        vpExternal.add(hpGlobalNavigation);
+        hpGlobalNavigation.setSpacing(5);
+        
+        HTML htmlIrriHome = new HTML("<a href=\"http://www.irri.org\">IRRI Home</a>", true);
+        htmlIrriHome.setStyleName("gwt-HTML-Link");
+        htmlIrriHome.setSize("73px", "15px");
+        hpGlobalNavigation.add(htmlIrriHome);
+        
+        HTML htmlFarmHouseholdSurvey = new HTML("<a href=\"http://geo.irri.org:8180/households\">Farm Households Survey</a>", true);
+        htmlFarmHouseholdSurvey.setStyleName("gwt-HTML-Link");
+        htmlFarmHouseholdSurvey.setSize("151px", "15px");
+        hpGlobalNavigation.add(htmlFarmHouseholdSurvey);
+        
+        HorizontalPanel hpAppTitle = new HorizontalPanel();
+        vpExternal.add(hpAppTitle);
+        vpExternal.setCellVerticalAlignment(hpAppTitle, HasVerticalAlignment.ALIGN_BOTTOM);
+        hpAppTitle.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        
+        Label lblWorldRiceStatistics = new Label("World Rice Statistics");
+        lblWorldRiceStatistics.setStyleName("gwt-Label-title");
+        lblWorldRiceStatistics.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        hpAppTitle.add(lblWorldRiceStatistics);
+        
+        Label lblBeta = new Label("[BETA]");
+        lblBeta.setStyleName("gwt-Label-version");
+        lblBeta.setHeight("22px");
+        hpAppTitle.add(lblBeta);
         // End of IRRI Banner
         
         // Create AppBanner
@@ -288,34 +232,59 @@ public class WRS_manila implements EntryPoint {
         hpAppBanner.setSize("100%", "100%");
         MainWrapper.addNorth(hpAppBanner, 40.0);
         
-        HorizontalPanel hpAppTitle = new HorizontalPanel();
-        hpAppBanner.add(hpAppTitle);
+        MenuBar menuBar = new MenuBar(false);
+        menuBar.setAnimationEnabled(true);
+        menuBar.setAutoOpen(true);
+        hpAppBanner.add(menuBar);
+        MenuBar menuBar_2 = new MenuBar(true);
         
-        Label lblWorldRiceStatistics = new Label("World Rice Statistics");
-        lblWorldRiceStatistics.setStyleName("gwt-Label-title");
-        lblWorldRiceStatistics.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-        hpAppTitle.add(lblWorldRiceStatistics);
+        MenuItem mntmQuery = new MenuItem("Query", false, menuBar_2);
         
-        Label lblBeta = new Label("[BETA]");
-        lblBeta.setStyleName("gwt-Label-version");
-        lblBeta.setHeight("22px");
-        hpAppTitle.add(lblBeta);
+        MenuItem mntmSelect = new MenuItem("Select", false, new Command() {
+        	public void execute() {
+            	if (ContentPanel.getVisibleWidget()!=0) ContentPanel.showWidget(0);
+        	}
+        });
+        menuBar_2.addItem(mntmSelect);
         
-        HorizontalPanel hpGlobalNavigation = new HorizontalPanel();
-        hpGlobalNavigation.setSpacing(5);
-        hpAppBanner.add(hpGlobalNavigation);
-        hpAppBanner.setCellVerticalAlignment(hpGlobalNavigation, HasVerticalAlignment.ALIGN_BOTTOM);
-    	hpAppBanner.setCellHorizontalAlignment(hpGlobalNavigation, HasHorizontalAlignment.ALIGN_RIGHT);
-    	
-        HTML htmlIrriHome = new HTML("<a href=\"http://www.irri.org\">IRRI Home</a>", true);
-        htmlIrriHome.setStyleName("gwt-HTML-Link");
-        htmlIrriHome.setSize("73px", "15px");
-        hpGlobalNavigation.add(htmlIrriHome);
+        mntmResults = new MenuItem("Results", false, (Command) null);
+        mntmResults.setEnabled(false);
+        menuBar_2.addItem(mntmResults);
+        menuBar.addItem(mntmQuery);
+        MenuBar menuBar_1 = new MenuBar(true);
         
-        HTML htmlFarmHouseholdSurvey = new HTML("<a href=\"http://geo.irri.org:8180/households\">Household Data</a>", true);
-        htmlFarmHouseholdSurvey.setStyleName("gwt-HTML-Link");
-        htmlFarmHouseholdSurvey.setSize("105px", "15px");
-        hpGlobalNavigation.add(htmlFarmHouseholdSurvey);
+        MenuItem mntmVisualize = new MenuItem("Visualize", false, menuBar_1);
+        
+        MenuItem mntmMapIt = new MenuItem("Map It!", false, new Command() {
+        	public void execute() {
+    			String url = frameVisualize.getUrl();
+    			if(!url.equalsIgnoreCase("http://50.19.190.186/vis/wrsMap_main.html")){
+    				frameVisualize.setUrl("http://50.19.190.186/vis/wrsMap_main.html");
+    			}        			
+        		ContentPanel.showWidget(2);
+        	}
+        });
+        menuBar_1.addItem(mntmMapIt);
+        
+        MenuItem mntmTrendIt = new MenuItem("Trend It!", false, new Command() {
+        	public void execute() {
+        		String url = frameVisualize.getUrl();
+    			if(!url.equalsIgnoreCase("http://50.19.190.186/vis/wrs_Motion.php")){
+    				frameVisualize.setUrl("http://50.19.190.186/vis/wrs_Motion.php");
+    			}        			
+        		ContentPanel.showWidget(2);
+        	}
+        });
+        menuBar_1.addItem(mntmTrendIt);
+        
+        MenuItem mntmd = new MenuItem("3D", false, new Command() {
+        	public void execute() {
+        		frameVisualize.setUrl("http://50.19.190.186/vis/wrs3D_main.html");
+        		ContentPanel.showWidget(2);
+        	}
+        });
+        menuBar_1.addItem(mntmd);
+        menuBar.addItem(mntmVisualize);
         // End of AppBanner
 
         // Create Status Panel
