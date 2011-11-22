@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.Command;
 
-
+import com.google.gwt.user.client.History;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
@@ -206,7 +206,7 @@ public class WRS_manila implements EntryPoint {
         htmlIrriHome.setSize("73px", "15px");
         hpGlobalNavigation.add(htmlIrriHome);
         
-        HTML htmlFarmHouseholdSurvey = new HTML("<a href=\"http://geo.irri.org:8180/households\">Farm Households Survey</a>", true);
+        HTML htmlFarmHouseholdSurvey = new HTML("<a href=\"http://ricestat.irri.org:8080/households\">Farm Households Survey</a>", true);
         htmlFarmHouseholdSurvey.setStyleName("gwt-HTML-Link");
         htmlFarmHouseholdSurvey.setSize("151px", "15px");
         hpGlobalNavigation.add(htmlFarmHouseholdSurvey);
@@ -236,6 +236,10 @@ public class WRS_manila implements EntryPoint {
         menuBar.setAnimationEnabled(true);
         menuBar.setAutoOpen(true);
         hpAppBanner.add(menuBar);
+        
+        MenuItem mntmHome = new MenuItem("Home", false, (Command) null);
+        mntmHome.setVisible(false);
+        menuBar.addItem(mntmHome);
         MenuBar menuBar_2 = new MenuBar(true);
         
         MenuItem mntmQuery = new MenuItem("Query", false, menuBar_2);
@@ -258,8 +262,8 @@ public class WRS_manila implements EntryPoint {
         MenuItem mntmMapIt = new MenuItem("Map It!", false, new Command() {
         	public void execute() {
     			String url = frameVisualize.getUrl();
-    			if(!url.equalsIgnoreCase("http://50.19.190.186/vis/wrsMap_main.html")){
-    				frameVisualize.setUrl("http://50.19.190.186/vis/wrsMap_main.html");
+    			if(!url.equalsIgnoreCase("http://ricestat.irri.org/vis/wrsMap_main.html")){
+    				frameVisualize.setUrl("http://ricestat.irri.org/vis/wrsMap_main.html");
     			}        			
         		ContentPanel.showWidget(2);
         	}
@@ -269,8 +273,8 @@ public class WRS_manila implements EntryPoint {
         MenuItem mntmTrendIt = new MenuItem("Trend It!", false, new Command() {
         	public void execute() {
         		String url = frameVisualize.getUrl();
-    			if(!url.equalsIgnoreCase("http://50.19.190.186/vis/wrs_Motion.php")){
-    				frameVisualize.setUrl("http://50.19.190.186/vis/wrs_Motion.php");
+    			if(!url.equalsIgnoreCase("http://ricestat.irri.org/vis/wrs_Motion.php")){
+    				frameVisualize.setUrl("http://ricestat.irri.org/vis/wrs_Motion.php");
     			}        			
         		ContentPanel.showWidget(2);
         	}
@@ -279,7 +283,10 @@ public class WRS_manila implements EntryPoint {
         
         MenuItem mntmd = new MenuItem("3D", false, new Command() {
         	public void execute() {
-        		frameVisualize.setUrl("http://50.19.190.186/vis/wrs3D_main.html");
+        		String url = frameVisualize.getUrl();
+    			if(!url.equalsIgnoreCase("http://ricestat.irri.org/vis/wrs3D_main.html")){
+    				frameVisualize.setUrl("http://ricestat.irri.org/vis/wrs3D_main.html");
+    			}        			
         		ContentPanel.showWidget(2);
         	}
         });

@@ -310,48 +310,48 @@ public class WRSChart extends Composite {
 				switch (selitem) {
 				case 1:
 					image.setUrl("images/scatter.png");
-					htmlChartDesc.setHTML("Scatter Plot");
+					htmlChartDesc.setHTML("Use to show distribution. Also for showing relationships between variables");
 					chckbxInteractive.setEnabled(false);
 					chckbxInteractive.setValue(true);
 					lblX.setText("X");
 					populateListBox(cbbX, variables);
 					cbbX.setEnabled(true);
-					lblSeries.setText("Anoher Variable");
+					lblSeries.setText("Another Variable");
 					populateListBox(cbbSeries, variables);
 					cbbSeries.setEnabled(true);
 					break;
 
 				case 2:
 					image.setUrl("images/line.png");
-					htmlChartDesc.setHTML("Line Chart");
+					htmlChartDesc.setHTML("Use to show trends");
 					chckbxInteractive.setEnabled(true);
 					chckbxInteractive.setValue(true);
 					commonChartOptions();
 					break;
 				case 3:
 					image.setUrl("images/column.png");
-					htmlChartDesc.setHTML("Column Chart");
+					htmlChartDesc.setHTML("Use to compare values from different categories");
 					chckbxInteractive.setEnabled(false);
 					chckbxInteractive.setValue(true);
 					commonChartOptions();
 					break;
 				case 4:
 					image.setUrl("images/bar.png");
-					htmlChartDesc.setHTML("Bar Chart");
+					htmlChartDesc.setHTML("Use to compare values from different categories");
 					chckbxInteractive.setEnabled(true);
 					chckbxInteractive.setValue(true);
 					commonChartOptions();
 					break;
 				case 5:
 					image.setUrl("images/area.png");
-					htmlChartDesc.setHTML("Area Chart");
+					htmlChartDesc.setHTML("Use to represent cumulated totals using numbers or percentages (stacked area charts in this case) over time.");
 					chckbxInteractive.setEnabled(true);
 					chckbxInteractive.setValue(true);
 					commonChartOptions();
 					break;
 				default:
 					image.setUrl("images/pie.png");
-					htmlChartDesc.setHTML("Shows percentage values as a slice of a pie");
+					htmlChartDesc.setHTML("<summary>Shows percentage values as a slice of a pie</summary>");
 					chckbxInteractive.setEnabled(true);
 					chckbxInteractive.setValue(true);
 					lblSeries.setText("year");
