@@ -67,7 +67,6 @@ public class BarChartPanel extends Composite {
 			
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				BarChart bar = new BarChart(data, opts);
                 VisBox.add(bar);
 			}
@@ -85,7 +84,6 @@ public class BarChartPanel extends Composite {
 			
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				ImageBarChart.Options opts = ImageBarChart.Options.create();
 				opts.setTitle(Title);
 				opts.setWidth(width);

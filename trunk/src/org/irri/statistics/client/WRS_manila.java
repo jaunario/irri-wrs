@@ -126,7 +126,6 @@ public class WRS_manila implements EntryPoint {
 			
 			@Override
 			public void onSuccess(String[][] result) {
-				// TODO Auto-generated method stub
 				mcpResults.setBaseData(result);
 				lblStatusGoesHere.setText("Fetched " + (result.length-1) + " records.");
 				//showdata();
@@ -225,17 +224,11 @@ public class WRS_manila implements EntryPoint {
         lblBeta.setStyleName("gwt-Label-version");
         lblBeta.setHeight("22px");
         hpAppTitle.add(lblBeta);
-        // End of IRRI Banner
-        
-        // Create AppBanner
-        HorizontalPanel hpAppBanner = new HorizontalPanel();
-        hpAppBanner.setSize("100%", "100%");
-        MainWrapper.addNorth(hpAppBanner, 40.0);
         
         MenuBar menuBar = new MenuBar(false);
+        MainWrapper.addNorth(menuBar, 35.0);
         menuBar.setAnimationEnabled(true);
         menuBar.setAutoOpen(true);
-        hpAppBanner.add(menuBar);
         
         MenuItem mntmHome = new MenuItem("Home", false, (Command) null);
         mntmHome.setVisible(false);
@@ -247,6 +240,7 @@ public class WRS_manila implements EntryPoint {
         MenuItem mntmSelect = new MenuItem("Select", false, new Command() {
         	public void execute() {
             	if (ContentPanel.getVisibleWidget()!=0) ContentPanel.showWidget(0);
+            	History.newItem("Select");
         	}
         });
         menuBar_2.addItem(mntmSelect);
@@ -266,6 +260,7 @@ public class WRS_manila implements EntryPoint {
     				frameVisualize.setUrl("http://ricestat.irri.org/vis/wrsMap_main.html");
     			}        			
         		ContentPanel.showWidget(2);
+        		History.newItem("MapIt");
         	}
         });
         menuBar_1.addItem(mntmMapIt);
@@ -277,6 +272,7 @@ public class WRS_manila implements EntryPoint {
     				frameVisualize.setUrl("http://ricestat.irri.org/vis/wrs_Motion.php");
     			}        			
         		ContentPanel.showWidget(2);
+        		History.newItem("TrendIt");
         	}
         });
         menuBar_1.addItem(mntmTrendIt);
@@ -288,6 +284,7 @@ public class WRS_manila implements EntryPoint {
     				frameVisualize.setUrl("http://ricestat.irri.org/vis/wrs3D_main.html");
     			}        			
         		ContentPanel.showWidget(2);
+        		History.newItem("3D");
         	}
         });
         menuBar_1.addItem(mntmd);

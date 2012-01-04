@@ -109,7 +109,6 @@ public class Slider extends Composite {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				pshbtnPlay.setDown(false);
 				stopSlide();
 			}

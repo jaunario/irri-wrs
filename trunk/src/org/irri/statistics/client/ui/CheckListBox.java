@@ -87,7 +87,6 @@ public class CheckListBox extends Composite implements HasChangeHandlers {
 	}
 	@Override
 	public HandlerRegistration addChangeHandler(ChangeHandler handler) {
-		// TODO Auto-generated method stub
 		return addDomHandler(handler, ChangeEvent.getType());
 	}
 	

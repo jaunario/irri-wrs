@@ -43,8 +43,8 @@ public class MySQLServiceImpl extends RemoteServiceServlet implements
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             Connection connection = DriverManager.getConnection(
-            		"jdbc:mysql://127.0.0.1/rice_stats", "ssd.webview", "Vi3wOn1y"); // for amazon and dev           		
-            	//	"jdbc:mysql://172.29.31.182/rice_stats", "ssd.webview", "Vi3wOn1y"); // for geo
+            	//	"jdbc:mysql://127.0.0.1/rice_stats", "ssd.webview", "Vi3wOn1y"); // for amazon and dev           		
+            		"jdbc:mysql://172.29.31.182/rice_stats", "ssd.webview", "Vi3wOn1y"); // for geo
             Statement select = connection.createStatement();
 
             ResultSet result = select.executeQuery(Query);
@@ -82,10 +82,10 @@ public class MySQLServiceImpl extends RemoteServiceServlet implements
     
     public String SaveCSV(String data){
        String filename = createFilename();
-       //String htdocs = System.getenv("HTDOCS") + "/csvs";
-       String htdocs = "/data/gisadmin/html/csvs";
-       //String hostname = System.getenv("DOMAIN");
-       String hostname = "ricestat.irri.org";
+       String htdocs = System.getenv("HTDOCS") + "/csvs";
+       //String htdocs = "/data/gisadmin/html/csvs";
+       String hostname = System.getenv("DOMAIN");
+       //String hostname = "ricestat.irri.org";
        String url = "http://"+ hostname +"/csvs/"+filename;
        File csvFile = new File(htdocs+"/"+filename);
        //String url = "http://localhost/csvs/"+filename;

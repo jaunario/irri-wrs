@@ -27,7 +27,6 @@ public class TablePanel extends Composite {
 			
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				viztab = new Table();
 				TablePanel.add(viztab);
 			}
@@ -100,7 +99,6 @@ public class TablePanel extends Composite {
 //			
 //			@Override
 //			public void run() {
-//				// TODO Auto-generated method stub
 //				TBTable = new Toolbar(); 
 //				Component cmp = Component.create();
 //				cmp.setType(Toolbar.Type.CSV);
