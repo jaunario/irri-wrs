@@ -101,7 +101,6 @@ public class WRSResultTable extends Composite {
 					
 					@Override
 					public void update(int index, CountryStat object, String value) {
-						// TODO Auto-generated method stub
 						object.setCountry(value);
 						queryresult.refresh();
 					}
@@ -110,7 +109,6 @@ public class WRSResultTable extends Composite {
 					
 					@Override
 					public int compare(CountryStat arg0, CountryStat arg1) {
-						// TODO Auto-generated method stub
 						return arg0.getCountry().compareTo(arg1.getCountry());
 					}
 				});
@@ -127,16 +125,13 @@ public class WRSResultTable extends Composite {
 					
 					@Override
 					public int compare(CountryStat arg0, CountryStat arg1) {
-						// TODO Auto-generated method stub
 						return arg0.getYear()-arg1.getYear();
 					}
 				});
 				thisColumn.setFieldUpdater(new FieldUpdater<CountryStat, Number>() {
 
 					@Override
-					public void update(int index, CountryStat object,
-							Number value) {
-						// TODO Auto-generated method stub
+					public void update(int index, CountryStat object, Number value) {
 						object.setYear(value.intValue());
 						queryresult.refresh();
 					}
@@ -155,7 +150,6 @@ public class WRSResultTable extends Composite {
 					
 					@Override
 					public int compare(CountryStat arg0, CountryStat arg1) {
-						// TODO Auto-generated method stub
 						return Float.compare(arg0.getVarValue(idx), arg1.getVarValue(idx));
 					}
 				});
@@ -163,9 +157,7 @@ public class WRSResultTable extends Composite {
 				thisColumn.setFieldUpdater(new FieldUpdater<CountryStat, Number>() {
 
 					@Override
-					public void update(int index, CountryStat object,
-							Number value) {
-						// TODO Auto-generated method stub
+					public void update(int index, CountryStat object, Number value) {
 						object.setVarValue(idx, value.floatValue());
 						queryresult.refresh();
 					}

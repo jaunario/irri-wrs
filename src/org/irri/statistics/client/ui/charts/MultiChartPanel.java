@@ -101,7 +101,6 @@ public class MultiChartPanel extends Composite {
 						
 						@Override
 						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
 							PopupPanel msg = new PopupPanel();
 							msg.add(new HTML("Operation failed. Please try Again. If the problem persists please contact us. (Indicate the variables chosen)"));
 							msg.setGlassEnabled(true);
@@ -147,7 +146,6 @@ public class MultiChartPanel extends Composite {
 					
 					@Override
 					public void onClick(ClickEvent event) {
-						// TODO Auto-generated method stub
 						int tab = deckChartPager.getWidgetIndex(newco);
 						deckChartPager.remove(tab);
 						dtbChartPageSelector.removeTab(tab);
