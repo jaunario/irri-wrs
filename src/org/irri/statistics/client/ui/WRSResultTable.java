@@ -2,7 +2,7 @@ package org.irri.statistics.client.ui;
 
 import java.util.Comparator;
 
-import org.irri.statistics.client.WRS_DataClasses.CountryStat;
+import org.irri.statistics.client.WRS_filters.CountryStat;
 import org.irri.statistics.client.utils.RPCUtils;
 
 import com.google.gwt.user.cellview.client.CellTable;
