@@ -30,6 +30,8 @@ import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.Command;
 
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.ui.InlineHTML;
+import com.google.gwt.user.client.ui.InlineLabel;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
@@ -171,7 +173,29 @@ public class WRS_manila implements EntryPoint {
         rootLayoutPanel.add(MainWrapper);
         rootLayoutPanel.setWidgetLeftRight(MainWrapper, 90.0, Unit.PX, 90.0, Unit.PX);
         
+        VerticalPanel verticalPanel = new VerticalPanel();
+        verticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        MainWrapper.addNorth(verticalPanel, 26.0);
+        verticalPanel.setSize("100%", "100%");
+        
+        HorizontalPanel hpGlobalNavigation = new HorizontalPanel();
+        verticalPanel.add(hpGlobalNavigation);
+        hpGlobalNavigation.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        hpGlobalNavigation.setSize("250px", "25px");
+        hpGlobalNavigation.setSpacing(5);
+        
+        InlineHTML nlnhtmlirriHome = new InlineHTML("<a href=\"http://www.irri.org\">IRRI Home</a>");
+        nlnhtmlirriHome.setStyleName("gwt-HTML-Link");
+        hpGlobalNavigation.add(nlnhtmlirriHome);
+        hpGlobalNavigation.setCellHorizontalAlignment(nlnhtmlirriHome, HasHorizontalAlignment.ALIGN_RIGHT);
+        
+        InlineHTML nlnhtmlfarmHouseholdsSurvey = new InlineHTML("<a href=\"http://ricestat.irri.org:8080/households\">Farm Households Survey</a>");
+        nlnhtmlfarmHouseholdsSurvey.setStyleName("gwt-HTML-Link");
+        hpGlobalNavigation.add(nlnhtmlfarmHouseholdsSurvey);
+        hpGlobalNavigation.setCellHorizontalAlignment(nlnhtmlfarmHouseholdsSurvey, HasHorizontalAlignment.ALIGN_RIGHT);
+        
         HorizontalPanel horizontalPanel = new HorizontalPanel();
+        horizontalPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
         horizontalPanel.setStyleName("banner");
         MainWrapper.addNorth(horizontalPanel, 80.0);
         horizontalPanel.setSize("100%", "100%");
@@ -191,39 +215,28 @@ public class WRS_manila implements EntryPoint {
         vpIRRIBanner.add(lblIRRIFull);
         
         VerticalPanel vpExternal = new VerticalPanel();
-        vpExternal.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        vpExternal.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
+        vpExternal.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         horizontalPanel.add(vpExternal);
         horizontalPanel.setCellVerticalAlignment(vpExternal, HasVerticalAlignment.ALIGN_BOTTOM);
+        horizontalPanel.setCellHorizontalAlignment(vpExternal, HasHorizontalAlignment.ALIGN_RIGHT);
         vpExternal.setSize("100%", "100%");
-        
-        HorizontalPanel hpGlobalNavigation = new HorizontalPanel();
-        vpExternal.add(hpGlobalNavigation);
-        hpGlobalNavigation.setSpacing(5);
-        
-        HTML htmlIrriHome = new HTML("<a href=\"http://www.irri.org\">IRRI Home</a>", true);
-        htmlIrriHome.setStyleName("gwt-HTML-Link");
-        htmlIrriHome.setSize("73px", "15px");
-        hpGlobalNavigation.add(htmlIrriHome);
-        
-        HTML htmlFarmHouseholdSurvey = new HTML("<a href=\"http://ricestat.irri.org:8080/households\">Farm Households Survey</a>", true);
-        htmlFarmHouseholdSurvey.setStyleName("gwt-HTML-Link");
-        htmlFarmHouseholdSurvey.setSize("151px", "15px");
-        hpGlobalNavigation.add(htmlFarmHouseholdSurvey);
         
         HorizontalPanel hpAppTitle = new HorizontalPanel();
         vpExternal.add(hpAppTitle);
-        vpExternal.setCellVerticalAlignment(hpAppTitle, HasVerticalAlignment.ALIGN_BOTTOM);
+        vpExternal.setCellHorizontalAlignment(hpAppTitle, HasHorizontalAlignment.ALIGN_RIGHT);
+        hpAppTitle.setSize("305px", "37px");
         hpAppTitle.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
         
-        Label lblWorldRiceStatistics = new Label("World Rice Statistics");
-        lblWorldRiceStatistics.setStyleName("gwt-Label-title");
-        lblWorldRiceStatistics.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-        hpAppTitle.add(lblWorldRiceStatistics);
+        InlineLabel nlnlblWorldRiceStatistics = new InlineLabel("World Rice Statistics");
+        nlnlblWorldRiceStatistics.setStyleName("gwt-Label-title");
+        hpAppTitle.add(nlnlblWorldRiceStatistics);
+        hpAppTitle.setCellHorizontalAlignment(nlnlblWorldRiceStatistics, HasHorizontalAlignment.ALIGN_RIGHT);
+        hpAppTitle.setCellVerticalAlignment(nlnlblWorldRiceStatistics, HasVerticalAlignment.ALIGN_BOTTOM);
         
-        Label lblBeta = new Label("[BETA]");
-        lblBeta.setStyleName("gwt-Label-version");
-        lblBeta.setHeight("22px");
-        hpAppTitle.add(lblBeta);
+        InlineLabel nlnlblVersion = new InlineLabel("[BETA]");
+        nlnlblVersion.setStyleName("gwt-Label-version");
+        hpAppTitle.add(nlnlblVersion);
         
         MenuBar menuBar = new MenuBar(false);
         MainWrapper.addNorth(menuBar, 35.0);

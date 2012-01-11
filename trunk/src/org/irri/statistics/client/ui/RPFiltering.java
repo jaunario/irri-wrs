@@ -1,11 +1,14 @@
 package org.irri.statistics.client.ui;
 
 import org.irri.statistics.client.utils.RPCUtils;
+import org.irri.statistics.client.utils.JSONUtils;
+import org.irri.statistics.client.WRS_filters;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -16,6 +19,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
 
 public class RPFiltering extends Composite {
 	/*
@@ -325,7 +334,39 @@ public class RPFiltering extends Composite {
 			lbxYear.clear();
 			lbxVariable.clear();
 			RPCUtils.getService("mysqlservice").RunSELECT("SELECT c.NAME_ENGLISH, r.iso3 FROM available r INNER JOIN countries c ON c.iso3=r.iso3 WHERE r.ci=0 GROUP BY 1 ASC",InitRegionBox);
-			RPCUtils.getService("mysqlservice").RunSELECT("SELECT g.group_name, r.group_code FROM available r INNER JOIN wrs_groups g ON g.group_code=r.group_code WHERE r.ci=0 GROUP BY 1 ASC",InitVarGroupBox);			
+			//RPCUtils.getService("mysqlservice").RunSELECT("SELECT g.group_name, r.group_code FROM available r INNER JOIN wrs_groups g ON g.group_code=r.group_code WHERE r.ci=0 GROUP BY 1 ASC",InitVarGroupBox);
+			populateGroupBox();
+		}
+		
+		private void populateGroupBox(){
+			String JSON_URL = "http://localhost/JSON/filters.php?what=3";
+			
+			RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, JSON_URL);
+			try {
+				Request request = builder.sendRequest(null, new RequestCallback() {
+					
+					@Override
+					public void onResponseReceived(Request request, Response response) {
+						if (response.getStatusCode()==200){
+							JsArray<WRS_filters> groups = JSONUtils.asArrayOfFilters(response.getText());
+							for (int i = 0; i < groups.length(); i++) {
+								WRS_filters group = groups.get(i);
+								lbxVarGroup.addItem(group.getItem(), group.getCode());
+							}
+						} else {
+							System.out.println("Couldn't retrieve JSON (" + response.getStatusText()
+					                + ")");
+						}
+					}
+					
+					@Override
+					public void onError(Request request, Throwable exception) {
+						System.out.println("Couldn't retrieve JSON");
+					}
+				});
+			} catch (RequestException e){
+				System.out.println("Couldn't retrieve JSON" + e.toString());
+			}
 		}
 		
 		public String getSelectedItems(ListBox lbx, boolean noquote){
