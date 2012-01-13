@@ -1,14 +1,14 @@
 package org.irri.statistics.client.ui;
 
 import org.irri.statistics.client.utils.RPCUtils;
-import org.irri.statistics.client.utils.JSONUtils;
-import org.irri.statistics.client.WRS_filters;
+//import org.irri.statistics.client.utils.JSONUtils;
+//import org.irri.statistics.client.WRS_filters;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.core.client.JsArray;
+//import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -20,11 +20,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
+//import com.google.gwt.http.client.Request;
+//import com.google.gwt.http.client.RequestBuilder;
+//import com.google.gwt.http.client.RequestCallback;
+//import com.google.gwt.http.client.RequestException;
+//import com.google.gwt.http.client.Response;
 
 public class RPFiltering extends Composite {
 	/*
@@ -334,11 +334,11 @@ public class RPFiltering extends Composite {
 			lbxYear.clear();
 			lbxVariable.clear();
 			RPCUtils.getService("mysqlservice").RunSELECT("SELECT c.NAME_ENGLISH, r.iso3 FROM available r INNER JOIN countries c ON c.iso3=r.iso3 WHERE r.ci=0 GROUP BY 1 ASC",InitRegionBox);
-			//RPCUtils.getService("mysqlservice").RunSELECT("SELECT g.group_name, r.group_code FROM available r INNER JOIN wrs_groups g ON g.group_code=r.group_code WHERE r.ci=0 GROUP BY 1 ASC",InitVarGroupBox);
-			populateGroupBox();
+			RPCUtils.getService("mysqlservice").RunSELECT("SELECT g.group_name, r.group_code FROM available r INNER JOIN wrs_groups g ON g.group_code=r.group_code WHERE r.ci=0 GROUP BY 1",InitVarGroupBox);
+			
 		}
 		
-		private void populateGroupBox(){
+		/*private void populateGroupBox(){
 			String JSON_URL = "http://geo.irri.org/JSON/filters.php?what=3";
 			
 			RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, JSON_URL);
@@ -367,7 +367,7 @@ public class RPFiltering extends Composite {
 			} catch (RequestException e){
 				System.out.println("Couldn't retrieve JSON" + e.toString());
 			}
-		}
+		}*/
 		
 		public String getSelectedItems(ListBox lbx, boolean noquote){
 			String selitems = "";

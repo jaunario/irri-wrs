@@ -43,8 +43,8 @@ public class MySQLServiceImpl extends RemoteServiceServlet implements
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             Connection connection = DriverManager.getConnection(
-            	//	"jdbc:mysql://127.0.0.1/rice_stats", "ssd.webview", "Vi3wOn1y"); // for amazon and dev           		
-            		"jdbc:mysql://172.29.31.182/rice_stats", "ssd.webview", "Vi3wOn1y"); // for geo
+            		"jdbc:mysql://127.0.0.1/rice_stats", "ssd.webview", "Vi3wOn1y"); // for amazon and dev           		
+            	//	"jdbc:mysql://172.29.31.182/rice_stats", "ssd.webview", "Vi3wOn1y"); // for geo
             Statement select = connection.createStatement();
 
             ResultSet result = select.executeQuery(Query);
@@ -82,12 +82,12 @@ public class MySQLServiceImpl extends RemoteServiceServlet implements
     
     public String SaveCSV(String data){
        String filename = createFilename();
-       String htdocs = System.getenv("HTDOCS") + "/csvs";
+       String htdocs = System.getenv("HTDOCS") + "\\csvs";
        //String htdocs = "/data/gisadmin/html/csvs";
        String hostname = System.getenv("DOMAIN");
        //String hostname = "ricestat.irri.org";
        String url = "http://"+ hostname +"/csvs/"+filename;
-       File csvFile = new File(htdocs+"/"+filename);
+       File csvFile = new File(htdocs+"\\"+filename);
        //String url = "http://localhost/csvs/"+filename;
        //File csvFile = new File("C:/Program Files/Apache Software Foundation/Apache2.2/htdocs/csvs/"+filename);
               
@@ -111,7 +111,8 @@ public class MySQLServiceImpl extends RemoteServiceServlet implements
         Random r = new Random();
         int i = absolute(r.nextInt());
         String fname=simpleDate.format(today)+"_"+Integer.toString(i)+".csv";
-        File file = new File("/www/csvs/"+fname);
+        String htdocs = System.getenv("HTDOCS") + "\\csvs\\";
+        File file = new File(htdocs+fname);
         while (file.exists()){
             i=absolute(r.nextInt());
             fname=today.toString()+"_"+Integer.toString(i)+".csv";
