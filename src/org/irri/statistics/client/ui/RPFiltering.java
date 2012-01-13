@@ -339,7 +339,7 @@ public class RPFiltering extends Composite {
 		}
 		
 		private void populateGroupBox(){
-			String JSON_URL = "http://localhost/JSON/filters.php?what=3";
+			String JSON_URL = "http://geo.irri.org/JSON/filters.php?what=3";
 			
 			RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, JSON_URL);
 			try {
